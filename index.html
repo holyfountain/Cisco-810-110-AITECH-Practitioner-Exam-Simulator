@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>810-110 Exam Simulator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="page-shell">
+    <header class="hero">
+      <div class="hero-topbar">
+        <p class="eyebrow">Cisco 810-110</p>
+        <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false">Dark Mode</button>
+      </div>
+      <h1>AI Technical Practitioner Exam Simulator</h1>
+      <p class="hero-copy">
+        Start a randomized 20-question exam from the built-in question bank. Passing requires a perfect score: 20 out of 20.
+      </p>
+    </header>
+
+    <main class="content">
+        <section class="panel intro-panel" id="introPanel">
+          <div class="intro-copy">
+            <h2>Start a new simulation</h2>
+            <p>
+              The question bank is bundled locally, so the exam is ready as soon as the page opens.
+            </p>
+          </div>
+
+          <div class="home-stats">
+            <article class="home-stat">
+              <p class="sidebar-label">Question Bank</p>
+              <p class="sidebar-value" id="bankCount">Loading...</p>
+            </article>
+            <article class="home-stat">
+              <p class="sidebar-label">Exam Size</p>
+              <p class="sidebar-value">20 questions</p>
+            </article>
+            <article class="home-stat">
+              <p class="sidebar-label">Passing Score</p>
+              <p class="sidebar-value">100%</p>
+            </article>
+          </div>
+
+          <p class="home-status" id="statusText">Preparing local database</p>
+
+          <div class="actions-row">
+            <button class="primary-button" id="startButton" disabled>Start Exam</button>
+          </div>
+        </section>
+
+        <section class="panel exam-panel hidden" id="examPanel">
+          <div class="exam-toolbar">
+            <div>
+              <p class="toolbar-label">Attempt</p>
+              <h2 id="examTitle">Simulation Exam</h2>
+            </div>
+            <div class="toolbar-stats">
+              <div>
+                <span class="toolbar-label">Answered</span>
+                <strong id="answeredCount">0 / 20</strong>
+              </div>
+              <div>
+                <span class="toolbar-label">Rule</span>
+                <strong>20 correct required</strong>
+              </div>
+            </div>
+          </div>
+
+          <section class="progress-summary" id="progressSummary" aria-live="polite">
+            <div class="progress-summary-copy">
+              <p class="toolbar-label">Progress</p>
+              <p class="progress-summary-text" id="progressSummaryText">0 answered, 20 remaining</p>
+            </div>
+            <div class="progress-summary-grid" id="progressSummaryGrid"></div>
+          </section>
+
+          <form id="examForm" class="question-list"></form>
+
+          <div class="sticky-actions">
+            <div class="question-navigation">
+              <button class="secondary-button" id="previousButton" type="button">Previous</button>
+              <p class="question-position" id="questionPosition">Question 1 of 20</p>
+              <button class="secondary-button" id="nextButton" type="button">Next</button>
+            </div>
+            <button class="primary-button" id="submitButton" type="button">Submit Exam</button>
+          </div>
+        </section>
+
+        <section class="panel results-panel hidden" id="resultsPanel">
+          <div id="resultsSummary"></div>
+          <div id="resultsReview" class="review-list"></div>
+          <div class="actions-row">
+            <button class="primary-button" id="restartButton" type="button">Generate New Exam</button>
+          </div>
+        </section>
+    </main>
+  </div>
+
+  <script src="./questions-db.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
