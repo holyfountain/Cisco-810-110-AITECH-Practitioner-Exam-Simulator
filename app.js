@@ -468,7 +468,7 @@ function initializeQuestionBank() {
 
     state.questionBank = loadDeduplicatedBank(QUESTION_BANK);
     updateBankDetails();
-    setLoadMessage("Question database ready. New exams now draw from the bundled local bank.");
+    setLoadMessage("Question database ready.");
   } catch (error) {
     state.questionBank = [];
     updateBankDetails();
