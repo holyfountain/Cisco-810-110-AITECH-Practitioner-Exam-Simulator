@@ -11,9 +11,11 @@ Local browser-based simulator for Cisco 810-110 AI Technical Practitioner study 
 
 - Exam mode with configurable question counts: `20`, `30`, `40`, `60`, `100`, or `ALL`
 - Practice mode with immediate correctness feedback after each answer
+- Practice flow setting with `Auto-advance` or `Manual Next` behavior after correct answers
 - Configurable passing score: `60%`, `70%`, `80%`, `90%`, or `100%`
-- Full question-bank practice by default, with optional limited practice sets
+- Practice defaults to 20 questions, with optional larger sets up to the full bank
 - Retry flow for missed practice questions from the results screen
+- Results summary card includes `Retry Wrong Answers` and `Home` actions
 - Saved practice-session persistence in local storage with Resume and Discard controls on the home screen
 - Question progress carousel with left and right controls for fast navigation
 - Per-session scoring and domain breakdown on the results screen
