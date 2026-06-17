@@ -730,6 +730,30 @@ function formatAnswerList(answerLetters, question) {
   return mapped.length > 0 ? mapped.join(" | ") : "No answer";
 }
 
+function formatRationaleText(rationale, question, answerLetters = question.correctAnswers) {
+  if (typeof rationale !== "string" || rationale.length === 0) {
+    return "";
+  }
+
+  const originalAnswerLead = answerLetters
+    .map((letter) => question.options.find((option) => option.letter === letter))
+    .filter(Boolean)
+    .map((option) => `${option.letter}. ${option.text.replace(/[.!?]+$/, "")}`)
+    .join(" and ");
+
+  if (!originalAnswerLead || !rationale.startsWith(originalAnswerLead)) {
+    return rationale;
+  }
+
+  const displayAnswerLead = answerLetters
+    .map((letter) => question.options.find((option) => option.letter === letter))
+    .filter(Boolean)
+    .map((option) => `${getDisplayLabelForOriginalLetter(question, option.letter)}. ${option.text.replace(/[.!?]+$/, "")}`)
+    .join(" and ");
+
+  return `${displayAnswerLead}${rationale.slice(originalAnswerLead.length)}`;
+}
+
 function getQuestionResult(question) {
   const selectedAnswers = getSelectedAnswers(question.id);
   const hasAnswer = selectedAnswers.length > 0;
@@ -885,7 +909,7 @@ function renderExam() {
           Correct answer: ${escapeHtml(formatAnswerList(question.correctAnswers, question))}
         </p>
         ${question.rationaleCorrect ? `
-          <p class="practice-feedback-copy">${escapeHtml(question.rationaleCorrect)}</p>
+          <p class="practice-feedback-copy">${escapeHtml(formatRationaleText(question.rationaleCorrect, question))}</p>
         ` : ""}
       </section>
     `
@@ -1030,7 +1054,7 @@ function renderResults(results) {
       ${result.question.rationaleCorrect ? `
         <section class="review-rationale">
           <p class="review-rationale-label">Why it is correct</p>
-          <p class="review-rationale-copy">${escapeHtml(result.question.rationaleCorrect)}</p>
+          <p class="review-rationale-copy">${escapeHtml(formatRationaleText(result.question.rationaleCorrect, result.question))}</p>
         </section>
       ` : ""}
       ${result.question.rationaleIncorrect ? `
