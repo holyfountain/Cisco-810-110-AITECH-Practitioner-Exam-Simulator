@@ -919,6 +919,24 @@ body.exam-session .sticky-actions {
   margin-bottom: 20px;
 }
 
+.result-banner-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.result-banner-copy {
+  min-width: 0;
+}
+
+.result-home-anchor {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  flex: 0 0 auto;
+}
+
 .result-actions-anchor {
   margin-top: 18px;
 }
@@ -1000,16 +1018,44 @@ body.exam-session .sticky-actions {
 }
 
 .domain-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 170px;
   padding: 16px;
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.72);
   border: 1px solid var(--border);
 }
 
+.domain-card-copy,
+.domain-card-score {
+  display: flex;
+  flex-direction: column;
+}
+
+.domain-card-copy {
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.domain-card-score {
+  align-items: flex-start;
+  justify-content: flex-end;
+  gap: 4px;
+}
+
 .domain-card .toolbar-label {
+  margin: 0;
   line-height: 1.55;
   letter-spacing: 0.1em;
   overflow-wrap: anywhere;
+}
+
+.domain-card-title {
+  margin: 0;
+  line-height: 1.45;
+  font-weight: 600;
 }
 
 :root[data-theme="dark"] .domain-card {
@@ -1019,8 +1065,12 @@ body.exam-session .sticky-actions {
 
 .domain-card strong {
   display: block;
-  margin-top: 8px;
+  margin: 0;
   font-size: 1.35rem;
+}
+
+.domain-card .review-meta {
+  margin: 0;
 }
 
 .review-list {
@@ -1223,6 +1273,10 @@ body.exam-session .sticky-actions {
     padding: 18px;
   }
 
+  .result-banner-header {
+    flex-wrap: wrap;
+  }
+
   .result-banner h2 {
     font-size: 1.75rem;
   }
@@ -1239,6 +1293,11 @@ body.exam-session .sticky-actions {
   .domain-card .toolbar-label {
     font-size: 0.74rem;
     line-height: 1.45;
+  }
+
+  .domain-card-title,
+  .domain-card .review-meta {
+    font-size: 0.92rem;
   }
 
   .domain-card strong {

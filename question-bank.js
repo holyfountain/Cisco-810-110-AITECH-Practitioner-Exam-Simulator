@@ -30,6 +30,12 @@ function classifyOfficialDomain(domain, questionText, optionText = "") {
     agentic: "Domain 6: Agentic AI"
   };
   const legacyMappings = [
+    ["Generative AI Models", officialDomainNames.models],
+    ["Prompt Engineering", officialDomainNames.prompt],
+    ["Ethics and Security", officialDomainNames.security],
+    ["Data Research and Analysis", officialDomainNames.data],
+    ["Development and Workflow Automation", officialDomainNames.development],
+    ["Agentic AI", officialDomainNames.agentic],
     ["Generative AI Models & Architecture", officialDomainNames.models],
     ["AI Infrastructure & Systems Integration", officialDomainNames.models],
     ["Evaluation Metrics & Model Validation", officialDomainNames.models],

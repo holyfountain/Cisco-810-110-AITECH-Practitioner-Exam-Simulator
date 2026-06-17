@@ -1092,7 +1092,7 @@ window.QUESTION_BANK = [
     "number": 35,
     "sourceName": "questions-source.txt",
     "domain": "Agentic AI",
-    "officialDomain": "Agentic AI",
+    "officialDomain": "Domain 6: Agentic AI",
     "text": "An AI operations framework processes 2,000 logs per minute. To lower runtime operational costs, an infrastructure engineer wants to pass log messages through an ultra-lightweight classification model (1 Billion parameters) first. If the log is deemed critical, it escalates to a high-capacity model (70 Billion parameters). What design pattern does this setup leverage?",
     "options": [
       {
@@ -1540,7 +1540,7 @@ window.QUESTION_BANK = [
     "number": 49,
     "sourceName": "questions-source.txt",
     "domain": "Prompt Engineering",
-    "officialDomain": "Prompt Engineering",
+    "officialDomain": "Domain 2: Prompt Engineering",
     "text": "An AI practitioner is reviewing a validation report for a fine-tuned technical support model. The report lists a metric called ROUGE (Recall-Oriented Understudy for Gisting Evaluation). What does a high ROUGE score typically indicate?",
     "options": [
       {
@@ -2500,7 +2500,7 @@ window.QUESTION_BANK = [
     "number": 79,
     "sourceName": "questions-source.txt",
     "domain": "Prompt Engineering",
-    "officialDomain": "Prompt Engineering",
+    "officialDomain": "Domain 2: Prompt Engineering",
     "text": "Why is it useful to specify attributes such as composition, lighting, and style when prompting an image-generation model?",
     "options": [
       {
@@ -3684,7 +3684,7 @@ window.QUESTION_BANK = [
     "number": 116,
     "sourceName": "questions-source.txt",
     "domain": "Agentic AI",
-    "officialDomain": "Agentic AI",
+    "officialDomain": "Domain 6: Agentic AI",
     "text": "What is the clearest difference between a tool-using agent and a standard one-shot text generation workflow?",
     "options": [
       {
@@ -4036,7 +4036,7 @@ window.QUESTION_BANK = [
     "number": 127,
     "sourceName": "questions-source.txt",
     "domain": "Agentic AI",
-    "officialDomain": "Agentic AI",
+    "officialDomain": "Domain 6: Agentic AI",
     "text": "An agent proposes a firewall change, runs a policy-check tool, sees a failure, and revises the plan before requesting approval. What does this best demonstrate?",
     "options": [
       {

@@ -64,6 +64,8 @@ const elements = {
 const state = {
   questionBank: [],
   examQuestions: [],
+  optionOrderByQuestionId: new Map(),
+  lastQuestionSignatureBySessionKey: new Map(),
   selections: new Map(),
   attemptCount: 0,
   currentQuestionIndex: 0,
@@ -81,6 +83,7 @@ const state = {
 
 const THEME_STORAGE_KEY = "aitech-theme";
 const PRACTICE_STATE_STORAGE_KEY = "aitech-practice-state";
+const SESSION_MEMORY_STORAGE_KEY = "aitech-session-memory";
 
 function escapeHtml(value) {
   return value
@@ -98,6 +101,48 @@ function shuffle(array) {
     [copy[index], copy[swapIndex]] = [copy[swapIndex], copy[index]];
   }
   return copy;
+}
+
+function createOptionOrderMap(questions, persistedOptionOrders = null) {
+  const persistedMap = persistedOptionOrders instanceof Map ? persistedOptionOrders : new Map(persistedOptionOrders || []);
+
+  return new Map(questions.map((question) => {
+    const validLetters = new Set(question.options.map((option) => option.letter));
+    const persistedOrder = persistedMap.get(question.id);
+    const hasValidPersistedOrder = Array.isArray(persistedOrder)
+      && persistedOrder.length === question.options.length
+      && persistedOrder.every((letter) => validLetters.has(letter));
+
+    return [
+      question.id,
+      hasValidPersistedOrder ? [...persistedOrder] : shuffle(question.options.map((option) => option.letter))
+    ];
+  }));
+}
+
+function getDisplayOptions(question) {
+  const optionOrder = state.optionOrderByQuestionId.get(question.id);
+  if (!Array.isArray(optionOrder) || optionOrder.length === 0) {
+    const fallbackOrder = shuffle(question.options.map((option) => option.letter));
+    state.optionOrderByQuestionId.set(question.id, fallbackOrder);
+    return fallbackOrder
+      .map((letter) => question.options.find((option) => option.letter === letter))
+      .filter(Boolean);
+  }
+
+  return optionOrder
+    .map((letter) => question.options.find((option) => option.letter === letter))
+    .filter(Boolean);
+}
+
+function getDisplayOptionLabel(index) {
+  return String.fromCharCode(65 + index);
+}
+
+function getDisplayLabelForOriginalLetter(question, originalLetter) {
+  const displayOptions = getDisplayOptions(question);
+  const optionIndex = displayOptions.findIndex((option) => option.letter === originalLetter);
+  return optionIndex >= 0 ? getDisplayOptionLabel(optionIndex) : originalLetter;
 }
 
 function setLoadMessage(message, isError = false) {
@@ -180,6 +225,45 @@ function clearPracticeStatePersistence() {
   window.localStorage.removeItem(PRACTICE_STATE_STORAGE_KEY);
 }
 
+function persistSessionMemory() {
+  const serializedState = {
+    lastQuestionSignatureBySessionKey: [...state.lastQuestionSignatureBySessionKey.entries()]
+  };
+
+  window.localStorage.setItem(SESSION_MEMORY_STORAGE_KEY, JSON.stringify(serializedState));
+}
+
+function loadPersistedSessionMemory() {
+  const serializedState = window.localStorage.getItem(SESSION_MEMORY_STORAGE_KEY);
+  if (!serializedState) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(serializedState);
+  } catch (error) {
+    window.localStorage.removeItem(SESSION_MEMORY_STORAGE_KEY);
+    return null;
+  }
+}
+
+function restorePersistedSessionMemory() {
+  const persistedState = loadPersistedSessionMemory();
+  if (!persistedState || !Array.isArray(persistedState.lastQuestionSignatureBySessionKey)) {
+    state.lastQuestionSignatureBySessionKey = new Map();
+    return;
+  }
+
+  state.lastQuestionSignatureBySessionKey = new Map(
+    persistedState.lastQuestionSignatureBySessionKey.filter((entry) => {
+      return Array.isArray(entry)
+        && entry.length === 2
+        && typeof entry[0] === "string"
+        && typeof entry[1] === "string";
+    })
+  );
+}
+
 function getPracticeAutoAdvanceLabel() {
   return state.practiceAutoAdvance ? "Auto-advance on correct" : "Press Next after feedback";
 }
@@ -207,6 +291,7 @@ function persistPracticeState() {
     attemptCount: state.attemptCount,
     currentQuestionIndex: state.currentQuestionIndex,
     examQuestionIds: state.examQuestions.map((question) => question.id),
+    optionOrders: state.examQuestions.map((question) => [question.id, [...(state.optionOrderByQuestionId.get(question.id) || question.options.map((option) => option.letter))]]),
     selections: [...state.selections.entries()],
     practiceRetryQuestionIds: state.practiceRetryQuestionIds,
     practiceMissedQuestionIds: [...state.practiceMissedQuestionIds],
@@ -274,6 +359,7 @@ function restorePersistedPracticeState(persistedState = loadPersistedPracticeSta
   state.sessionMode = "practice";
   state.attemptCount = Number.isInteger(persistedState.attemptCount) ? persistedState.attemptCount : state.attemptCount;
   state.examQuestions = restoredQuestions;
+  state.optionOrderByQuestionId = createOptionOrderMap(restoredQuestions, persistedState.optionOrders);
   state.currentQuestionIndex = Math.min(
     Math.max(Number.isInteger(persistedState.currentQuestionIndex) ? persistedState.currentQuestionIndex : 0, 0),
     restoredQuestions.length - 1
@@ -485,6 +571,46 @@ function getPracticeQuestions() {
     : shuffledQuestions.slice(0, targetQuestionCount);
 }
 
+function getQuestionSequenceSignature(questions) {
+  return questions.map((question) => question.id).join("|");
+}
+
+function getSessionQuestionSignatureKey(mode) {
+  const runType = mode === "practice" && Array.isArray(state.practiceRetryQuestionIds) && state.practiceRetryQuestionIds.length > 0
+    ? "retry"
+    : "fresh";
+  return `${mode}:${state.activeQuestionCountOption}:${runType}`;
+}
+
+function buildSessionQuestions(mode) {
+  const sessionKey = getSessionQuestionSignatureKey(mode);
+  const previousSignature = state.lastQuestionSignatureBySessionKey.get(sessionKey);
+  const retryPractice = mode === "practice" && Array.isArray(state.practiceRetryQuestionIds) && state.practiceRetryQuestionIds.length > 0;
+
+  let questions = [];
+  let signature = "";
+  let attempts = 0;
+
+  do {
+    if (mode === "practice") {
+      questions = getPracticeQuestions();
+    } else {
+      const targetQuestionCount = resolveQuestionCount(state.activeQuestionCountOption, state.questionBank.length);
+      questions = buildBlueprintExam(state.questionBank, targetQuestionCount);
+    }
+
+    signature = getQuestionSequenceSignature(questions);
+    attempts += 1;
+  } while (!retryPractice && previousSignature && signature === previousSignature && attempts < 25);
+
+  if (signature) {
+    state.lastQuestionSignatureBySessionKey.set(sessionKey, signature);
+    persistSessionMemory();
+  }
+
+  return questions;
+}
+
 function getHasWrongSelection(question, selectedAnswers) {
   if (selectedAnswers.length === 0) {
     return false;
@@ -506,13 +632,12 @@ function startSession(mode) {
   state.activeQuestionCountOption = getRequestedQuestionCountOption(mode);
   state.currentQuestionIndex = 0;
 
-  if (mode === "practice") {
-    state.examQuestions = getPracticeQuestions();
-  } else {
-    const targetQuestionCount = resolveQuestionCount(state.activeQuestionCountOption, state.questionBank.length);
-    state.examQuestions = buildBlueprintExam(state.questionBank, targetQuestionCount);
+  if (mode !== "practice") {
     state.practiceRetryQuestionIds = null;
   }
+
+  state.examQuestions = buildSessionQuestions(mode);
+  state.optionOrderByQuestionId = createOptionOrderMap(state.examQuestions);
 
   syncSessionModeUi();
   updateSessionTitle();
@@ -552,6 +677,7 @@ function returnToHome() {
   state.practiceMissedQuestionIds = new Set();
   state.selections = new Map();
   state.examQuestions = [];
+  state.optionOrderByQuestionId = new Map();
   state.currentQuestionIndex = 0;
   state.activeQuestionCountOption = getRequestedQuestionCountOption("exam");
 
@@ -599,7 +725,7 @@ function formatAnswerList(answerLetters, question) {
   const mapped = answerLetters
     .map((letter) => question.options.find((option) => option.letter === letter))
     .filter(Boolean)
-    .map((option) => `${option.letter}. ${option.text}`);
+    .map((option) => `${getDisplayLabelForOriginalLetter(question, option.letter)}. ${option.text}`);
 
   return mapped.length > 0 ? mapped.join(" | ") : "No answer";
 }
@@ -717,9 +843,10 @@ function renderExam() {
   const inputType = question.multiSelect ? "checkbox" : "radio";
   const selectedAnswers = getSelectedAnswers(question.id);
   const practiceResult = practiceMode ? getQuestionResult(question) : null;
-  const optionsMarkup = question.options.map((option) => {
+  const optionsMarkup = getDisplayOptions(question).map((option, index) => {
     const checked = selectedAnswers.includes(option.letter) ? "checked" : "";
     const optionClasses = [];
+    const displayLabel = getDisplayOptionLabel(index);
 
     if (selectedAnswers.includes(option.letter)) {
       optionClasses.push("selected");
@@ -745,7 +872,7 @@ function renderExam() {
           ${question.multiSelect ? "data-multi-select=\"true\"" : ""}
           ${checked}
         >
-        <span><strong>${escapeHtml(option.letter)}.</strong> ${escapeHtml(option.text)}</span>
+        <span><strong>${escapeHtml(displayLabel)}.</strong> ${escapeHtml(option.text)}</span>
       </label>
     `;
   }).join("");
@@ -834,9 +961,14 @@ function renderResults(results) {
 
   elements.resultsSummary.innerHTML = `
     <section class="result-banner ${passed ? "pass" : "fail"}">
-      <p class="eyebrow">${practiceMode ? "Practice Summary" : "Result"}</p>
-      <h2>${practiceMode ? "Session Complete" : (passed ? "Passed" : "Not Passed")}</h2>
-      <p class="result-note">${practiceMode ? `Practice mode shows live feedback while you work through the session. Passing threshold for this run was ${getActivePassingScore()}%.` : `Passing score for this session was ${getActivePassingScore()}%.`}</p>
+      <div class="result-banner-header">
+        <div class="result-banner-copy">
+          <p class="eyebrow">${practiceMode ? "Practice Summary" : "Result"}</p>
+          <h2>${practiceMode ? "Session Complete" : (passed ? "Passed" : "Not Passed")}</h2>
+          <p class="result-note">${practiceMode ? `Practice mode shows live feedback while you work through the session. Passing threshold for this run was ${getActivePassingScore()}%.` : `Passing score for this session was ${getActivePassingScore()}%.`}</p>
+        </div>
+        <div class="result-home-anchor" id="resultHomeAnchor"></div>
+      </div>
       <div class="result-grid">
         <div class="result-stat">
           <span class="toolbar-label">Score</span>
@@ -861,19 +993,28 @@ function renderResults(results) {
       <div class="domain-grid">
         ${domainBreakdown.map((entry) => `
           <article class="domain-card">
-            <p class="toolbar-label">${escapeHtml(entry.domain)}</p>
-            <strong>${entry.correct} / ${entry.total}</strong>
-            <p class="review-meta">${entry.percentage}% correct</p>
+            <div class="domain-card-copy">
+              <p class="toolbar-label">Domain:</p>
+              <p class="domain-card-title">${escapeHtml(entry.domain)}</p>
+            </div>
+            <div class="domain-card-score">
+              <strong>${entry.correct} / ${entry.total}</strong>
+              <p class="review-meta">${entry.percentage}% correct</p>
+            </div>
           </article>
         `).join("")}
       </div>
     </section>
   `;
 
+  const homeAnchor = elements.resultsSummary.querySelector("#resultHomeAnchor");
+  if (homeAnchor) {
+    homeAnchor.appendChild(elements.restartButton);
+  }
+
   const actionsAnchor = elements.resultsSummary.querySelector("#resultsActionsAnchor");
   if (actionsAnchor) {
-    actionsAnchor.appendChild(elements.resultsActions);
-    elements.resultsActions.classList.remove("hidden");
+    actionsAnchor.appendChild(elements.retryWrongButton);
   }
 
   elements.resultsReview.innerHTML = results.map((result, index) => `
@@ -1105,6 +1246,7 @@ function initializeAboutContent() {
 
 function initializeQuestionBank() {
   setLoadMessage("Loading built-in question database.");
+  restorePersistedSessionMemory();
 
   try {
     if (!Array.isArray(window.QUESTION_BANK)) {
