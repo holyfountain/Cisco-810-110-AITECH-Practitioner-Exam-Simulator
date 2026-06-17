@@ -1,7 +1,11 @@
 const QUESTION_BANK = Array.isArray(window.QUESTION_BANK) ? window.QUESTION_BANK : [];
+const APP_VERSION = "1.1";
 
-const EXAM_SIZE = 20;
-const PASSING_SCORE = 100;
+const DEFAULT_EXAM_QUESTION_COUNT = 20;
+const DEFAULT_PRACTICE_QUESTION_COUNT = "ALL";
+const DEFAULT_PASSING_SCORE = 100;
+const QUESTION_COUNT_OPTIONS = ["20", "30", "40", "60", "100", "ALL"];
+const PASSING_SCORE_OPTIONS = [60, 70, 80, 90, 100];
 const BLUEPRINT_DOMAIN_TARGETS = [
   ["Domain 1: Generative AI Models", 4],
   ["Domain 2: Prompt Engineering", 3],
@@ -14,7 +18,19 @@ const BLUEPRINT_DOMAIN_TARGETS = [
 const elements = {
   bankCount: document.querySelector("#bankCount"),
   statusText: document.querySelector("#statusText"),
-  startButton: document.querySelector("#startButton"),
+  examModeButton: document.querySelector("#examModeButton"),
+  practiceModeButton: document.querySelector("#practiceModeButton"),
+  questionCountSelect: document.querySelector("#questionCountSelect"),
+  passingScoreSelect: document.querySelector("#passingScoreSelect"),
+  savedSessionBanner: document.querySelector("#savedSessionBanner"),
+  savedSessionText: document.querySelector("#savedSessionText"),
+  resumePracticeButton: document.querySelector("#resumePracticeButton"),
+  discardSavedPracticeButton: document.querySelector("#discardSavedPracticeButton"),
+  aboutButton: document.querySelector("#aboutButton"),
+  aboutModal: document.querySelector("#aboutModal"),
+  aboutModalBackdrop: document.querySelector("#aboutModalBackdrop"),
+  closeAboutButton: document.querySelector("#closeAboutButton"),
+  aboutVersion: document.querySelector("#aboutVersion"),
   themeToggle: document.querySelector("#themeToggle"),
   introPanel: document.querySelector("#introPanel"),
   examPanel: document.querySelector("#examPanel"),
@@ -24,8 +40,13 @@ const elements = {
   nextButton: document.querySelector("#nextButton"),
   questionPosition: document.querySelector("#questionPosition"),
   submitButton: document.querySelector("#submitButton"),
+  quitPracticeButton: document.querySelector("#quitPracticeButton"),
   restartButton: document.querySelector("#restartButton"),
+  retryWrongButton: document.querySelector("#retryWrongButton"),
+  progressScrollLeftButton: document.querySelector("#progressScrollLeftButton"),
+  progressScrollRightButton: document.querySelector("#progressScrollRightButton"),
   answeredCount: document.querySelector("#answeredCount"),
+  sessionRule: document.querySelector("#sessionRule"),
   examTitle: document.querySelector("#examTitle"),
   progressSummaryText: document.querySelector("#progressSummaryText"),
   progressSummaryGrid: document.querySelector("#progressSummaryGrid"),
@@ -38,10 +59,20 @@ const state = {
   examQuestions: [],
   selections: new Map(),
   attemptCount: 0,
-  currentQuestionIndex: 0
+  currentQuestionIndex: 0,
+  sessionMode: "exam",
+  practiceRetryQuestionIds: null,
+  practiceMissedQuestionIds: new Set(),
+  autoAdvanceTimeoutId: null,
+  pendingPracticeState: null,
+  questionCountTouched: false,
+  selectedQuestionCountOption: String(DEFAULT_EXAM_QUESTION_COUNT),
+  activeQuestionCountOption: String(DEFAULT_EXAM_QUESTION_COUNT),
+  passingScore: DEFAULT_PASSING_SCORE
 };
 
 const THEME_STORAGE_KEY = "aitech-theme";
+const PRACTICE_STATE_STORAGE_KEY = "aitech-practice-state";
 
 function escapeHtml(value) {
   return value
@@ -85,6 +116,226 @@ function handleThemeToggle() {
   applyTheme(nextTheme);
 }
 
+function openAboutModal() {
+  elements.aboutModal.classList.remove("hidden");
+  elements.aboutModal.setAttribute("aria-hidden", "false");
+  document.body.classList.add("modal-open");
+}
+
+function closeAboutModal() {
+  elements.aboutModal.classList.add("hidden");
+  elements.aboutModal.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("modal-open");
+}
+
+function handleGlobalKeydown(event) {
+  if (event.key === "Escape" && !elements.aboutModal.classList.contains("hidden")) {
+    closeAboutModal();
+  }
+}
+
+function normalizeQuestionCountOption(value, fallback = String(DEFAULT_EXAM_QUESTION_COUNT)) {
+  return QUESTION_COUNT_OPTIONS.includes(value) ? value : fallback;
+}
+
+function resolveQuestionCount(option, availableCount) {
+  const normalizedOption = normalizeQuestionCountOption(option);
+  if (normalizedOption === "ALL") {
+    return availableCount;
+  }
+
+  const parsedCount = Number(normalizedOption);
+  if (!Number.isFinite(parsedCount) || parsedCount <= 0) {
+    return Math.min(DEFAULT_EXAM_QUESTION_COUNT, availableCount);
+  }
+
+  return Math.min(parsedCount, availableCount);
+}
+
+function getRequestedQuestionCountOption(mode) {
+  if (state.questionCountTouched) {
+    return normalizeQuestionCountOption(state.selectedQuestionCountOption);
+  }
+
+  return mode === "practice" ? DEFAULT_PRACTICE_QUESTION_COUNT : String(DEFAULT_EXAM_QUESTION_COUNT);
+}
+
+function getTargetQuestionCount(mode) {
+  return resolveQuestionCount(getRequestedQuestionCountOption(mode), state.questionBank.length);
+}
+
+function getActivePassingScore() {
+  return state.passingScore;
+}
+
+function clearPracticeStatePersistence() {
+  window.localStorage.removeItem(PRACTICE_STATE_STORAGE_KEY);
+}
+
+function getCurrentView() {
+  if (!elements.resultsPanel.classList.contains("hidden")) {
+    return "results";
+  }
+
+  if (!elements.examPanel.classList.contains("hidden")) {
+    return "exam";
+  }
+
+  return "intro";
+}
+
+function persistPracticeState() {
+  if (!isPracticeMode() || state.examQuestions.length === 0) {
+    clearPracticeStatePersistence();
+    return;
+  }
+
+  const serializedState = {
+    sessionMode: state.sessionMode,
+    attemptCount: state.attemptCount,
+    currentQuestionIndex: state.currentQuestionIndex,
+    examQuestionIds: state.examQuestions.map((question) => question.id),
+    selections: [...state.selections.entries()],
+    practiceRetryQuestionIds: state.practiceRetryQuestionIds,
+    practiceMissedQuestionIds: [...state.practiceMissedQuestionIds],
+    questionCountOption: state.activeQuestionCountOption,
+    questionCountTouched: state.questionCountTouched,
+    passingScore: state.passingScore,
+    view: getCurrentView()
+  };
+
+  window.localStorage.setItem(PRACTICE_STATE_STORAGE_KEY, JSON.stringify(serializedState));
+}
+
+function loadPersistedPracticeState() {
+  const serializedState = window.localStorage.getItem(PRACTICE_STATE_STORAGE_KEY);
+  if (!serializedState) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(serializedState);
+  } catch (error) {
+    clearPracticeStatePersistence();
+    return null;
+  }
+}
+
+function hideSavedPracticeNotice() {
+  elements.savedSessionBanner.classList.add("hidden");
+  elements.savedSessionText.textContent = "A saved practice session is available.";
+}
+
+function showSavedPracticeNotice(persistedState) {
+  const questionCount = Array.isArray(persistedState.examQuestionIds) ? persistedState.examQuestionIds.length : 0;
+  const questionNumber = Math.min(
+    Math.max(Number.isInteger(persistedState.currentQuestionIndex) ? persistedState.currentQuestionIndex + 1 : 1, 1),
+    Math.max(questionCount, 1)
+  );
+  const sessionLabel = Array.isArray(persistedState.practiceRetryQuestionIds) && persistedState.practiceRetryQuestionIds.length > 0
+    ? "retry queue"
+    : "practice session";
+  const progressLabel = persistedState.view === "results"
+    ? `Summary ready for ${questionCount} questions.`
+    : `Resume at question ${questionNumber} of ${questionCount}.`;
+
+  elements.savedSessionText.textContent = `Saved ${sessionLabel} found. ${progressLabel}`;
+  elements.savedSessionBanner.classList.remove("hidden");
+}
+
+function restorePersistedPracticeState(persistedState = loadPersistedPracticeState()) {
+  if (!persistedState || persistedState.sessionMode !== "practice") {
+    return false;
+  }
+
+  const questionMap = new Map(state.questionBank.map((question) => [question.id, question]));
+  const restoredQuestions = Array.isArray(persistedState.examQuestionIds)
+    ? persistedState.examQuestionIds.map((id) => questionMap.get(id)).filter(Boolean)
+    : [];
+
+  if (restoredQuestions.length === 0) {
+    clearPracticeStatePersistence();
+    return false;
+  }
+
+  state.sessionMode = "practice";
+  state.attemptCount = Number.isInteger(persistedState.attemptCount) ? persistedState.attemptCount : state.attemptCount;
+  state.examQuestions = restoredQuestions;
+  state.currentQuestionIndex = Math.min(
+    Math.max(Number.isInteger(persistedState.currentQuestionIndex) ? persistedState.currentQuestionIndex : 0, 0),
+    restoredQuestions.length - 1
+  );
+  state.practiceRetryQuestionIds = Array.isArray(persistedState.practiceRetryQuestionIds)
+    ? persistedState.practiceRetryQuestionIds.filter((id) => questionMap.has(id))
+    : null;
+  state.practiceMissedQuestionIds = new Set(
+    Array.isArray(persistedState.practiceMissedQuestionIds)
+      ? persistedState.practiceMissedQuestionIds.filter((id) => questionMap.has(id))
+      : []
+  );
+  state.selections = new Map(
+    Array.isArray(persistedState.selections)
+      ? persistedState.selections
+        .filter((entry) => Array.isArray(entry) && typeof entry[0] === "string" && questionMap.has(entry[0]) && Array.isArray(entry[1]))
+        .map(([questionId, answers]) => [questionId, answers])
+      : []
+  );
+  state.questionCountTouched = Boolean(persistedState.questionCountTouched);
+  state.selectedQuestionCountOption = normalizeQuestionCountOption(
+    persistedState.questionCountOption,
+    String(DEFAULT_EXAM_QUESTION_COUNT)
+  );
+  state.activeQuestionCountOption = normalizeQuestionCountOption(
+    persistedState.questionCountOption,
+    DEFAULT_PRACTICE_QUESTION_COUNT
+  );
+  state.passingScore = PASSING_SCORE_OPTIONS.includes(Number(persistedState.passingScore))
+    ? Number(persistedState.passingScore)
+    : DEFAULT_PASSING_SCORE;
+
+  syncHomeSettingsUi();
+  setExamChrome(true);
+
+  if (persistedState.view === "results") {
+    elements.introPanel.classList.add("hidden");
+    syncSessionModeUi();
+    renderResults(gradeExam());
+    return true;
+  }
+
+  elements.introPanel.classList.add("hidden");
+  elements.resultsPanel.classList.add("hidden");
+  elements.examPanel.classList.remove("hidden");
+  syncSessionModeUi();
+  renderExam();
+  return true;
+}
+
+function queueSavedPracticeNotice() {
+  const persistedState = loadPersistedPracticeState();
+  if (!persistedState || persistedState.sessionMode !== "practice") {
+    state.pendingPracticeState = null;
+    hideSavedPracticeNotice();
+    return false;
+  }
+
+  const questionMap = new Map(state.questionBank.map((question) => [question.id, question]));
+  const restoredQuestions = Array.isArray(persistedState.examQuestionIds)
+    ? persistedState.examQuestionIds.filter((id) => questionMap.has(id))
+    : [];
+
+  if (restoredQuestions.length === 0) {
+    state.pendingPracticeState = null;
+    clearPracticeStatePersistence();
+    hideSavedPracticeNotice();
+    return false;
+  }
+
+  state.pendingPracticeState = persistedState;
+  showSavedPracticeNotice(persistedState);
+  return true;
+}
+
 function loadDeduplicatedBank(questionBank) {
   const seen = new Set();
   return questionBank.filter((question) => {
@@ -101,39 +352,219 @@ function getOfficialDomainName(question) {
   return question.officialDomain || question.domain || "Uncategorized";
 }
 
-function buildBlueprintExam(questionBank) {
+function getScaledBlueprintTargets(targetQuestionCount) {
+  const totalWeight = BLUEPRINT_DOMAIN_TARGETS.reduce((sum, [, count]) => sum + count, 0);
+  const scaledTargets = BLUEPRINT_DOMAIN_TARGETS.map(([domainName, baseCount]) => {
+    const rawTarget = (baseCount / totalWeight) * targetQuestionCount;
+    return {
+      domainName,
+      floorTarget: Math.floor(rawTarget),
+      remainder: rawTarget - Math.floor(rawTarget)
+    };
+  });
+
+  let allocatedQuestions = scaledTargets.reduce((sum, entry) => sum + entry.floorTarget, 0);
+  const sortedByRemainder = [...scaledTargets].sort((left, right) => right.remainder - left.remainder);
+
+  let index = 0;
+  while (allocatedQuestions < targetQuestionCount && sortedByRemainder.length > 0) {
+    const entry = sortedByRemainder[index % sortedByRemainder.length];
+    entry.floorTarget += 1;
+    allocatedQuestions += 1;
+    index += 1;
+  }
+
+  return scaledTargets.map((entry) => [entry.domainName, entry.floorTarget]);
+}
+
+function buildBlueprintExam(questionBank, requestedQuestionCount) {
+  const targetQuestionCount = Math.min(requestedQuestionCount, questionBank.length);
+  if (targetQuestionCount >= questionBank.length) {
+    return shuffle(questionBank);
+  }
+
   const selectedQuestions = [];
   const usedQuestionIds = new Set();
+  const scaledTargets = getScaledBlueprintTargets(targetQuestionCount);
 
-  for (const [domainName, targetCount] of BLUEPRINT_DOMAIN_TARGETS) {
+  for (const [domainName, targetCount] of scaledTargets) {
+    if (targetCount === 0) {
+      continue;
+    }
+
     const domainQuestions = shuffle(questionBank.filter((question) => {
       return getOfficialDomainName(question) === domainName && !usedQuestionIds.has(question.id);
     }));
 
-    const chosenQuestions = domainQuestions.slice(0, targetCount);
-    chosenQuestions.forEach((question) => {
+    domainQuestions.slice(0, targetCount).forEach((question) => {
       usedQuestionIds.add(question.id);
       selectedQuestions.push(question);
     });
   }
 
-  if (selectedQuestions.length < EXAM_SIZE) {
+  if (selectedQuestions.length < targetQuestionCount) {
     const fallbackQuestions = shuffle(questionBank.filter((question) => !usedQuestionIds.has(question.id)));
-    fallbackQuestions.slice(0, EXAM_SIZE - selectedQuestions.length).forEach((question) => {
+    fallbackQuestions.slice(0, targetQuestionCount - selectedQuestions.length).forEach((question) => {
       usedQuestionIds.add(question.id);
       selectedQuestions.push(question);
     });
   }
 
-  return shuffle(selectedQuestions).slice(0, EXAM_SIZE);
+  return shuffle(selectedQuestions).slice(0, targetQuestionCount);
+}
+
+function syncHomeSettingsUi() {
+  elements.questionCountSelect.value = normalizeQuestionCountOption(state.selectedQuestionCountOption);
+  elements.passingScoreSelect.value = String(state.passingScore);
 }
 
 function updateBankDetails() {
   elements.bankCount.textContent = `${state.questionBank.length} questions`;
-  elements.statusText.textContent = state.questionBank.length >= EXAM_SIZE
-    ? "Ready"
-    : "More questions required";
-  elements.startButton.disabled = state.questionBank.length < EXAM_SIZE;
+
+  const examQuestionCount = getTargetQuestionCount("exam");
+  const practiceQuestionCount = getTargetQuestionCount("practice");
+  const examReady = state.questionBank.length >= examQuestionCount && examQuestionCount > 0;
+  const practiceReady = state.questionBank.length >= practiceQuestionCount && practiceQuestionCount > 0;
+
+  elements.examModeButton.disabled = !examReady;
+  elements.practiceModeButton.disabled = !practiceReady;
+
+  if (examReady && practiceReady) {
+    setLoadMessage("Question database ready.");
+    return;
+  }
+
+  if (!examReady && practiceReady) {
+    setLoadMessage("Selected exam question count exceeds the available question bank.", true);
+    return;
+  }
+
+  setLoadMessage("Question database could not be prepared for the selected settings.", true);
+}
+
+function isPracticeMode() {
+  return state.sessionMode === "practice";
+}
+
+function clearAutoAdvanceTimer() {
+  if (state.autoAdvanceTimeoutId !== null) {
+    window.clearTimeout(state.autoAdvanceTimeoutId);
+    state.autoAdvanceTimeoutId = null;
+  }
+}
+
+function getSessionSize() {
+  return state.examQuestions.length;
+}
+
+function getPracticeQuestions() {
+  if (Array.isArray(state.practiceRetryQuestionIds) && state.practiceRetryQuestionIds.length > 0) {
+    const retryIds = new Set(state.practiceRetryQuestionIds);
+    return state.questionBank.filter((question) => retryIds.has(question.id));
+  }
+
+  const targetQuestionCount = resolveQuestionCount(state.activeQuestionCountOption, state.questionBank.length);
+  const shuffledQuestions = shuffle(state.questionBank);
+  return targetQuestionCount >= shuffledQuestions.length
+    ? shuffledQuestions
+    : shuffledQuestions.slice(0, targetQuestionCount);
+}
+
+function getHasWrongSelection(question, selectedAnswers) {
+  if (selectedAnswers.length === 0) {
+    return false;
+  }
+
+  const hasInvalidOption = selectedAnswers.some((answer) => !question.correctAnswers.includes(answer));
+  const hasCompleteButWrongSelection = selectedAnswers.length >= question.correctAnswers.length
+    && !areAnswersEqual(selectedAnswers, question.correctAnswers);
+
+  return hasInvalidOption || hasCompleteButWrongSelection;
+}
+
+function startSession(mode) {
+  clearAutoAdvanceTimer();
+  state.sessionMode = mode;
+  state.attemptCount += 1;
+  state.selections = new Map();
+  state.practiceMissedQuestionIds = new Set();
+  state.activeQuestionCountOption = getRequestedQuestionCountOption(mode);
+  state.currentQuestionIndex = 0;
+
+  if (mode === "practice") {
+    state.examQuestions = getPracticeQuestions();
+  } else {
+    const targetQuestionCount = resolveQuestionCount(state.activeQuestionCountOption, state.questionBank.length);
+    state.examQuestions = buildBlueprintExam(state.questionBank, targetQuestionCount);
+    state.practiceRetryQuestionIds = null;
+  }
+
+  syncSessionModeUi();
+  updateSessionTitle();
+  elements.introPanel.classList.add("hidden");
+  elements.resultsPanel.classList.add("hidden");
+  elements.examPanel.classList.remove("hidden");
+  setExamChrome(true);
+
+  renderExam();
+  persistPracticeState();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function startRetryWrongPractice() {
+  updateSessionTitle();
+  if (!Array.isArray(state.practiceRetryQuestionIds) || state.practiceRetryQuestionIds.length === 0) {
+    return;
+  }
+
+  startSession("practice");
+}
+
+function startFreshPractice() {
+  state.practiceRetryQuestionIds = null;
+  startSession("practice");
+}
+
+function exitPracticeMode() {
+  clearAutoAdvanceTimer();
+  state.sessionMode = "exam";
+  state.practiceRetryQuestionIds = null;
+  state.practiceMissedQuestionIds = new Set();
+  state.selections = new Map();
+  state.examQuestions = [];
+  state.currentQuestionIndex = 0;
+  state.activeQuestionCountOption = String(DEFAULT_EXAM_QUESTION_COUNT);
+
+  elements.examPanel.classList.add("hidden");
+  elements.resultsPanel.classList.add("hidden");
+  elements.introPanel.classList.remove("hidden");
+  elements.examForm.innerHTML = "";
+  elements.resultsSummary.innerHTML = "";
+  elements.resultsReview.innerHTML = "";
+  setExamChrome(false);
+  clearPracticeStatePersistence();
+  state.pendingPracticeState = null;
+  hideSavedPracticeNotice();
+  syncSessionModeUi();
+  updateBankDetails();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function updateSessionTitle() {
+  elements.examTitle.textContent = isPracticeMode()
+    ? `${Array.isArray(state.practiceRetryQuestionIds) && state.practiceRetryQuestionIds.length > 0 ? "Retry Wrong Answers" : "Practice Mode"} ${state.attemptCount}`
+    : `Simulation Exam ${state.attemptCount}`;
+}
+
+function syncSessionModeUi() {
+  const practiceMode = isPracticeMode();
+  elements.submitButton.textContent = practiceMode ? "Finish Practice" : "Submit Exam";
+  elements.sessionRule.textContent = practiceMode
+    ? "Auto-advance on correct"
+    : `${getActivePassingScore()}% to pass`;
+  elements.quitPracticeButton.classList.toggle("hidden", !practiceMode || elements.examPanel.classList.contains("hidden"));
+  elements.retryWrongButton.classList.add("hidden");
+  elements.restartButton.textContent = practiceMode ? "Start New Practice" : "Generate New Exam";
 }
 
 function getSelectedAnswers(questionId) {
@@ -149,9 +580,21 @@ function formatAnswerList(answerLetters, question) {
   return mapped.length > 0 ? mapped.join(" | ") : "No answer";
 }
 
+function getQuestionResult(question) {
+  const selectedAnswers = getSelectedAnswers(question.id);
+  const hasAnswer = selectedAnswers.length > 0;
+
+  return {
+    question,
+    selectedAnswers,
+    hasAnswer,
+    isCorrect: hasAnswer && areAnswersEqual(selectedAnswers, question.correctAnswers)
+  };
+}
+
 function updateAnsweredCount() {
   const answered = state.examQuestions.filter((question) => getSelectedAnswers(question.id).length > 0).length;
-  elements.answeredCount.textContent = `${answered} / ${EXAM_SIZE}`;
+  elements.answeredCount.textContent = `${answered} / ${getSessionSize()}`;
 }
 
 function setExamChrome(active) {
@@ -160,18 +603,36 @@ function setExamChrome(active) {
 
 function updateQuestionNavigation() {
   const questionNumber = state.currentQuestionIndex + 1;
-  elements.questionPosition.textContent = `Question ${questionNumber} of ${EXAM_SIZE}`;
+  elements.questionPosition.textContent = `Question ${questionNumber} of ${getSessionSize()}`;
   elements.previousButton.disabled = state.currentQuestionIndex === 0;
-  elements.nextButton.disabled = state.currentQuestionIndex === EXAM_SIZE - 1;
+  elements.nextButton.disabled = state.currentQuestionIndex === getSessionSize() - 1;
 }
 
 function renderProgressSummary() {
   const unansweredNumbers = [];
+  let correctCount = 0;
+  let incorrectCount = 0;
+  const practiceMode = isPracticeMode();
 
   elements.progressSummaryGrid.innerHTML = state.examQuestions.map((question, index) => {
     const questionNumber = index + 1;
-    const answered = getSelectedAnswers(question.id).length > 0;
+    const result = getQuestionResult(question);
+    const answered = result.hasAnswer;
     const active = index === state.currentQuestionIndex;
+    let statusClass = answered ? "answered" : "unanswered";
+    let statusLabel = answered ? "answered" : "unanswered";
+
+    if (practiceMode && answered) {
+      if (result.isCorrect) {
+        statusClass = "correct";
+        statusLabel = "correct";
+        correctCount += 1;
+      } else {
+        statusClass = "incorrect";
+        statusLabel = "incorrect";
+        incorrectCount += 1;
+      }
+    }
 
     if (!answered) {
       unansweredNumbers.push(questionNumber);
@@ -179,10 +640,10 @@ function renderProgressSummary() {
 
     return `
       <button
-        class="progress-chip ${answered ? "answered" : "unanswered"} ${active ? "active" : ""}"
+        class="progress-chip ${statusClass} ${active ? "active" : ""}"
         type="button"
         data-question-jump="${escapeHtml(question.id)}"
-        aria-label="Jump to question ${questionNumber} (${answered ? "answered" : "unanswered"}${active ? ", current" : ""})"
+        aria-label="Jump to question ${questionNumber} (${statusLabel}${active ? ", current" : ""})"
       >
         ${questionNumber}
       </button>
@@ -191,6 +652,16 @@ function renderProgressSummary() {
 
   const answeredCount = state.examQuestions.length - unansweredNumbers.length;
   const remainingCount = unansweredNumbers.length;
+
+  if (practiceMode) {
+    const unresolvedPreview = unansweredNumbers.length > 0
+      ? ` Remaining: ${unansweredNumbers.slice(0, 8).join(", ")}${unansweredNumbers.length > 8 ? ", ..." : ""}.`
+      : " All questions checked.";
+
+    elements.progressSummaryText.textContent = `${correctCount} correct, ${incorrectCount} wrong, ${remainingCount} remaining.${unresolvedPreview}`;
+    return;
+  }
+
   const unresolvedPreview = unansweredNumbers.length > 0
     ? ` Unanswered: ${unansweredNumbers.slice(0, 8).join(", ")}${unansweredNumbers.length > 8 ? ", ..." : ""}.`
     : " All questions answered.";
@@ -218,15 +689,30 @@ function renderExam() {
     return;
   }
 
+  const practiceMode = isPracticeMode();
   const inputType = question.multiSelect ? "checkbox" : "radio";
   const selectedAnswers = getSelectedAnswers(question.id);
+  const practiceResult = practiceMode ? getQuestionResult(question) : null;
   const optionsMarkup = question.options.map((option) => {
     const checked = selectedAnswers.includes(option.letter) ? "checked" : "";
-    const selectedClass = selectedAnswers.includes(option.letter) ? "selected" : "";
+    const optionClasses = [];
+
+    if (selectedAnswers.includes(option.letter)) {
+      optionClasses.push("selected");
+    }
+
+    if (practiceResult?.hasAnswer) {
+      if (question.correctAnswers.includes(option.letter)) {
+        optionClasses.push("correct-answer");
+      } else if (selectedAnswers.includes(option.letter)) {
+        optionClasses.push("incorrect-answer");
+      }
+    }
+
     const inputName = question.multiSelect ? `${question.id}-${option.letter}` : question.id;
 
     return `
-      <label class="option-label ${selectedClass}">
+      <label class="option-label ${optionClasses.join(" ")}">
         <input
           type="${inputType}"
           name="${escapeHtml(inputName)}"
@@ -240,33 +726,32 @@ function renderExam() {
     `;
   }).join("");
 
+  const practiceFeedbackMarkup = practiceMode && practiceResult?.hasAnswer
+    ? `
+      <section class="practice-feedback ${practiceResult.isCorrect ? "correct" : "incorrect"}" aria-live="polite">
+        <p class="practice-feedback-title">${practiceResult.isCorrect ? "Correct" : "Wrong"}</p>
+        <p class="practice-feedback-copy">
+          Correct answer: ${escapeHtml(formatAnswerList(question.correctAnswers, question))}
+        </p>
+        ${question.rationaleCorrect ? `
+          <p class="practice-feedback-copy">${escapeHtml(question.rationaleCorrect)}</p>
+        ` : ""}
+      </section>
+    `
+    : "";
+
   elements.examForm.innerHTML = `
-    <article class="question-card" id="question-${escapeHtml(question.id)}">
-      <p class="question-meta">Question ${state.currentQuestionIndex + 1} of ${EXAM_SIZE}${getOfficialDomainName(question) ? ` • ${escapeHtml(getOfficialDomainName(question))}` : ""}${question.multiSelect ? " • Select all that apply" : ""}</p>
+    <article class="question-card ${practiceResult?.hasAnswer ? (practiceResult.isCorrect ? "practice-correct" : "practice-incorrect") : ""}" id="question-${escapeHtml(question.id)}">
+      <p class="question-meta">Question ${state.currentQuestionIndex + 1} of ${getSessionSize()}${getOfficialDomainName(question) ? ` • ${escapeHtml(getOfficialDomainName(question))}` : ""}${question.multiSelect ? " • Select all that apply" : ""}</p>
       <h3>${escapeHtml(question.text)}</h3>
       <div class="options-list">${optionsMarkup}</div>
+      ${practiceFeedbackMarkup}
     </article>
   `;
 
   updateAnsweredCount();
   updateQuestionNavigation();
   renderProgressSummary();
-}
-
-function startExam() {
-  state.attemptCount += 1;
-  state.selections = new Map();
-  state.examQuestions = buildBlueprintExam(state.questionBank);
-  state.currentQuestionIndex = 0;
-
-  elements.examTitle.textContent = `Simulation Exam ${state.attemptCount}`;
-  elements.introPanel.classList.add("hidden");
-  elements.resultsPanel.classList.add("hidden");
-  elements.examPanel.classList.remove("hidden");
-  setExamChrome(true);
-
-  renderExam();
-  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 function areAnswersEqual(left, right) {
@@ -280,16 +765,7 @@ function areAnswersEqual(left, right) {
 }
 
 function gradeExam() {
-  return state.examQuestions.map((question) => {
-    const selectedAnswers = getSelectedAnswers(question.id);
-    const isCorrect = areAnswersEqual(selectedAnswers, question.correctAnswers);
-
-    return {
-      question,
-      selectedAnswers,
-      isCorrect
-    };
-  });
+  return state.examQuestions.map((question) => getQuestionResult(question));
 }
 
 function buildDomainBreakdown(results) {
@@ -321,18 +797,22 @@ function buildDomainBreakdown(results) {
 
 function renderResults(results) {
   const correctCount = results.filter((result) => result.isCorrect).length;
-  const score = Math.round((correctCount / EXAM_SIZE) * 100);
-  const passed = score === PASSING_SCORE;
+  const sessionSize = getSessionSize();
+  const score = sessionSize > 0 ? Math.round((correctCount / sessionSize) * 100) : 0;
+  const passed = score >= getActivePassingScore();
   const domainBreakdown = buildDomainBreakdown(results);
+  const practiceMode = isPracticeMode();
+  const retryWrongCount = state.practiceMissedQuestionIds.size;
 
   elements.examPanel.classList.add("hidden");
   elements.resultsPanel.classList.remove("hidden");
+  elements.quitPracticeButton.classList.add("hidden");
 
   elements.resultsSummary.innerHTML = `
     <section class="result-banner ${passed ? "pass" : "fail"}">
-      <p class="eyebrow">Result</p>
-      <h2>${passed ? "Passed" : "Not Passed"}</h2>
-      <p class="result-note">Passing requires a perfect score. This simulator only marks a pass at 20 correct answers.</p>
+      <p class="eyebrow">${practiceMode ? "Practice Summary" : "Result"}</p>
+      <h2>${practiceMode ? "Session Complete" : (passed ? "Passed" : "Not Passed")}</h2>
+      <p class="result-note">${practiceMode ? `Practice mode shows live feedback while you work through the session. Passing threshold for this run was ${getActivePassingScore()}%.` : `Passing score for this session was ${getActivePassingScore()}%.`}</p>
       <div class="result-grid">
         <div class="result-stat">
           <span class="toolbar-label">Score</span>
@@ -340,18 +820,18 @@ function renderResults(results) {
         </div>
         <div class="result-stat">
           <span class="toolbar-label">Correct</span>
-          <strong>${correctCount} / ${EXAM_SIZE}</strong>
+          <strong>${correctCount} / ${sessionSize}</strong>
         </div>
         <div class="result-stat">
-          <span class="toolbar-label">Needed</span>
-          <strong>20 / 20</strong>
+          <span class="toolbar-label">${practiceMode ? "Retry Queue" : "Passing Score"}</span>
+          <strong>${practiceMode ? `${retryWrongCount} questions` : `${getActivePassingScore()}%`}</strong>
         </div>
       </div>
     </section>
     <section class="domain-summary">
       <div class="domain-summary-header">
         <h3>Performance by Domain</h3>
-        <p class="result-note">Scores reflect only the 20 questions included in this attempt.</p>
+        <p class="result-note">Scores reflect only the ${sessionSize} questions included in this attempt.</p>
       </div>
       <div class="domain-grid">
         ${domainBreakdown.map((entry) => `
@@ -390,6 +870,17 @@ function renderResults(results) {
     </article>
   `).join("");
 
+  if (practiceMode) {
+    state.practiceRetryQuestionIds = [...state.practiceMissedQuestionIds];
+    elements.retryWrongButton.classList.toggle("hidden", state.practiceRetryQuestionIds.length === 0);
+  } else {
+    state.practiceRetryQuestionIds = null;
+    elements.retryWrongButton.classList.add("hidden");
+  }
+
+  elements.restartButton.textContent = practiceMode ? "Start New Practice" : "Generate New Exam";
+  persistPracticeState();
+
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
@@ -414,9 +905,82 @@ function handleSelectionChange(event) {
     state.selections.set(questionId, [target.value]);
   }
 
+  if (isPracticeMode()) {
+    const currentQuestion = state.examQuestions[state.currentQuestionIndex];
+    const selectedAnswers = getSelectedAnswers(questionId);
+
+    if (currentQuestion && getHasWrongSelection(currentQuestion, selectedAnswers)) {
+      state.practiceMissedQuestionIds.add(questionId);
+    }
+
+    renderExam();
+    persistPracticeState();
+
+    if (currentQuestion && areAnswersEqual(selectedAnswers, currentQuestion.correctAnswers)) {
+      clearAutoAdvanceTimer();
+      state.autoAdvanceTimeoutId = window.setTimeout(() => {
+        state.autoAdvanceTimeoutId = null;
+
+        if (state.currentQuestionIndex >= state.examQuestions.length - 1) {
+          renderResults(gradeExam());
+          return;
+        }
+
+        state.currentQuestionIndex += 1;
+        renderExam();
+        persistPracticeState();
+        elements.examPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 700);
+    }
+
+    return;
+  }
+
   syncOptionSelectionStyles(questionId);
   updateAnsweredCount();
   renderProgressSummary();
+}
+
+function handleQuestionCountChange(event) {
+  const target = event.target;
+  if (!(target instanceof HTMLSelectElement)) {
+    return;
+  }
+
+  state.questionCountTouched = true;
+  state.selectedQuestionCountOption = normalizeQuestionCountOption(target.value);
+  updateBankDetails();
+}
+
+function handlePassingScoreChange(event) {
+  const target = event.target;
+  if (!(target instanceof HTMLSelectElement)) {
+    return;
+  }
+
+  const nextPassingScore = Number(target.value);
+  state.passingScore = PASSING_SCORE_OPTIONS.includes(nextPassingScore) ? nextPassingScore : DEFAULT_PASSING_SCORE;
+}
+
+function handleResumeSavedPractice() {
+  if (!restorePersistedPracticeState(state.pendingPracticeState)) {
+    state.pendingPracticeState = null;
+    hideSavedPracticeNotice();
+    updateBankDetails();
+    return;
+  }
+
+  hideSavedPracticeNotice();
+  state.pendingPracticeState = null;
+  setLoadMessage("Resumed saved practice session.");
+}
+
+function handleDiscardSavedPractice() {
+  clearPracticeStatePersistence();
+  state.pendingPracticeState = null;
+  hideSavedPracticeNotice();
+  setLoadMessage("Saved practice session discarded.");
+  updateBankDetails();
 }
 
 function handleProgressJump(event) {
@@ -432,7 +996,18 @@ function handleProgressJump(event) {
 
   state.currentQuestionIndex = nextQuestionIndex;
   renderExam();
+  persistPracticeState();
   elements.examPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function scrollProgressCarousel(direction) {
+  const container = elements.progressSummaryGrid;
+  if (!container) {
+    return;
+  }
+
+  const scrollAmount = Math.max(container.clientWidth * 0.7, 180) * direction;
+  container.scrollBy({ left: scrollAmount, behavior: "smooth" });
 }
 
 function handleQuestionNavigation(step) {
@@ -443,10 +1018,12 @@ function handleQuestionNavigation(step) {
 
   state.currentQuestionIndex = nextIndex;
   renderExam();
+  persistPracticeState();
   elements.examPanel.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 function handleSubmit() {
+  clearAutoAdvanceTimer();
   const unanswered = state.examQuestions.filter((question) => getSelectedAnswers(question.id).length === 0).length;
   if (unanswered > 0) {
     const proceed = window.confirm(`There are ${unanswered} unanswered questions. Submit anyway?`);
@@ -456,6 +1033,32 @@ function handleSubmit() {
   }
 
   renderResults(gradeExam());
+}
+
+function handleRestart() {
+  if (isPracticeMode()) {
+    startFreshPractice();
+    return;
+  }
+
+  state.practiceRetryQuestionIds = null;
+  startSession("exam");
+}
+
+function initializeSettingsControls() {
+  elements.questionCountSelect.innerHTML = QUESTION_COUNT_OPTIONS.map((option) => {
+    return `<option value="${option}">${option}</option>`;
+  }).join("");
+
+  elements.passingScoreSelect.innerHTML = PASSING_SCORE_OPTIONS.map((option) => {
+    return `<option value="${option}">${option}%</option>`;
+  }).join("");
+
+  syncHomeSettingsUi();
+}
+
+function initializeAboutContent() {
+  elements.aboutVersion.textContent = APP_VERSION;
 }
 
 function initializeQuestionBank() {
@@ -468,6 +1071,10 @@ function initializeQuestionBank() {
 
     state.questionBank = loadDeduplicatedBank(QUESTION_BANK);
     updateBankDetails();
+    if (queueSavedPracticeNotice()) {
+      setLoadMessage("Saved practice session available.");
+      return;
+    }
     setLoadMessage("Question database ready.");
   } catch (error) {
     state.questionBank = [];
@@ -476,14 +1083,30 @@ function initializeQuestionBank() {
   }
 }
 
-elements.startButton.addEventListener("click", startExam);
+elements.examModeButton.addEventListener("click", () => startSession("exam"));
+elements.practiceModeButton.addEventListener("click", () => startSession("practice"));
+elements.questionCountSelect.addEventListener("change", handleQuestionCountChange);
+elements.passingScoreSelect.addEventListener("change", handlePassingScoreChange);
 elements.previousButton.addEventListener("click", () => handleQuestionNavigation(-1));
 elements.nextButton.addEventListener("click", () => handleQuestionNavigation(1));
 elements.submitButton.addEventListener("click", handleSubmit);
-elements.restartButton.addEventListener("click", startExam);
+elements.resumePracticeButton.addEventListener("click", handleResumeSavedPractice);
+elements.discardSavedPracticeButton.addEventListener("click", handleDiscardSavedPractice);
+elements.aboutButton.addEventListener("click", openAboutModal);
+elements.closeAboutButton.addEventListener("click", closeAboutModal);
+elements.aboutModalBackdrop.addEventListener("click", closeAboutModal);
+elements.quitPracticeButton.addEventListener("click", exitPracticeMode);
+elements.restartButton.addEventListener("click", handleRestart);
+elements.retryWrongButton.addEventListener("click", startRetryWrongPractice);
+elements.progressScrollLeftButton.addEventListener("click", () => scrollProgressCarousel(-1));
+elements.progressScrollRightButton.addEventListener("click", () => scrollProgressCarousel(1));
 elements.themeToggle.addEventListener("click", handleThemeToggle);
 elements.examForm.addEventListener("change", handleSelectionChange);
 elements.progressSummaryGrid.addEventListener("click", handleProgressJump);
+document.addEventListener("keydown", handleGlobalKeydown);
 
 initializeTheme();
+initializeAboutContent();
+initializeSettingsControls();
+syncSessionModeUi();
 initializeQuestionBank();
