@@ -224,7 +224,7 @@ body.exam-session .exam-panel {
 
 .home-stats {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
   margin-top: 24px;
 }
@@ -255,8 +255,14 @@ body.exam-session .exam-panel {
   border: 1px solid var(--border);
   background: var(--panel-strong);
   color: var(--text);
+  color-scheme: light;
   font: inherit;
   font-weight: 700;
+}
+
+.setting-select option {
+  background: #fffaf2;
+  color: #1d2433;
 }
 
 .setting-note {
@@ -267,9 +273,15 @@ body.exam-session .exam-panel {
 }
 
 :root[data-theme="dark"] .setting-select {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(237, 242, 255, 0.14);
+  background: #223047;
+  border-color: rgba(237, 242, 255, 0.18);
   color: #f4f7ff;
+  color-scheme: dark;
+}
+
+:root[data-theme="dark"] .setting-select option {
+  background: #192234;
+  color: #edf2ff;
 }
 
 .home-status {
@@ -563,7 +575,7 @@ body.exam-session .toolbar-stat-item {
   overflow-y: hidden;
   scroll-behavior: smooth;
   scrollbar-width: none;
-  padding-bottom: 2px;
+  padding: 4px 0;
 }
 
 .progress-summary-grid::-webkit-scrollbar {
@@ -666,6 +678,7 @@ body.exam-session .progress-summary-text {
 
 body.exam-session .progress-summary-grid {
   gap: 6px;
+  padding: 4px 0;
 }
 
 body.exam-session .progress-chip {
@@ -904,6 +917,14 @@ body.exam-session .sticky-actions {
   padding: 22px;
   border-radius: 20px;
   margin-bottom: 20px;
+}
+
+.result-actions-anchor {
+  margin-top: 18px;
+}
+
+.result-actions {
+  margin-top: 0;
 }
 
 .result-banner.pass {
