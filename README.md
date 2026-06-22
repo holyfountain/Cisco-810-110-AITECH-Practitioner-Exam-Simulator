@@ -2,6 +2,14 @@
 
 Browser-based study simulator for Cisco 810-110 AI Technical Practitioner exam preparation.
 
+## Student Access
+
+- https://wwwin-github.cisco.com/pages/tantunes/Cisco-810-110-AITECH-Practitioner-Exam-Simulator/
+
+## Repository
+
+- https://wwwin-github.cisco.com/tantunes/Cisco-810-110-AITECH-Practitioner-Exam-Simulator.git
+
 ## Current Version
 
 - `1.2`
