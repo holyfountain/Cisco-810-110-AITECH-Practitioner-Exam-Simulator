@@ -1,5 +1,6 @@
 const QUESTION_BANK = Array.isArray(window.QUESTION_BANK) ? window.QUESTION_BANK : [];
 const APP_VERSION = "1.2";
+const APP_LAST_UPDATED = "2026-06-22";
 const PRACTICE_AUTO_ADVANCE_DELAY_MS = 5000;
 const PRACTICE_ADVANCE_OPTIONS = [
   { value: "auto", label: "Auto-advance" },
@@ -37,6 +38,7 @@ const elements = {
   aboutModalBackdrop: document.querySelector("#aboutModalBackdrop"),
   closeAboutButton: document.querySelector("#closeAboutButton"),
   aboutVersion: document.querySelector("#aboutVersion"),
+  aboutLastUpdated: document.querySelector("#aboutLastUpdated"),
   themeToggle: document.querySelector("#themeToggle"),
   introPanel: document.querySelector("#introPanel"),
   examPanel: document.querySelector("#examPanel"),
@@ -1281,6 +1283,7 @@ function initializeSettingsControls() {
 
 function initializeAboutContent() {
   elements.aboutVersion.textContent = APP_VERSION;
+  elements.aboutLastUpdated.textContent = APP_LAST_UPDATED;
 }
 
 function initializeQuestionBank() {
