@@ -12,13 +12,18 @@ Browser-based study simulator for Cisco 810-110 AI Technical Practitioner exam p
 
 ## Current Version
 
-- `1.2`
+- `1.3`
 
 ## Latest Update
 
-- Expanded the built-in question bank to `156` questions.
-- Improved practice retry behavior so corrected answers leave the retry queue and unanswered practice items can be retried.
-- Updated the practice retry label to `Retry Missed Questions`.
+- Corrected the answer key for Question `79` in the built-in question bank.
+- Clarified the prompting terminology used in Question `59`.
+- Refreshed the in-app release metadata and `Last Updated` timestamp.
+
+## Maintenance
+
+- A tracked pre-commit hook refreshes `APP_LAST_UPDATED` in `app.js` automatically before each commit.
+- If hooks are not active in a fresh clone, run `git config core.hooksPath .githooks` from the repository root.
 
 ## Description
 
