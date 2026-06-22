@@ -1,4 +1,4 @@
 #!/bin/sh
 
 node update-release-metadata.mjs || exit 1
-git add app.js
+git add app.js index.html
