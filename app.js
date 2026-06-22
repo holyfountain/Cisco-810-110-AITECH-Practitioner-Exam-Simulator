@@ -1216,6 +1216,7 @@ function handleProgressJump(event) {
     return;
   }
 
+  clearAutoAdvanceTimer();
   state.currentQuestionIndex = nextQuestionIndex;
   renderExam();
   persistPracticeState();
@@ -1238,6 +1239,7 @@ function handleQuestionNavigation(step) {
     return;
   }
 
+  clearAutoAdvanceTimer();
   state.currentQuestionIndex = nextIndex;
   renderExam();
   persistPracticeState();
