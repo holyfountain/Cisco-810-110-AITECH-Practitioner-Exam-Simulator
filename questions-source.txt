@@ -756,13 +756,13 @@ Answer: 🟩 C. Data Pseudonymization / Masking
 A developer wants an AI code assistant to refactor an asynchronous microservice written in Node.js. To get the highest quality refactored code block, the developer creates a prompt that outlines the exact performance constraints, details the structural layout of the current service, and appends a single comprehensive example of a perfectly refactored asynchronous pattern. What prompt methodology combination is being used?
 
 * A. Zero-shot role shifting
-* B. Context-augmented One-shot prompting
+* B. One-shot prompting with contextual grounding
 * C. Negative input filtering
 * D. Speculative few-shot padding
 
-Answer: 🟩 B. Context-augmented One-shot prompting
+Answer: 🟩 B. One-shot prompting with contextual grounding
 
-* Why it is correct: B. Context-augmented One-shot prompting is correct because it is the prompt design choice most likely to produce the requested behavior in a scenario where a developer wants an AI code assistant to refactor an asynchronous microservice written in Node. js. To get the highest quality refactored code block, the developer creates a prompt that outlines the exact performance constraints, details the structural layout of the current service, and appends a single comprehensive example of a perfectly refactored asynchronous pattern.
+* Why it is correct: B. One-shot prompting with contextual grounding is correct because the prompt includes a single example while also supplying task-specific constraints and structural context, which is the prompt design choice most likely to produce the requested behavior in this refactoring scenario.
 * Why others are incorrect: The other options point to different engineering activities or unrealistic guarantees, but they do not solve the workflow constraint in the prompt.
 
 ## Question 60 (Domain: Generative AI Models)
@@ -1020,9 +1020,9 @@ Why is it useful to specify attributes such as composition, lighting, and style 
 * C. Because image prompts must include SQL-like syntax to be valid
 * D. Because detailed prompts force the provider to retain no logs
 
-Answer: 🟩 B. Because the model otherwise disables its safety filters automatically
+Answer: 🟩 A. Because visual generation benefits from explicit constraints on non-text output attributes
 
-* Why it is correct: Because the model otherwise disables its safety filters automatically is correct because it best matches the prompt-design or grounding technique that most directly shapes the model behavior the question is asking about.
+* Why it is correct: Because visual generation benefits from explicit constraints on non-text output attributes is correct because image-generation prompts become more controllable and precise when they specify visual properties such as composition, lighting, and style.
 * Why others are incorrect: The other options may sound related, but they either adjust the wrong control, confuse prompting with architecture changes, or weaken the intended instruction pattern.
 
 ## Question 80 (Domain: Prompt Engineering)
