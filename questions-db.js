@@ -4158,5 +4158,837 @@ window.QUESTION_BANK = [
     "rationaleCorrect": "Segment results by scenario type and compare error patterns across those subsets is correct because it best matches the data-analysis or data-preparation activity that best matches the situation in the prompt.",
     "rationaleIncorrect": "The other options refer to different lifecycle stages, unrelated controls, or outcomes that do not solve the stated data-analysis problem.",
     "multiSelect": false
+  },
+  {
+    "id": "questions-source.txt-131",
+    "number": 131,
+    "sourceName": "questions-source.txt",
+    "domain": "Data Research and Analysis",
+    "officialDomain": "Domain 4: Data Research and Analysis",
+    "text": "An AI insight shows that \"Enterprise customers frequently mention integration challenges.\" Which of the following is a well-formed, product-focused hypothesis derived from that insight?",
+    "options": [
+      {
+        "letter": "A",
+        "text": "Our sales team is overpromising our integration capabilities to Enterprise clients"
+      },
+      {
+        "letter": "B",
+        "text": "Our product's Enterprise tier lacks the robust integration features these clients require"
+      },
+      {
+        "letter": "C",
+        "text": "Our support documentation for Enterprise clients is insufficient for their needs"
+      },
+      {
+        "letter": "D",
+        "text": "Enterprise customers are generally more demanding than our other customer tiers"
+      }
+    ],
+    "correctAnswers": [
+      "B"
+    ],
+    "rationaleCorrect": "Our product's Enterprise tier lacks the robust integration features these clients require is correct because it best translates the observed customer signal into a testable product hypothesis about a feature gap.",
+    "rationaleIncorrect": "The other options either shift the hypothesis away from the product itself, speculate about teams or customer behavior without enough evidence, or point to a different root cause than the insight most directly supports.",
+    "multiSelect": false
+  },
+  {
+    "id": "questions-source.txt-132",
+    "number": 132,
+    "sourceName": "questions-source.txt",
+    "domain": "Generative AI Models",
+    "officialDomain": "Domain 1: Generative AI Models",
+    "text": "An engineer needs to integrate an AI API to perform a high-volume, real-time task, such as automatically classifying network alerts by severity. Which strategy is the most optimal for balancing low cost and low latency?",
+    "options": [
+      {
+        "letter": "A",
+        "text": "Use the largest, highest-quality model for guaranteed accuracy"
+      },
+      {
+        "letter": "B",
+        "text": "Use the smallest, fastest model and set the temperature to 0.0"
+      },
+      {
+        "letter": "C",
+        "text": "Increase the max_tokens limit significantly to reduce the number of API calls"
+      },
+      {
+        "letter": "D",
+        "text": "Focus only on implementing exponential backoff for retries"
+      }
+    ],
+    "correctAnswers": [
+      "B"
+    ],
+    "rationaleCorrect": "Use the smallest, fastest model and set the temperature to 0.0 is correct because it best matches the model-selection and inference-control strategy for a high-volume, latency-sensitive classification workflow.",
+    "rationaleIncorrect": "The other options either increase cost or latency unnecessarily, tune the wrong parameter for the stated objective, or focus on reliability controls that do not directly optimize model speed and cost.",
+    "multiSelect": false
+  },
+  {
+    "id": "questions-source.txt-133",
+    "number": 133,
+    "sourceName": "questions-source.txt",
+    "domain": "Ethics and Security",
+    "officialDomain": "Domain 3: Ethics and Security",
+    "text": "What is the primary security risk of committing a hard-coded API key to a version control system?",
+    "options": [
+      {
+        "letter": "A",
+        "text": "A potential decrease in application performance"
+      },
+      {
+        "letter": "B",
+        "text": "The risk of unauthorized access and fraudulent charges"
+      },
+      {
+        "letter": "C",
+        "text": "Future incompatibility with the API provider's key format"
+      },
+      {
+        "letter": "D",
+        "text": "Increased difficulty when rotating the API key in the future"
+      }
+    ],
+    "correctAnswers": [
+      "B"
+    ],
+    "rationaleCorrect": "The risk of unauthorized access and fraudulent charges is correct because it directly captures the main security impact of exposing a secret in a shared or compromised code repository.",
+    "rationaleIncorrect": "The other options may be secondary operational concerns or unrelated outcomes, but they do not describe the primary security consequence of leaking a credential.",
+    "multiSelect": false
+  },
+  {
+    "id": "questions-source.txt-134",
+    "number": 134,
+    "sourceName": "questions-source.txt",
+    "domain": "Development and Workflow Automation",
+    "officialDomain": "Domain 5: Development and Workflow Automation",
+    "text": "An engineer is tasked with scaffolding the complete boilerplate for a new, multi-file microservice based on a high-level design document. Which AI-assisted workflow is most appropriate for this task?",
+    "options": [
+      {
+        "letter": "A",
+        "text": "Using an IDE co-pilot for real-time inline suggestions"
+      },
+      {
+        "letter": "B",
+        "text": "Using a conversational AI to generate entire files from instructions"
+      },
+      {
+        "letter": "C",
+        "text": "Using an AI tool to generate a comprehensive unit test suite"
+      },
+      {
+        "letter": "D",
+        "text": "Using a general-purpose public AI chatbot for advice"
+      }
+    ],
+    "correctAnswers": [
+      "B"
+    ],
+    "rationaleCorrect": "Using a conversational AI to generate entire files from instructions is correct because it best matches a workflow where the goal is to scaffold substantial multi-file boilerplate from a high-level specification.",
+    "rationaleIncorrect": "The other options are better suited to narrower inline coding help, downstream validation work, or generic guidance rather than generating a complete starting implementation.",
+    "multiSelect": false
+  },
+  {
+    "id": "questions-source.txt-135",
+    "number": 135,
+    "sourceName": "questions-source.txt",
+    "domain": "Development and Workflow Automation",
+    "officialDomain": "Domain 5: Development and Workflow Automation",
+    "text": "When a team's primary bottleneck is slow and error-prone deployments, in which SDLC phase does AI offer the most direct solution?",
+    "options": [
+      {
+        "letter": "A",
+        "text": "Clarifying user stories in the requirements phase"
+      },
+      {
+        "letter": "B",
+        "text": "Generating UI mockups in the design phase"
+      },
+      {
+        "letter": "C",
+        "text": "Accelerating feature implementation with co-pilots"
+      },
+      {
+        "letter": "D",
+        "text": "Automating CI/CD script and configuration generation"
+      }
+    ],
+    "correctAnswers": [
+      "D"
+    ],
+    "rationaleCorrect": "Automating CI/CD script and configuration generation is correct because it targets the deployment stage directly and helps reduce manual deployment friction, inconsistency, and execution errors.",
+    "rationaleIncorrect": "The other options may improve earlier SDLC activities, but they do not address deployment automation as directly as improving CI/CD workflows and release configuration.",
+    "multiSelect": false
+  },
+  {
+    "id": "questions-source.txt-136",
+    "number": 136,
+    "sourceName": "questions-source.txt",
+    "domain": "Data Research and Analysis",
+    "officialDomain": "Domain 4: Data Research and Analysis",
+    "text": "An AI analysis of customer feedback provides a surprising insight. According to the \"Trust but Verify\" principle, what is your most critical next step?",
+    "options": [
+      {
+        "letter": "A",
+        "text": "Immediately share the surprising insight with your leadership team"
+      },
+      {
+        "letter": "B",
+        "text": "Ask the AI to rewrite the insight to make it sound more plausible"
+      },
+      {
+        "letter": "C",
+        "text": "Manually review a sample of the source feedback to confirm the AI's finding is accurate"
+      },
+      {
+        "letter": "D",
+        "text": "Discard the insight because it contradicts your own professional expertise"
+      }
+    ],
+    "correctAnswers": [
+      "C"
+    ],
+    "rationaleCorrect": "Manually review a sample of the source feedback to confirm the AI's finding is accurate is correct because it best matches the verification step needed before acting on an AI-generated analytical conclusion.",
+    "rationaleIncorrect": "The other options either skip validation, try to reframe the output instead of checking it, or reject the result without evidence rather than verifying it against the underlying data.",
+    "multiSelect": false
+  },
+  {
+    "id": "questions-source.txt-137",
+    "number": 137,
+    "sourceName": "questions-source.txt",
+    "domain": "Data Research and Analysis",
+    "officialDomain": "Domain 4: Data Research and Analysis",
+    "text": "An AI finds a strong connection between customers who request a certain feature and their product tier. What is the most common pitfall to avoid when interpreting this finding?",
+    "options": [
+      {
+        "letter": "A",
+        "text": "Ignoring the connection because it was generated by an AI"
+      },
+      {
+        "letter": "B",
+        "text": "Presenting the unverified finding directly to leadership"
+      },
+      {
+        "letter": "C",
+        "text": "Assuming the connection proves that the product tier causes the feature request"
+      },
+      {
+        "letter": "D",
+        "text": "Failing to ask the AI to create a visualization of the connection"
+      }
+    ],
+    "correctAnswers": [
+      "C"
+    ],
+    "rationaleCorrect": "Assuming the connection proves that the product tier causes the feature request is correct because it identifies the classic mistake of treating correlation as proof of causation without additional analysis.",
+    "rationaleIncorrect": "The other options may reflect weaker process issues, but they do not capture the main analytical error in interpreting a relationship between two observed variables.",
+    "multiSelect": false
+  },
+  {
+    "id": "questions-source.txt-138",
+    "number": 138,
+    "sourceName": "questions-source.txt",
+    "domain": "Development and Workflow Automation",
+    "officialDomain": "Domain 5: Development and Workflow Automation",
+    "text": "What is the primary goal of the \"Iterative Refinement\" process when working with an AI-generated draft?",
+    "options": [
+      {
+        "letter": "A",
+        "text": "To verify the factual accuracy of all data points in the text"
+      },
+      {
+        "letter": "B",
+        "text": "To ensure the document's structure follows the approved outline"
+      },
+      {
+        "letter": "C",
+        "text": "To expand the draft by generating additional content for each section"
+      },
+      {
+        "letter": "D",
+        "text": "To polish the existing text for tone, clarity, and strategic impact"
+      }
+    ],
+    "correctAnswers": [
+      "D"
+    ],
+    "rationaleCorrect": "To polish the existing text for tone, clarity, and strategic impact is correct because iterative refinement focuses on improving an initial draft through targeted revisions rather than replacing the drafting workflow entirely.",
+    "rationaleIncorrect": "The other options describe adjacent review or editing activities, but they do not capture the main purpose of refinement as improving the quality and fit of an already generated draft.",
+    "multiSelect": false
+  },
+  {
+    "id": "questions-source.txt-139",
+    "number": 139,
+    "sourceName": "questions-source.txt",
+    "domain": "Generative AI Models",
+    "officialDomain": "Domain 1: Generative AI Models",
+    "text": "A hospital requires an AI assistant to query patient records but strictly prohibits sensitive data (PHI) from leaving their secure internal network. Why is local LLM deployment the superior architectural choice over a public cloud API?",
+    "options": [
+      {
+        "letter": "A",
+        "text": "Local deployment guarantees zero latency for all queries regardless of hardware."
+      },
+      {
+        "letter": "B",
+        "text": "Local deployment provides access to more advanced models than those available via APIs."
+      },
+      {
+        "letter": "C",
+        "text": "Local deployment ensures data sovereignty by processing all information within the hospital's infrastructure."
+      },
+      {
+        "letter": "D",
+        "text": "Local deployment eliminates the need for software updates and maintenance."
+      }
+    ],
+    "correctAnswers": [
+      "C"
+    ],
+    "rationaleCorrect": "Local deployment ensures data sovereignty by processing all information within the hospital's infrastructure is correct because it directly addresses the core requirement that protected health information must remain inside the hospital's secure environment.",
+    "rationaleIncorrect": "The other options overpromise technical benefits, assume model availability advantages that are not inherent to deployment location, or ignore the ongoing operational responsibilities of running models locally.",
+    "multiSelect": false
+  },
+  {
+    "id": "questions-source.txt-140",
+    "number": 140,
+    "sourceName": "questions-source.txt",
+    "domain": "Generative AI Models",
+    "officialDomain": "Domain 1: Generative AI Models",
+    "text": "In a RAG architecture, what is the specific function of the \"embedding model\"?",
+    "options": [
+      {
+        "letter": "A",
+        "text": "It generates the final conversational response to the user."
+      },
+      {
+        "letter": "B",
+        "text": "It stores the vector data in a high-speed database for later retrieval."
+      },
+      {
+        "letter": "C",
+        "text": "It reformulates the user's query to add synonyms and related keywords."
+      },
+      {
+        "letter": "D",
+        "text": "It converts text from documents and queries into numerical vectors for semantic comparison."
+      }
+    ],
+    "correctAnswers": [
+      "D"
+    ],
+    "rationaleCorrect": "It converts text from documents and queries into numerical vectors for semantic comparison is correct because that is the embedding model's core role in enabling semantic similarity search within a RAG pipeline.",
+    "rationaleIncorrect": "The other options describe roles handled by different components, such as the generator model, the vector database, or optional query-rewrite logic, rather than the embedding model itself.",
+    "multiSelect": false
+  },
+  {
+    "id": "questions-source.txt-141",
+    "number": 141,
+    "sourceName": "questions-source.txt",
+    "domain": "Generative AI Models",
+    "officialDomain": "Domain 1: Generative AI Models",
+    "text": "What is the primary operational advantage of using Retrieval-Augmented Generation (RAG) instead of Fine-Tuning for a company with frequently changing internal policies?",
+    "options": [
+      {
+        "letter": "A",
+        "text": "RAG models require significantly less GPU memory during inference than fine-tuned models."
+      },
+      {
+        "letter": "B",
+        "text": "RAG eliminates the need for any data preparation or document organization."
+      },
+      {
+        "letter": "C",
+        "text": "RAG allows the system to be updated by re-indexing documents rather than retraining the model."
+      },
+      {
+        "letter": "D",
+        "text": "RAG changes the model's fundamental reasoning capabilities to better understand legal text."
+      }
+    ],
+    "correctAnswers": [
+      "C"
+    ],
+    "rationaleCorrect": "RAG allows the system to be updated by re-indexing documents rather than retraining the model is correct because it directly supports faster operational updates when source knowledge changes frequently.",
+    "rationaleIncorrect": "The other options either overstate what RAG guarantees, ignore the continued need for organized source content, or confuse knowledge-grounding architecture with changing the model's core capabilities.",
+    "multiSelect": false
+  },
+  {
+    "id": "questions-source.txt-142",
+    "number": 142,
+    "sourceName": "questions-source.txt",
+    "domain": "Generative AI Models",
+    "officialDomain": "Domain 1: Generative AI Models",
+    "text": "You successfully deployed a custom AI model that performed perfectly during launch. Six months later, users report that the accuracy has significantly dropped, even though the code and hardware haven't changed. What \"Day 2\" operational challenge does this describe?",
+    "options": [
+      {
+        "letter": "A",
+        "text": "Model Quantization: The model has slowly lost precision bits over time."
+      },
+      {
+        "letter": "B",
+        "text": "Model Drift: The model's performance has degraded because real-world data and context have evolved while the model remained static."
+      },
+      {
+        "letter": "C",
+        "text": "Vector Collapse: The embedding database has become too full to accept new queries."
+      },
+      {
+        "letter": "D",
+        "text": "Catastrophic Forgetting: The model has spontaneously overwritten its original training weights."
+      }
+    ],
+    "correctAnswers": [
+      "B"
+    ],
+    "rationaleCorrect": "Model Drift is correct because it describes the operational challenge where a once-accurate model becomes less effective as the real-world data distribution, user behavior, or business context changes over time.",
+    "rationaleIncorrect": "The other options describe unrelated concepts, unrealistic failure mechanisms, or behaviors that do not match a gradual post-deployment accuracy decline under otherwise stable infrastructure.",
+    "multiSelect": false
+  },
+  {
+    "id": "questions-source.txt-143",
+    "number": 143,
+    "sourceName": "questions-source.txt",
+    "domain": "Agentic AI",
+    "officialDomain": "Domain 6: Agentic AI",
+    "text": "Your production agent is consuming 3x more tokens than expected and taking significantly longer to complete. The trace shows it is calling the same tool repeatedly with slight variations. What is the best immediate action?",
+    "options": [
+      {
+        "letter": "A",
+        "text": "Increasing the token budget to allow the agent to finish its thought process"
+      },
+      {
+        "letter": "B",
+        "text": "Switching to a smaller, faster model to reduce the cost per loop"
+      },
+      {
+        "letter": "C",
+        "text": "Stopping the execution (timeout/halt) and investigating the trace for a reasoning loop"
+      },
+      {
+        "letter": "D",
+        "text": "Ignoring the behavior as it reflects the agent's advanced learning process"
+      }
+    ],
+    "correctAnswers": [
+      "C"
+    ],
+    "rationaleCorrect": "Stopping the execution (timeout/halt) and investigating the trace for a reasoning loop is correct because it directly addresses the immediate operational risk of runaway tool use, wasted tokens, and degraded response time.",
+    "rationaleIncorrect": "The other options either allow the faulty behavior to continue, reduce cost without fixing the control problem, or misinterpret repeated tool looping as a beneficial behavior.",
+    "multiSelect": false
+  },
+  {
+    "id": "questions-source.txt-144",
+    "number": 144,
+    "sourceName": "questions-source.txt",
+    "domain": "Agentic AI",
+    "officialDomain": "Domain 6: Agentic AI",
+    "text": "What is the primary architectural benefit of using the Model Context Protocol (MCP) instead of custom tool binding?",
+    "options": [
+      {
+        "letter": "A",
+        "text": "It allows any MCP-compatible AI model to use standard tools without requiring custom translation code"
+      },
+      {
+        "letter": "B",
+        "text": "It allows tools to execute significantly faster by bypassing the API layer"
+      },
+      {
+        "letter": "C",
+        "text": "It prevents the AI model from hallucinating by restricting its vocabulary"
+      },
+      {
+        "letter": "D",
+        "text": "It encrypts all data sent between the model and the tool"
+      }
+    ],
+    "correctAnswers": [
+      "A"
+    ],
+    "rationaleCorrect": "It allows any MCP-compatible AI model to use standard tools without requiring custom translation code is correct because MCP's main architectural value is standardizing how models discover and interact with tools across environments.",
+    "rationaleIncorrect": "The other options describe benefits that MCP does not inherently guarantee, such as faster execution, hallucination prevention, or built-in transport encryption as the protocol's primary purpose.",
+    "multiSelect": false
+  },
+  {
+    "id": "questions-source.txt-145",
+    "number": 145,
+    "sourceName": "questions-source.txt",
+    "domain": "Agentic AI",
+    "officialDomain": "Domain 6: Agentic AI",
+    "text": "According to the \"Agent Unveiled\" architectural model, what is the specific role of the Large Language Model (LLM) within an autonomous agent?",
+    "options": [
+      {
+        "letter": "A",
+        "text": "It executes the API calls and handles network connection errors directly."
+      },
+      {
+        "letter": "B",
+        "text": "It acts as the reasoning engine that observes the state and decides the next action."
+      },
+      {
+        "letter": "C",
+        "text": "It serves as the long-term database that stores the history of all past interactions."
+      },
+      {
+        "letter": "D",
+        "text": "It enforces the hard-coded security guardrails to prevent malicious inputs."
+      }
+    ],
+    "correctAnswers": [
+      "B"
+    ],
+    "rationaleCorrect": "It acts as the reasoning engine that observes the state and decides the next action is correct because the LLM's core architectural role in an agent is planning and decision-making based on the current context and observations.",
+    "rationaleIncorrect": "The other options describe responsibilities that belong to external tools, memory systems, or guardrail mechanisms rather than the LLM's primary role inside the agent loop.",
+    "multiSelect": false
+  },
+  {
+    "id": "questions-source.txt-146",
+    "number": 146,
+    "sourceName": "questions-source.txt",
+    "domain": "Development and Workflow Automation",
+    "officialDomain": "Domain 5: Development and Workflow Automation",
+    "text": "Your company has a strict requirement that all workflow execution data must remain within your own cloud infrastructure (Data Residency). Why is n8n the superior choice over Zapier for this scenario?",
+    "options": [
+      {
+        "letter": "A",
+        "text": "Because n8n supports more third-party integrations than Zapier"
+      },
+      {
+        "letter": "B",
+        "text": "Because n8n can be self-hosted within your private infrastructure, whereas Zapier is SaaS-only"
+      },
+      {
+        "letter": "C",
+        "text": "Because n8n uses a task-based pricing model that is cheaper at scale"
+      },
+      {
+        "letter": "D",
+        "text": "Because n8n eliminates the need for API keys"
+      }
+    ],
+    "correctAnswers": [
+      "B"
+    ],
+    "rationaleCorrect": "Because n8n can be self-hosted within your private infrastructure, whereas Zapier is SaaS-only is correct because self-hosting directly satisfies the requirement to keep workflow data execution within the company's controlled environment.",
+    "rationaleIncorrect": "The other options focus on possible differences in integrations, pricing, or convenience, but they do not directly solve the core data residency constraint in the prompt.",
+    "multiSelect": false
+  },
+  {
+    "id": "questions-source.txt-147",
+    "number": 147,
+    "sourceName": "questions-source.txt",
+    "domain": "Development and Workflow Automation",
+    "officialDomain": "Domain 5: Development and Workflow Automation",
+    "text": "When reviewing an AI-generated function for a production system, what is the most critical verification step?",
+    "options": [
+      {
+        "letter": "A",
+        "text": "Ensuring it adheres to team naming conventions"
+      },
+      {
+        "letter": "B",
+        "text": "Verifying it is free of security vulnerabilities"
+      },
+      {
+        "letter": "C",
+        "text": "Checking that it includes detailed inline comments"
+      },
+      {
+        "letter": "D",
+        "text": "Confirming it uses the latest available language syntax"
+      }
+    ],
+    "correctAnswers": [
+      "B"
+    ],
+    "rationaleCorrect": "Verifying it is free of security vulnerabilities is correct because production code review must prioritize safety and risk reduction over style, commentary, or use of newer syntax.",
+    "rationaleIncorrect": "The other options may improve maintainability or consistency, but they are secondary to ensuring that the generated code does not introduce exploitable behavior into a production system.",
+    "multiSelect": false
+  },
+  {
+    "id": "questions-source.txt-148",
+    "number": 148,
+    "sourceName": "questions-source.txt",
+    "domain": "Development and Workflow Automation",
+    "officialDomain": "Domain 5: Development and Workflow Automation",
+    "text": "What is the most effective first step when using an AI to debug a complex production error?",
+    "options": [
+      {
+        "letter": "A",
+        "text": "Ask the AI to rewrite the entire component from scratch"
+      },
+      {
+        "letter": "B",
+        "text": "Instruct the AI to suggest a potential code fix immediately"
+      },
+      {
+        "letter": "C",
+        "text": "Provide the AI with the complete stack trace for an explanation"
+      },
+      {
+        "letter": "D",
+        "text": "Prompt the AI to refactor the code for better performance"
+      }
+    ],
+    "correctAnswers": [
+      "C"
+    ],
+    "rationaleCorrect": "Provide the AI with the complete stack trace for an explanation is correct because effective debugging starts with accurate failure context, and the stack trace gives the model the clearest evidence about where and how the error occurred.",
+    "rationaleIncorrect": "The other options jump prematurely to rewriting, fixing, or refactoring before establishing a grounded understanding of the actual failure signal.",
+    "multiSelect": false
+  },
+  {
+    "id": "questions-source.txt-149",
+    "number": 149,
+    "sourceName": "questions-source.txt",
+    "domain": "Development and Workflow Automation",
+    "officialDomain": "Domain 5: Development and Workflow Automation",
+    "text": "When prompting an AI to draft a formal report from your completed analysis, what is the most important component to provide in your prompt?",
+    "options": [
+      {
+        "letter": "A",
+        "text": "The desired word count for the final document"
+      },
+      {
+        "letter": "B",
+        "text": "A clear, logical outline for the AI to follow"
+      },
+      {
+        "letter": "C",
+        "text": "A request for the AI to use a professional and authoritative tone"
+      },
+      {
+        "letter": "D",
+        "text": "A list of all the raw data you used in your analysis"
+      }
+    ],
+    "correctAnswers": [
+      "B"
+    ],
+    "rationaleCorrect": "A clear, logical outline for the AI to follow is correct because strong structure guidance is the most effective way to shape a coherent report that reflects the intended flow of the completed analysis.",
+    "rationaleIncorrect": "The other options may influence style or provide context, but they are less effective than a defined structure for guiding how the final report should be organized and presented.",
+    "multiSelect": false
+  },
+  {
+    "id": "questions-source.txt-150",
+    "number": 150,
+    "sourceName": "questions-source.txt",
+    "domain": "Data Research and Analysis",
+    "officialDomain": "Domain 4: Data Research and Analysis",
+    "text": "To begin your analysis of a large volume of unstructured customer feedback, which prompt is most effective for the \"Orient\" step, the first part of the Four-Step EDA Methodology?",
+    "options": [
+      {
+        "letter": "A",
+        "text": "A prompt asking the AI to find the single most important customer quote"
+      },
+      {
+        "letter": "B",
+        "text": "A prompt requesting a high-level thematic summary of the main issues"
+      },
+      {
+        "letter": "C",
+        "text": "A prompt instructing the AI to correlate the feedback with other business data"
+      },
+      {
+        "letter": "D",
+        "text": "A prompt asking the AI to generate three business hypotheses"
+      }
+    ],
+    "correctAnswers": [
+      "B"
+    ],
+    "rationaleCorrect": "A prompt requesting a high-level thematic summary of the main issues is correct because the Orient step is about getting an initial broad understanding of the dataset before drilling into specific relationships or hypotheses.",
+    "rationaleIncorrect": "The other options jump too quickly into prioritization, correlation, or hypothesis generation before first establishing a general view of the key themes present in the feedback.",
+    "multiSelect": false
+  },
+  {
+    "id": "questions-source.txt-151",
+    "number": 151,
+    "sourceName": "questions-source.txt",
+    "domain": "Generative AI Models",
+    "officialDomain": "Domain 1: Generative AI Models",
+    "text": "When evaluating an open-source model on Hugging Face for a commercial enterprise application, what is the most critical non-technical factor to verify on the Model Card?",
+    "options": [
+      {
+        "letter": "A",
+        "text": "The total number of times the model has been downloaded by the community"
+      },
+      {
+        "letter": "B",
+        "text": "The specific terms of the license to ensure it permits commercial use"
+      },
+      {
+        "letter": "C",
+        "text": "The date the model was originally uploaded to the repository"
+      },
+      {
+        "letter": "D",
+        "text": "The number of parameters the model contains relative to its file size"
+      }
+    ],
+    "correctAnswers": [
+      "B"
+    ],
+    "rationaleCorrect": "The specific terms of the license to ensure it permits commercial use is correct because licensing determines whether the model can legally be adopted in an enterprise commercial context regardless of its technical quality.",
+    "rationaleIncorrect": "The other options may provide context about popularity or model characteristics, but they do not address the most important legal and governance constraint for commercial adoption.",
+    "multiSelect": false
+  },
+  {
+    "id": "questions-source.txt-152",
+    "number": 152,
+    "sourceName": "questions-source.txt",
+    "domain": "Generative AI Models",
+    "officialDomain": "Domain 1: Generative AI Models",
+    "text": "You are designing a RAG system. Engineers report that the system fails to find relevant documents because they search for \"broken fans\" while the manuals use the term \"thermal exhaust failure.\" Which component of the RAG pipeline is responsible for bridging this gap?",
+    "options": [
+      {
+        "letter": "A",
+        "text": "The Generator (LLM), which creates new synonyms for the user"
+      },
+      {
+        "letter": "B",
+        "text": "The Vector Database, which automatically rewrites the documents"
+      },
+      {
+        "letter": "C",
+        "text": "The Retriever (using Semantic Search), which matches concepts rather than just keywords"
+      },
+      {
+        "letter": "D",
+        "text": "The Quantization Layer, which simplifies the vocabulary for the model"
+      }
+    ],
+    "correctAnswers": [
+      "C"
+    ],
+    "rationaleCorrect": "The Retriever (using Semantic Search), which matches concepts rather than just keywords is correct because semantic retrieval is the part of the RAG pipeline that connects related meanings even when the query and source documents use different wording.",
+    "rationaleIncorrect": "The other options describe components that generate responses, store vectors, or optimize model execution, but they do not perform the core concept-matching retrieval function in this scenario.",
+    "multiSelect": false
+  },
+  {
+    "id": "questions-source.txt-153",
+    "number": 153,
+    "sourceName": "questions-source.txt",
+    "domain": "Data Research and Analysis",
+    "officialDomain": "Domain 4: Data Research and Analysis",
+    "text": "What is the primary purpose of the \"Correlate\" step in the EDA methodology for qualitative feedback",
+    "options": [
+      {
+        "letter": "A",
+        "text": "To get a basic, high-level summary of a single source of feedback"
+      },
+      {
+        "letter": "B",
+        "text": "To turn an AI-generated insight into a testable business hypothesis"
+      },
+      {
+        "letter": "C",
+        "text": "To identify hidden patterns by connecting themes across different feedback sources"
+      },
+      {
+        "letter": "D",
+        "text": "To create a text-based breakdown of the most common complaint themes"
+      }
+    ],
+    "correctAnswers": [
+      "C"
+    ],
+    "rationaleCorrect": "To identify hidden patterns by connecting themes across different feedback sources is correct because the Correlate step focuses on finding relationships and reinforcing signals across multiple qualitative inputs rather than just summarizing one source.",
+    "rationaleIncorrect": "The other options align more closely with earlier summarization or later hypothesis-formation activities, rather than the cross-source pattern discovery that correlation is meant to support.",
+    "multiSelect": false
+  },
+  {
+    "id": "questions-source.txt-154",
+    "number": 154,
+    "sourceName": "questions-source.txt",
+    "domain": "Generative AI Models",
+    "officialDomain": "Domain 1: Generative AI Models",
+    "text": "A news organization wants to create an AI assistant that summarizes articles in the specific, concise voice of their lead editor. They have a dataset of 5,000 past articles written by that editor. Which customization strategy is most appropriate?",
+    "options": [
+      {
+        "letter": "A",
+        "text": "Implement Retrieval-Augmented Generation (RAG) to access the articles as a knowledge base"
+      },
+      {
+        "letter": "B",
+        "text": "Fine-tune the model on the editor's past articles to adapt its output style"
+      },
+      {
+        "letter": "C",
+        "text": "Increase the model temperature so it becomes more expressive and varied"
+      },
+      {
+        "letter": "D",
+        "text": "Use a vector database without changing the model behavior itself"
+      }
+    ],
+    "correctAnswers": [
+      "B"
+    ],
+    "rationaleCorrect": "Fine-tune the model on the editor's past articles to adapt its output style is correct because fine-tuning is the most appropriate way to teach a model consistent stylistic behavior from a sufficiently large set of representative examples.",
+    "rationaleIncorrect": "The other options can help with factual grounding or output variability, but they do not directly train the model to reproduce a specific editorial voice with consistency.",
+    "multiSelect": false
+  },
+  {
+    "id": "questions-source.txt-155",
+    "number": 155,
+    "sourceName": "questions-source.txt",
+    "domain": "Development and Workflow Automation",
+    "officialDomain": "Domain 5: Development and Workflow Automation",
+    "text": "Our n8n workflow calls an external API that fails intermittently due to load. What is the standard architectural pattern to handle this without human intervention?",
+    "options": [
+      {
+        "letter": "A",
+        "text": "Implementing exponential backoff with retry limits"
+      },
+      {
+        "letter": "B",
+        "text": "Implementing a circuit breaker that permanently disables the step"
+      },
+      {
+        "letter": "C",
+        "text": "Immediately escalating every failure to the on-call engineer"
+      },
+      {
+        "letter": "D",
+        "text": "Caching the failure response to prevent future errors"
+      }
+    ],
+    "correctAnswers": [
+      "A"
+    ],
+    "rationaleCorrect": "Implementing exponential backoff with retry limits is correct because transient load-related failures are most commonly handled by controlled retries that space out requests and avoid overwhelming the external system.",
+    "rationaleIncorrect": "The other options either overreact to temporary faults, disable useful recovery behavior, or preserve failed responses instead of addressing the intermittent nature of the problem.",
+    "multiSelect": false
+  },
+  {
+    "id": "questions-source.txt-156",
+    "number": 156,
+    "sourceName": "questions-source.txt",
+    "domain": "Agentic AI",
+    "officialDomain": "Domain 6: Agentic AI",
+    "text": "You are designing a system to process customer support tickets. Under which specific condition is an autonomous agent a better architectural choice than a directive workflow?",
+    "options": [
+      {
+        "letter": "A",
+        "text": "When the process logic is deterministic and can be mapped as a decision tree"
+      },
+      {
+        "letter": "B",
+        "text": "When the problem space is ambiguous and requires reasoning about novel issues not predicted in advance"
+      },
+      {
+        "letter": "C",
+        "text": "When the primary constraint is minimizing execution cost and latency"
+      },
+      {
+        "letter": "D",
+        "text": "When the system requires a rigid audit trail for every action taken"
+      }
+    ],
+    "correctAnswers": [
+      "B"
+    ],
+    "rationaleCorrect": "When the problem space is ambiguous and requires reasoning about novel issues not predicted in advance is correct because agents are most valuable when the system must adapt its actions dynamically instead of following a fully predefined path.",
+    "rationaleIncorrect": "The other options better fit deterministic workflows, cost-sensitive automation, or tightly controlled process execution rather than situations that benefit from agentic reasoning.",
+    "multiSelect": false
   }
 ];

@@ -2,6 +2,16 @@
 
 Browser-based study simulator for Cisco 810-110 AI Technical Practitioner exam preparation.
 
+## Current Version
+
+- `1.2`
+
+## Latest Update
+
+- Expanded the built-in question bank to `156` questions.
+- Improved practice retry behavior so corrected answers leave the retry queue and unanswered practice items can be retried.
+- Updated the practice retry label to `Retry Missed Questions`.
+
 ## Description
 
 This simulator provides two study flows from the built-in question bank:

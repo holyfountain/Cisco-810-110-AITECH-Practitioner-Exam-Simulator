@@ -1,5 +1,5 @@
 const QUESTION_BANK = Array.isArray(window.QUESTION_BANK) ? window.QUESTION_BANK : [];
-const APP_VERSION = "1.1";
+const APP_VERSION = "1.2";
 const PRACTICE_AUTO_ADVANCE_DELAY_MS = 5000;
 const PRACTICE_ADVANCE_OPTIONS = [
   { value: "auto", label: "Auto-advance" },
@@ -702,7 +702,7 @@ function returnToHome() {
 
 function updateSessionTitle() {
   elements.examTitle.textContent = isPracticeMode()
-    ? `${Array.isArray(state.practiceRetryQuestionIds) && state.practiceRetryQuestionIds.length > 0 ? "Retry Wrong Answers" : "Practice Mode"} ${state.attemptCount}`
+    ? `${Array.isArray(state.practiceRetryQuestionIds) && state.practiceRetryQuestionIds.length > 0 ? "Retry Missed Questions" : "Practice Mode"} ${state.attemptCount}`
     : `Simulation Exam ${state.attemptCount}`;
 }
 
@@ -943,6 +943,12 @@ function gradeExam() {
   return state.examQuestions.map((question) => getQuestionResult(question));
 }
 
+function getPracticeRetryQuestionIds(results) {
+  return results
+    .filter((result) => !result.isCorrect)
+    .map((result) => result.question.id);
+}
+
 function buildDomainBreakdown(results) {
   const domainMap = new Map();
 
@@ -977,7 +983,8 @@ function renderResults(results) {
   const passed = score >= getActivePassingScore();
   const domainBreakdown = buildDomainBreakdown(results);
   const practiceMode = isPracticeMode();
-  const retryWrongCount = state.practiceMissedQuestionIds.size;
+  const practiceRetryQuestionIds = practiceMode ? getPracticeRetryQuestionIds(results) : [];
+  const retryWrongCount = practiceRetryQuestionIds.length;
 
   elements.examPanel.classList.add("hidden");
   elements.resultsPanel.classList.remove("hidden");
@@ -1067,10 +1074,12 @@ function renderResults(results) {
   `).join("");
 
   if (practiceMode) {
-    state.practiceRetryQuestionIds = [...state.practiceMissedQuestionIds];
+    state.practiceRetryQuestionIds = practiceRetryQuestionIds;
+    elements.retryWrongButton.textContent = "Retry Missed Questions";
     elements.retryWrongButton.classList.toggle("hidden", state.practiceRetryQuestionIds.length === 0);
   } else {
     state.practiceRetryQuestionIds = null;
+    elements.retryWrongButton.textContent = "Retry Wrong Answers";
     elements.retryWrongButton.classList.add("hidden");
   }
   persistPracticeState();
@@ -1104,8 +1113,12 @@ function handleSelectionChange(event) {
     const currentQuestion = state.examQuestions[state.currentQuestionIndex];
     const selectedAnswers = getSelectedAnswers(questionId);
 
-    if (currentQuestion && getHasWrongSelection(currentQuestion, selectedAnswers)) {
-      state.practiceMissedQuestionIds.add(questionId);
+    if (currentQuestion) {
+      if (getHasWrongSelection(currentQuestion, selectedAnswers)) {
+        state.practiceMissedQuestionIds.add(questionId);
+      } else {
+        state.practiceMissedQuestionIds.delete(questionId);
+      }
     }
 
     renderExam();

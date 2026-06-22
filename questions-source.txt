@@ -1687,3 +1687,341 @@ Answer: 🟩 A. Segment results by scenario type and compare error patterns acro
 
 * Why it is correct: Segment results by scenario type and compare error patterns across those subsets is correct because it best matches the data-analysis or data-preparation activity that best matches the situation in the prompt.
 * Why others are incorrect: The other options refer to different lifecycle stages, unrelated controls, or outcomes that do not solve the stated data-analysis problem.
+
+## Question 131 (Domain: Data Research and Analysis)
+An AI insight shows that "Enterprise customers frequently mention integration challenges." Which of the following is a well-formed, product-focused hypothesis derived from that insight?
+
+* A. Our sales team is overpromising our integration capabilities to Enterprise clients
+* B. Our product's Enterprise tier lacks the robust integration features these clients require
+* C. Our support documentation for Enterprise clients is insufficient for their needs
+* D. Enterprise customers are generally more demanding than our other customer tiers
+
+Answer: 🟩 B. Our product's Enterprise tier lacks the robust integration features these clients require
+
+* Why it is correct: Our product's Enterprise tier lacks the robust integration features these clients require is correct because it best translates the observed customer signal into a testable product hypothesis about a feature gap.
+* Why others are incorrect: The other options either shift the hypothesis away from the product itself, speculate about teams or customer behavior without enough evidence, or point to a different root cause than the insight most directly supports.
+
+## Question 132 (Domain: Generative AI Models)
+An engineer needs to integrate an AI API to perform a high-volume, real-time task, such as automatically classifying network alerts by severity. Which strategy is the most optimal for balancing low cost and low latency?
+
+* A. Use the largest, highest-quality model for guaranteed accuracy
+* B. Use the smallest, fastest model and set the temperature to 0.0
+* C. Increase the max_tokens limit significantly to reduce the number of API calls
+* D. Focus only on implementing exponential backoff for retries
+
+Answer: 🟩 B. Use the smallest, fastest model and set the temperature to 0.0
+
+* Why it is correct: Use the smallest, fastest model and set the temperature to 0.0 is correct because it best matches the model-selection and inference-control strategy for a high-volume, latency-sensitive classification workflow.
+* Why others are incorrect: The other options either increase cost or latency unnecessarily, tune the wrong parameter for the stated objective, or focus on reliability controls that do not directly optimize model speed and cost.
+
+## Question 133 (Domain: Ethics and Security)
+What is the primary security risk of committing a hard-coded API key to a version control system?
+
+* A. A potential decrease in application performance
+* B. The risk of unauthorized access and fraudulent charges
+* C. Future incompatibility with the API provider's key format
+* D. Increased difficulty when rotating the API key in the future
+
+Answer: 🟩 B. The risk of unauthorized access and fraudulent charges
+
+* Why it is correct: The risk of unauthorized access and fraudulent charges is correct because it directly captures the main security impact of exposing a secret in a shared or compromised code repository.
+* Why others are incorrect: The other options may be secondary operational concerns or unrelated outcomes, but they do not describe the primary security consequence of leaking a credential.
+
+## Question 134 (Domain: Development and Workflow Automation)
+An engineer is tasked with scaffolding the complete boilerplate for a new, multi-file microservice based on a high-level design document. Which AI-assisted workflow is most appropriate for this task?
+
+* A. Using an IDE co-pilot for real-time inline suggestions
+* B. Using a conversational AI to generate entire files from instructions
+* C. Using an AI tool to generate a comprehensive unit test suite
+* D. Using a general-purpose public AI chatbot for advice
+
+Answer: 🟩 B. Using a conversational AI to generate entire files from instructions
+
+* Why it is correct: Using a conversational AI to generate entire files from instructions is correct because it best matches a workflow where the goal is to scaffold substantial multi-file boilerplate from a high-level specification.
+* Why others are incorrect: The other options are better suited to narrower inline coding help, downstream validation work, or generic guidance rather than generating a complete starting implementation.
+
+## Question 135 (Domain: Development and Workflow Automation)
+When a team's primary bottleneck is slow and error-prone deployments, in which SDLC phase does AI offer the most direct solution?
+
+* A. Clarifying user stories in the requirements phase
+* B. Generating UI mockups in the design phase
+* C. Accelerating feature implementation with co-pilots
+* D. Automating CI/CD script and configuration generation
+
+Answer: 🟩 D. Automating CI/CD script and configuration generation
+
+* Why it is correct: Automating CI/CD script and configuration generation is correct because it targets the deployment stage directly and helps reduce manual deployment friction, inconsistency, and execution errors.
+* Why others are incorrect: The other options may improve earlier SDLC activities, but they do not address deployment automation as directly as improving CI/CD workflows and release configuration.
+
+## Question 136 (Domain: Data Research and Analysis)
+An AI analysis of customer feedback provides a surprising insight. According to the "Trust but Verify" principle, what is your most critical next step?
+
+* A. Immediately share the surprising insight with your leadership team
+* B. Ask the AI to rewrite the insight to make it sound more plausible
+* C. Manually review a sample of the source feedback to confirm the AI's finding is accurate
+* D. Discard the insight because it contradicts your own professional expertise
+
+Answer: 🟩 C. Manually review a sample of the source feedback to confirm the AI's finding is accurate
+
+* Why it is correct: Manually review a sample of the source feedback to confirm the AI's finding is accurate is correct because it best matches the verification step needed before acting on an AI-generated analytical conclusion.
+* Why others are incorrect: The other options either skip validation, try to reframe the output instead of checking it, or reject the result without evidence rather than verifying it against the underlying data.
+
+## Question 137 (Domain: Data Research and Analysis)
+An AI finds a strong connection between customers who request a certain feature and their product tier. What is the most common pitfall to avoid when interpreting this finding?
+
+* A. Ignoring the connection because it was generated by an AI
+* B. Presenting the unverified finding directly to leadership
+* C. Assuming the connection proves that the product tier causes the feature request
+* D. Failing to ask the AI to create a visualization of the connection
+
+Answer: 🟩 C. Assuming the connection proves that the product tier causes the feature request
+
+* Why it is correct: Assuming the connection proves that the product tier causes the feature request is correct because it identifies the classic mistake of treating correlation as proof of causation without additional analysis.
+* Why others are incorrect: The other options may reflect weaker process issues, but they do not capture the main analytical error in interpreting a relationship between two observed variables.
+
+## Question 138 (Domain: Development and Workflow Automation)
+What is the primary goal of the "Iterative Refinement" process when working with an AI-generated draft?
+
+* A. To verify the factual accuracy of all data points in the text
+* B. To ensure the document's structure follows the approved outline
+* C. To expand the draft by generating additional content for each section
+* D. To polish the existing text for tone, clarity, and strategic impact
+
+Answer: 🟩 D. To polish the existing text for tone, clarity, and strategic impact
+
+* Why it is correct: To polish the existing text for tone, clarity, and strategic impact is correct because iterative refinement focuses on improving an initial draft through targeted revisions rather than replacing the drafting workflow entirely.
+* Why others are incorrect: The other options describe adjacent review or editing activities, but they do not capture the main purpose of refinement as improving the quality and fit of an already generated draft.
+
+## Question 139 (Domain: Generative AI Models)
+A hospital requires an AI assistant to query patient records but strictly prohibits sensitive data (PHI) from leaving their secure internal network. Why is local LLM deployment the superior architectural choice over a public cloud API?
+
+* A. Local deployment guarantees zero latency for all queries regardless of hardware.
+* B. Local deployment provides access to more advanced models than those available via APIs.
+* C. Local deployment ensures data sovereignty by processing all information within the hospital's infrastructure.
+* D. Local deployment eliminates the need for software updates and maintenance.
+
+Answer: 🟩 C. Local deployment ensures data sovereignty by processing all information within the hospital's infrastructure.
+
+* Why it is correct: Local deployment ensures data sovereignty by processing all information within the hospital's infrastructure is correct because it directly addresses the core requirement that protected health information must remain inside the hospital's secure environment.
+* Why others are incorrect: The other options overpromise technical benefits, assume model availability advantages that are not inherent to deployment location, or ignore the ongoing operational responsibilities of running models locally.
+
+## Question 140 (Domain: Generative AI Models)
+In a RAG architecture, what is the specific function of the "embedding model"?
+
+* A. It generates the final conversational response to the user.
+* B. It stores the vector data in a high-speed database for later retrieval.
+* C. It reformulates the user's query to add synonyms and related keywords.
+* D. It converts text from documents and queries into numerical vectors for semantic comparison.
+
+Answer: 🟩 D. It converts text from documents and queries into numerical vectors for semantic comparison.
+
+* Why it is correct: It converts text from documents and queries into numerical vectors for semantic comparison is correct because that is the embedding model's core role in enabling semantic similarity search within a RAG pipeline.
+* Why others are incorrect: The other options describe roles handled by different components, such as the generator model, the vector database, or optional query-rewrite logic, rather than the embedding model itself.
+
+## Question 141 (Domain: Generative AI Models)
+What is the primary operational advantage of using Retrieval-Augmented Generation (RAG) instead of Fine-Tuning for a company with frequently changing internal policies?
+
+* A. RAG models require significantly less GPU memory during inference than fine-tuned models.
+* B. RAG eliminates the need for any data preparation or document organization.
+* C. RAG allows the system to be updated by re-indexing documents rather than retraining the model.
+* D. RAG changes the model's fundamental reasoning capabilities to better understand legal text.
+
+Answer: 🟩 C. RAG allows the system to be updated by re-indexing documents rather than retraining the model.
+
+* Why it is correct: RAG allows the system to be updated by re-indexing documents rather than retraining the model is correct because it directly supports faster operational updates when source knowledge changes frequently.
+* Why others are incorrect: The other options either overstate what RAG guarantees, ignore the continued need for organized source content, or confuse knowledge-grounding architecture with changing the model's core capabilities.
+
+## Question 142 (Domain: Generative AI Models)
+You successfully deployed a custom AI model that performed perfectly during launch. Six months later, users report that the accuracy has significantly dropped, even though the code and hardware haven't changed. What "Day 2" operational challenge does this describe?
+
+* A. Model Quantization: The model has slowly lost precision bits over time.
+* B. Model Drift: The model's performance has degraded because real-world data and context have evolved while the model remained static.
+* C. Vector Collapse: The embedding database has become too full to accept new queries.
+* D. Catastrophic Forgetting: The model has spontaneously overwritten its original training weights.
+
+Answer: 🟩 B. Model Drift: The model's performance has degraded because real-world data and context have evolved while the model remained static.
+
+* Why it is correct: Model Drift is correct because it describes the operational challenge where a once-accurate model becomes less effective as the real-world data distribution, user behavior, or business context changes over time.
+* Why others are incorrect: The other options describe unrelated concepts, unrealistic failure mechanisms, or behaviors that do not match a gradual post-deployment accuracy decline under otherwise stable infrastructure.
+
+## Question 143 (Domain: Agentic AI)
+Your production agent is consuming 3x more tokens than expected and taking significantly longer to complete. The trace shows it is calling the same tool repeatedly with slight variations. What is the best immediate action?
+
+* A. Increasing the token budget to allow the agent to finish its thought process
+* B. Switching to a smaller, faster model to reduce the cost per loop
+* C. Stopping the execution (timeout/halt) and investigating the trace for a reasoning loop
+* D. Ignoring the behavior as it reflects the agent's advanced learning process
+
+Answer: 🟩 C. Stopping the execution (timeout/halt) and investigating the trace for a reasoning loop
+
+* Why it is correct: Stopping the execution (timeout/halt) and investigating the trace for a reasoning loop is correct because it directly addresses the immediate operational risk of runaway tool use, wasted tokens, and degraded response time.
+* Why others are incorrect: The other options either allow the faulty behavior to continue, reduce cost without fixing the control problem, or misinterpret repeated tool looping as a beneficial behavior.
+
+## Question 144 (Domain: Agentic AI)
+What is the primary architectural benefit of using the Model Context Protocol (MCP) instead of custom tool binding?
+
+* A. It allows any MCP-compatible AI model to use standard tools without requiring custom translation code
+* B. It allows tools to execute significantly faster by bypassing the API layer
+* C. It prevents the AI model from hallucinating by restricting its vocabulary
+* D. It encrypts all data sent between the model and the tool
+
+Answer: 🟩 A. It allows any MCP-compatible AI model to use standard tools without requiring custom translation code
+
+* Why it is correct: It allows any MCP-compatible AI model to use standard tools without requiring custom translation code is correct because MCP's main architectural value is standardizing how models discover and interact with tools across environments.
+* Why others are incorrect: The other options describe benefits that MCP does not inherently guarantee, such as faster execution, hallucination prevention, or built-in transport encryption as the protocol's primary purpose.
+
+## Question 145 (Domain: Agentic AI)
+According to the "Agent Unveiled" architectural model, what is the specific role of the Large Language Model (LLM) within an autonomous agent?
+
+* A. It executes the API calls and handles network connection errors directly.
+* B. It acts as the reasoning engine that observes the state and decides the next action.
+* C. It serves as the long-term database that stores the history of all past interactions.
+* D. It enforces the hard-coded security guardrails to prevent malicious inputs.
+
+Answer: 🟩 B. It acts as the reasoning engine that observes the state and decides the next action.
+
+* Why it is correct: It acts as the reasoning engine that observes the state and decides the next action is correct because the LLM's core architectural role in an agent is planning and decision-making based on the current context and observations.
+* Why others are incorrect: The other options describe responsibilities that belong to external tools, memory systems, or guardrail mechanisms rather than the LLM's primary role inside the agent loop.
+
+## Question 146 (Domain: Development and Workflow Automation)
+Your company has a strict requirement that all workflow execution data must remain within your own cloud infrastructure (Data Residency). Why is n8n the superior choice over Zapier for this scenario?
+
+* A. Because n8n supports more third-party integrations than Zapier
+* B. Because n8n can be self-hosted within your private infrastructure, whereas Zapier is SaaS-only
+* C. Because n8n uses a task-based pricing model that is cheaper at scale
+* D. Because n8n eliminates the need for API keys
+
+Answer: 🟩 B. Because n8n can be self-hosted within your private infrastructure, whereas Zapier is SaaS-only
+
+* Why it is correct: Because n8n can be self-hosted within your private infrastructure, whereas Zapier is SaaS-only is correct because self-hosting directly satisfies the requirement to keep workflow data execution within the company's controlled environment.
+* Why others are incorrect: The other options focus on possible differences in integrations, pricing, or convenience, but they do not directly solve the core data residency constraint in the prompt.
+
+## Question 147 (Domain: Development and Workflow Automation)
+When reviewing an AI-generated function for a production system, what is the most critical verification step?
+
+* A. Ensuring it adheres to team naming conventions
+* B. Verifying it is free of security vulnerabilities
+* C. Checking that it includes detailed inline comments
+* D. Confirming it uses the latest available language syntax
+
+Answer: 🟩 B. Verifying it is free of security vulnerabilities
+
+* Why it is correct: Verifying it is free of security vulnerabilities is correct because production code review must prioritize safety and risk reduction over style, commentary, or use of newer syntax.
+* Why others are incorrect: The other options may improve maintainability or consistency, but they are secondary to ensuring that the generated code does not introduce exploitable behavior into a production system.
+
+## Question 148 (Domain: Development and Workflow Automation)
+What is the most effective first step when using an AI to debug a complex production error?
+
+* A. Ask the AI to rewrite the entire component from scratch
+* B. Instruct the AI to suggest a potential code fix immediately
+* C. Provide the AI with the complete stack trace for an explanation
+* D. Prompt the AI to refactor the code for better performance
+
+Answer: 🟩 C. Provide the AI with the complete stack trace for an explanation
+
+* Why it is correct: Provide the AI with the complete stack trace for an explanation is correct because effective debugging starts with accurate failure context, and the stack trace gives the model the clearest evidence about where and how the error occurred.
+* Why others are incorrect: The other options jump prematurely to rewriting, fixing, or refactoring before establishing a grounded understanding of the actual failure signal.
+
+## Question 149 (Domain: Development and Workflow Automation)
+When prompting an AI to draft a formal report from your completed analysis, what is the most important component to provide in your prompt?
+
+* A. The desired word count for the final document
+* B. A clear, logical outline for the AI to follow
+* C. A request for the AI to use a professional and authoritative tone
+* D. A list of all the raw data you used in your analysis
+
+Answer: 🟩 B. A clear, logical outline for the AI to follow
+
+* Why it is correct: A clear, logical outline for the AI to follow is correct because strong structure guidance is the most effective way to shape a coherent report that reflects the intended flow of the completed analysis.
+* Why others are incorrect: The other options may influence style or provide context, but they are less effective than a defined structure for guiding how the final report should be organized and presented.
+
+## Question 150 (Domain: Data Research and Analysis)
+To begin your analysis of a large volume of unstructured customer feedback, which prompt is most effective for the "Orient" step, the first part of the Four-Step EDA Methodology?
+
+* A. A prompt asking the AI to find the single most important customer quote
+* B. A prompt requesting a high-level thematic summary of the main issues
+* C. A prompt instructing the AI to correlate the feedback with other business data
+* D. A prompt asking the AI to generate three business hypotheses
+
+Answer: 🟩 B. A prompt requesting a high-level thematic summary of the main issues
+
+* Why it is correct: A prompt requesting a high-level thematic summary of the main issues is correct because the Orient step is about getting an initial broad understanding of the dataset before drilling into specific relationships or hypotheses.
+* Why others are incorrect: The other options jump too quickly into prioritization, correlation, or hypothesis generation before first establishing a general view of the key themes present in the feedback.
+
+## Question 151 (Domain: Generative AI Models)
+When evaluating an open-source model on Hugging Face for a commercial enterprise application, what is the most critical non-technical factor to verify on the Model Card?
+
+* A. The total number of times the model has been downloaded by the community
+* B. The specific terms of the license to ensure it permits commercial use
+* C. The date the model was originally uploaded to the repository
+* D. The number of parameters the model contains relative to its file size
+
+Answer: 🟩 B. The specific terms of the license to ensure it permits commercial use
+
+* Why it is correct: The specific terms of the license to ensure it permits commercial use is correct because licensing determines whether the model can legally be adopted in an enterprise commercial context regardless of its technical quality.
+* Why others are incorrect: The other options may provide context about popularity or model characteristics, but they do not address the most important legal and governance constraint for commercial adoption.
+
+## Question 152 (Domain: Generative AI Models)
+You are designing a RAG system. Engineers report that the system fails to find relevant documents because they search for "broken fans" while the manuals use the term "thermal exhaust failure." Which component of the RAG pipeline is responsible for bridging this gap?
+
+* A. The Generator (LLM), which creates new synonyms for the user
+* B. The Vector Database, which automatically rewrites the documents
+* C. The Retriever (using Semantic Search), which matches concepts rather than just keywords
+* D. The Quantization Layer, which simplifies the vocabulary for the model
+
+Answer: 🟩 C. The Retriever (using Semantic Search), which matches concepts rather than just keywords
+
+* Why it is correct: The Retriever (using Semantic Search), which matches concepts rather than just keywords is correct because semantic retrieval is the part of the RAG pipeline that connects related meanings even when the query and source documents use different wording.
+* Why others are incorrect: The other options describe components that generate responses, store vectors, or optimize model execution, but they do not perform the core concept-matching retrieval function in this scenario.
+
+## Question 153 (Domain: Data Research and Analysis)
+What is the primary purpose of the "Correlate" step in the EDA methodology for qualitative feedback
+
+* A. To get a basic, high-level summary of a single source of feedback
+* B. To turn an AI-generated insight into a testable business hypothesis
+* C. To identify hidden patterns by connecting themes across different feedback sources
+* D. To create a text-based breakdown of the most common complaint themes
+
+Answer: 🟩 C. To identify hidden patterns by connecting themes across different feedback sources
+
+* Why it is correct: To identify hidden patterns by connecting themes across different feedback sources is correct because the Correlate step focuses on finding relationships and reinforcing signals across multiple qualitative inputs rather than just summarizing one source.
+* Why others are incorrect: The other options align more closely with earlier summarization or later hypothesis-formation activities, rather than the cross-source pattern discovery that correlation is meant to support.
+
+## Question 154 (Domain: Generative AI Models)
+A news organization wants to create an AI assistant that summarizes articles in the specific, concise voice of their lead editor. They have a dataset of 5,000 past articles written by that editor. Which customization strategy is most appropriate?
+
+* A. Implement Retrieval-Augmented Generation (RAG) to access the articles as a knowledge base
+* B. Fine-tune the model on the editor's past articles to adapt its output style
+* C. Increase the model temperature so it becomes more expressive and varied
+* D. Use a vector database without changing the model behavior itself
+
+Answer: 🟩 B. Fine-tune the model on the editor's past articles to adapt its output style
+
+* Why it is correct: Fine-tune the model on the editor's past articles to adapt its output style is correct because fine-tuning is the most appropriate way to teach a model consistent stylistic behavior from a sufficiently large set of representative examples.
+* Why others are incorrect: The other options can help with factual grounding or output variability, but they do not directly train the model to reproduce a specific editorial voice with consistency.
+
+## Question 155 (Domain: Development and Workflow Automation)
+Our n8n workflow calls an external API that fails intermittently due to load. What is the standard architectural pattern to handle this without human intervention?
+
+* A. Implementing exponential backoff with retry limits
+* B. Implementing a circuit breaker that permanently disables the step
+* C. Immediately escalating every failure to the on-call engineer
+* D. Caching the failure response to prevent future errors
+
+Answer: 🟩 A. Implementing exponential backoff with retry limits
+
+* Why it is correct: Implementing exponential backoff with retry limits is correct because transient load-related failures are most commonly handled by controlled retries that space out requests and avoid overwhelming the external system.
+* Why others are incorrect: The other options either overreact to temporary faults, disable useful recovery behavior, or preserve failed responses instead of addressing the intermittent nature of the problem.
+
+## Question 156 (Domain: Agentic AI)
+You are designing a system to process customer support tickets. Under which specific condition is an autonomous agent a better architectural choice than a directive workflow?
+
+* A. When the process logic is deterministic and can be mapped as a decision tree
+* B. When the problem space is ambiguous and requires reasoning about novel issues not predicted in advance
+* C. When the primary constraint is minimizing execution cost and latency
+* D. When the system requires a rigid audit trail for every action taken
+
+Answer: 🟩 B. When the problem space is ambiguous and requires reasoning about novel issues not predicted in advance
+
+* Why it is correct: When the problem space is ambiguous and requires reasoning about novel issues not predicted in advance is correct because agents are most valuable when the system must adapt its actions dynamically instead of following a fully predefined path.
+* Why others are incorrect: The other options better fit deterministic workflows, cost-sensitive automation, or tightly controlled process execution rather than situations that benefit from agentic reasoning.
