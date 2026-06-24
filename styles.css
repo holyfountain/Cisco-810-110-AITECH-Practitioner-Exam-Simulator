@@ -827,6 +827,22 @@ body.exam-session .option-label {
   box-shadow: 0 0 0 2px rgba(179, 63, 63, 0.12);
 }
 
+.option-label.correct-answer.selected {
+  border-color: var(--accent);
+  background: linear-gradient(90deg, rgba(15, 138, 95, 0.2) 0%, rgba(15, 138, 95, 0.1) 100%);
+  box-shadow: 0 0 0 2px rgba(15, 138, 95, 0.22), 0 0 18px rgba(15, 138, 95, 0.18);
+}
+
+.option-label.incorrect-answer.selected {
+  border-color: var(--danger);
+  background: linear-gradient(90deg, rgba(179, 63, 63, 0.2) 0%, rgba(179, 63, 63, 0.1) 100%);
+  box-shadow: 0 0 0 2px rgba(179, 63, 63, 0.2), 0 0 18px rgba(179, 63, 63, 0.18);
+}
+
+.option-label.incorrect-answer.selected::before {
+  background: var(--danger);
+}
+
 :root[data-theme="dark"] .option-label.correct-answer {
   border-color: rgba(79, 208, 161, 0.3);
 }
@@ -834,6 +850,17 @@ body.exam-session .option-label {
 :root[data-theme="dark"] .option-label.incorrect-answer {
   border-color: rgba(255, 143, 143, 0.22);
   box-shadow: 0 0 0 2px rgba(255, 143, 143, 0.08);
+}
+
+:root[data-theme="dark"] .option-label.correct-answer.selected {
+  background: linear-gradient(90deg, rgba(79, 208, 161, 0.22) 0%, rgba(79, 208, 161, 0.1) 100%);
+  box-shadow: 0 0 0 2px rgba(79, 208, 161, 0.3), 0 0 18px rgba(79, 208, 161, 0.2);
+}
+
+:root[data-theme="dark"] .option-label.incorrect-answer.selected {
+  border-color: rgba(255, 143, 143, 0.4);
+  background: linear-gradient(90deg, rgba(255, 143, 143, 0.18) 0%, rgba(255, 143, 143, 0.08) 100%);
+  box-shadow: 0 0 0 2px rgba(255, 143, 143, 0.16), 0 0 18px rgba(255, 143, 143, 0.16);
 }
 
 .practice-feedback {
