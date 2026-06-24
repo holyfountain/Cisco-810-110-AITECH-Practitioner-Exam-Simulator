@@ -504,6 +504,18 @@ body.exam-session .exam-panel {
   white-space: nowrap;
 }
 
+.practice-flow-control {
+  align-items: center;
+}
+
+.toolbar-select {
+  width: auto;
+  min-width: 180px;
+  margin-top: 0;
+  padding: 8px 12px;
+  border-radius: 999px;
+}
+
 .toolbar-stats strong {
   display: inline;
   font-size: 1.05rem;
@@ -535,6 +547,11 @@ body.exam-session .toolbar-stats strong {
 body.exam-session .exam-toolbar-heading,
 body.exam-session .toolbar-stat-item {
   gap: 8px;
+}
+
+body.exam-session .toolbar-select {
+  min-width: 160px;
+  padding: 7px 12px;
 }
 
 .progress-summary {
@@ -1258,6 +1275,11 @@ body.exam-session .sticky-actions {
     display: grid;
     grid-template-columns: 1fr;
     align-items: start;
+  }
+
+  .toolbar-select {
+    width: 100%;
+    min-width: 0;
   }
 
   .progress-summary-text,

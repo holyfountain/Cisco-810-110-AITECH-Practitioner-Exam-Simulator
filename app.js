@@ -1,6 +1,6 @@
 const QUESTION_BANK = Array.isArray(window.QUESTION_BANK) ? window.QUESTION_BANK : [];
 const APP_VERSION = "1.3";
-const APP_LAST_UPDATED = "2026-06-24-07-58";
+const APP_LAST_UPDATED = "2026-06-24-08-06";
 const PRACTICE_AUTO_ADVANCE_DELAY_MS = 5000;
 const PRACTICE_ADVANCE_OPTIONS = [
   { value: "auto", label: "Auto-advance" },
@@ -29,6 +29,7 @@ const elements = {
   questionCountSelect: document.querySelector("#questionCountSelect"),
   passingScoreSelect: document.querySelector("#passingScoreSelect"),
   practiceAdvanceSelect: document.querySelector("#practiceAdvanceSelect"),
+  sessionPracticeAdvanceSelect: document.querySelector("#sessionPracticeAdvanceSelect"),
   savedSessionBanner: document.querySelector("#savedSessionBanner"),
   savedSessionText: document.querySelector("#savedSessionText"),
   resumePracticeButton: document.querySelector("#resumePracticeButton"),
@@ -56,6 +57,7 @@ const elements = {
   progressScrollRightButton: document.querySelector("#progressScrollRightButton"),
   answeredCount: document.querySelector("#answeredCount"),
   sessionRule: document.querySelector("#sessionRule"),
+  practiceFlowControl: document.querySelector("#practiceFlowControl"),
   examTitle: document.querySelector("#examTitle"),
   progressSummaryText: document.querySelector("#progressSummaryText"),
   progressSummaryGrid: document.querySelector("#progressSummaryGrid"),
@@ -521,6 +523,12 @@ function syncHomeSettingsUi() {
   elements.practiceAdvanceSelect.value = state.practiceAutoAdvance ? "auto" : "manual";
 }
 
+function syncPracticeAdvanceControls() {
+  const value = state.practiceAutoAdvance ? "auto" : "manual";
+  elements.practiceAdvanceSelect.value = value;
+  elements.sessionPracticeAdvanceSelect.value = value;
+}
+
 function updateBankDetails() {
   elements.bankCount.textContent = `${state.questionBank.length} questions`;
 
@@ -641,12 +649,12 @@ function startSession(mode) {
   state.examQuestions = buildSessionQuestions(mode);
   state.optionOrderByQuestionId = createOptionOrderMap(state.examQuestions);
 
-  syncSessionModeUi();
   updateSessionTitle();
   elements.introPanel.classList.add("hidden");
   elements.resultsPanel.classList.add("hidden");
   elements.examPanel.classList.remove("hidden");
   setExamChrome(true);
+  syncSessionModeUi();
 
   renderExam();
   persistPracticeState();
@@ -714,9 +722,11 @@ function syncSessionModeUi() {
   elements.sessionRule.textContent = practiceMode
     ? getPracticeAutoAdvanceLabel()
     : `${getActivePassingScore()}% to pass`;
+  elements.practiceFlowControl.classList.toggle("hidden", !practiceMode || elements.examPanel.classList.contains("hidden"));
   elements.quitPracticeButton.classList.toggle("hidden", !practiceMode || elements.examPanel.classList.contains("hidden"));
   elements.retryWrongButton.classList.add("hidden");
   elements.restartButton.textContent = "Home";
+  syncPracticeAdvanceControls();
 }
 
 function getSelectedAnswers(questionId) {
@@ -1179,9 +1189,11 @@ function handlePracticeAdvanceChange(event) {
   }
 
   state.practiceAutoAdvance = target.value !== "manual";
+  syncPracticeAdvanceControls();
   if (isPracticeMode()) {
     clearAutoAdvanceTimer();
     syncSessionModeUi();
+    renderExam();
     persistPracticeState();
   }
 }
@@ -1278,7 +1290,12 @@ function initializeSettingsControls() {
     return `<option value="${option.value}">${option.label}</option>`;
   }).join("");
 
+  elements.sessionPracticeAdvanceSelect.innerHTML = PRACTICE_ADVANCE_OPTIONS.map((option) => {
+    return `<option value="${option.value}">${option.label}</option>`;
+  }).join("");
+
   syncHomeSettingsUi();
+  syncPracticeAdvanceControls();
 }
 
 function initializeAboutContent() {
@@ -1314,6 +1331,7 @@ elements.practiceModeButton.addEventListener("click", () => startSession("practi
 elements.questionCountSelect.addEventListener("change", handleQuestionCountChange);
 elements.passingScoreSelect.addEventListener("change", handlePassingScoreChange);
 elements.practiceAdvanceSelect.addEventListener("change", handlePracticeAdvanceChange);
+elements.sessionPracticeAdvanceSelect.addEventListener("change", handlePracticeAdvanceChange);
 elements.previousButton.addEventListener("click", () => handleQuestionNavigation(-1));
 elements.nextButton.addEventListener("click", () => handleQuestionNavigation(1));
 elements.submitButton.addEventListener("click", handleSubmit);
