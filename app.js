@@ -1,6 +1,6 @@
 const QUESTION_BANK = Array.isArray(window.QUESTION_BANK) ? window.QUESTION_BANK : [];
 const APP_VERSION = "1.3";
-const APP_LAST_UPDATED = "2026-06-24-08-06";
+const APP_LAST_UPDATED = "2026-06-25-11-05";
 const PRACTICE_AUTO_ADVANCE_DELAY_MS = 5000;
 const PRACTICE_ADVANCE_OPTIONS = [
   { value: "auto", label: "Auto-advance" },
@@ -766,6 +766,49 @@ function formatRationaleText(rationale, question, answerLetters = question.corre
   return `${displayAnswerLead}${rationale.slice(originalAnswerLead.length)}`;
 }
 
+function formatPracticeRationaleText(rationale, question) {
+  const formattedRationale = formatRationaleText(rationale, question);
+
+  if (!formattedRationale) {
+    return "";
+  }
+
+  const answerLeadVariants = [
+    formatAnswerList(question.correctAnswers, question),
+    question.correctAnswers
+      .map((letter) => question.options.find((option) => option.letter === letter))
+      .filter(Boolean)
+      .map((option) => option.text)
+      .join(" and ")
+  ].filter(Boolean);
+
+  for (const answerLead of answerLeadVariants) {
+    const escapedAnswerLead = answerLead.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const strippedRationale = formattedRationale.replace(
+      new RegExp(`^${escapedAnswerLead}\s+(?:is\s+correct\s+because|because)\s+`, "i"),
+      "Because "
+    );
+
+    if (strippedRationale !== formattedRationale) {
+      return strippedRationale;
+    }
+  }
+
+  const normalizedRationale = formattedRationale.trim();
+  const lowerCaseRationale = normalizedRationale.toLowerCase();
+  const becauseMarkers = [" is correct because ", " because "];
+
+  for (const marker of becauseMarkers) {
+    const markerIndex = lowerCaseRationale.indexOf(marker);
+
+    if (markerIndex > 0 && markerIndex < 160) {
+      return `Because ${normalizedRationale.slice(markerIndex + marker.length).trim()}`;
+    }
+  }
+
+  return formattedRationale;
+}
+
 function getQuestionResult(question) {
   const selectedAnswers = getSelectedAnswers(question.id);
   const hasAnswer = selectedAnswers.length > 0;
@@ -917,11 +960,13 @@ function renderExam() {
     ? `
       <section class="practice-feedback ${practiceResult.isCorrect ? "correct" : "incorrect"}" aria-live="polite">
         <p class="practice-feedback-title">${practiceResult.isCorrect ? "Correct" : "Wrong"}</p>
-        <p class="practice-feedback-copy">
-          Correct answer: ${escapeHtml(formatAnswerList(question.correctAnswers, question))}
-        </p>
+        ${practiceResult.isCorrect ? "" : `
+          <p class="practice-feedback-copy">
+            Correct answer: ${escapeHtml(formatAnswerList(question.correctAnswers, question))}
+          </p>
+        `}
         ${question.rationaleCorrect ? `
-          <p class="practice-feedback-copy">${escapeHtml(formatRationaleText(question.rationaleCorrect, question))}</p>
+          <p class="practice-feedback-copy">${escapeHtml(formatPracticeRationaleText(question.rationaleCorrect, question))}</p>
         ` : ""}
       </section>
     `
