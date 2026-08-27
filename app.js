@@ -1,6 +1,6 @@
 const QUESTION_BANK = Array.isArray(window.QUESTION_BANK) ? window.QUESTION_BANK : [];
-const APP_VERSION = "1.3";
-const APP_LAST_UPDATED = "2026-08-27-14-58";
+const APP_VERSION = "1.4";
+const APP_LAST_UPDATED = "2026-08-27-15-16";
 const PRACTICE_AUTO_ADVANCE_DELAY_MS = 5000;
 const PRACTICE_ADVANCE_OPTIONS = [
   { value: "auto", label: "Auto-advance" },
@@ -1087,23 +1087,22 @@ function formatRationaleText(rationale, question, answerLetters = question.corre
     return "";
   }
 
-  const originalAnswerLead = answerLetters
+  // Remap any "<originalLetter>. <option text>" reference to the shuffled display label,
+  // wherever it appears in the rationale (start or mid-sentence).
+  let result = rationale;
+  answerLetters
     .map((letter) => question.options.find((option) => option.letter === letter))
     .filter(Boolean)
-    .map((option) => `${option.letter}. ${option.text.replace(/[.!?]+$/, "")}`)
-    .join(" and ");
+    .forEach((option) => {
+      const optionText = option.text.replace(/[.!?]+$/, "");
+      const originalLead = `${option.letter}. ${optionText}`;
+      const displayLead = `${getDisplayLabelForOriginalLetter(question, option.letter)}. ${optionText}`;
+      if (originalLead !== displayLead) {
+        result = result.split(originalLead).join(displayLead);
+      }
+    });
 
-  if (!originalAnswerLead || !rationale.startsWith(originalAnswerLead)) {
-    return rationale;
-  }
-
-  const displayAnswerLead = answerLetters
-    .map((letter) => question.options.find((option) => option.letter === letter))
-    .filter(Boolean)
-    .map((option) => `${getDisplayLabelForOriginalLetter(question, option.letter)}. ${option.text.replace(/[.!?]+$/, "")}`)
-    .join(" and ");
-
-  return `${displayAnswerLead}${rationale.slice(originalAnswerLead.length)}`;
+  return result;
 }
 
 function formatPracticeRationaleText(rationale, question) {

@@ -11,16 +11,20 @@ The former Cisco GitHub Pages URL (https://wwwin-github.cisco.com/pages/tantunes
 
 ## Current Version
 
-- `1.3`
+- `1.4`
 
 ## Latest Update
 
-- Corrected the answer key for Question `79` in the built-in question bank.
-- Clarified the prompting terminology used in Question `59`.
-- Refreshed the in-app release metadata and `Last Updated` timestamp.
+- Added a `Questions DB` blueprint browser (Domain > Question > answers and reasoning).
+- Added anonymous `Usage Stats` and a community `Feedback` card with post-session and spontaneous prompts.
+- Added a `BookExam` guide for requesting the Cisco employee exam discount and scheduling with Pearson VUE (step screenshots shown on the BDB-hosted app).
+- Expanded the question bank to `160` questions (added metaprompting and agentic human-in-the-loop items).
+- Fixed answer-letter mapping in exam/practice results review so each rationale cites the shuffled displayed option.
+- Migrated hosting to the BDB web app, with an automatic redirect from the former Cisco GitHub Pages URL.
 
 ## Maintenance
 
+- Update `README.md` (`Current Version` and `Latest Update`) on every deploy to prod.
 - A tracked pre-commit hook refreshes `APP_LAST_UPDATED` in `app.js` automatically before each commit.
 - If hooks are not active in a fresh clone, run `git config core.hooksPath .githooks` from the repository root.
 
@@ -52,6 +56,10 @@ It is designed to help students rehearse question flow, review answers, and trac
 - Saved practice-session resume and discard controls
 - Results summary with score, correct count, retry count or passing score, and performance by domain
 - Question progress carousel for quick navigation during a session
+- Questions database browser grouped by exam blueprint domain, with answers and rationale
+- Anonymous usage statistics (shared on the BDB-hosted app; per-browser otherwise)
+- Community feedback card, post-session prompts, and a spontaneous feedback button
+- BookExam guide: request the Cisco employee exam discount and schedule with Pearson VUE
 - Light and dark theme toggle
 - Responsive layout for desktop and mobile screens
 - About dialog with author, version, README link, and disclaimer
