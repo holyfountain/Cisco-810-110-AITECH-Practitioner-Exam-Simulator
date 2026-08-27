@@ -1608,7 +1608,7 @@ body.exam-session .sticky-actions {
 }
 
 .book-details {
-  margin-top: 8px;
+  margin: 0 0 12px;
   padding: 12px 14px;
   border-radius: 14px;
   background: var(--panel-strong);
