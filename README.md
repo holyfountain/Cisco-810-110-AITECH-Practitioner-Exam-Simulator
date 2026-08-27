@@ -4,8 +4,10 @@ Browser-based study simulator for Cisco 810-110 AI Technical Practitioner exam p
 
 ## Student Access
 
-- https://wwwin-github.cisco.com/pages/tantunes/Cisco-810-110-AITECH-Practitioner-Exam-Simulator/
-- https://holyfountain.github.io/Cisco-810-110-AITECH-Practitioner-Exam-Simulator/
+- Cisco (primary, hosted on BDB): https://scripts.cisco.com/app/aitech_exam_simulator
+- Public mirror: https://holyfountain.github.io/Cisco-810-110-AITECH-Practitioner-Exam-Simulator/
+
+The former Cisco GitHub Pages URL (https://wwwin-github.cisco.com/pages/tantunes/Cisco-810-110-AITECH-Practitioner-Exam-Simulator/) automatically redirects to the BDB-hosted app.
 
 ## Current Version
 
@@ -21,6 +23,13 @@ Browser-based study simulator for Cisco 810-110 AI Technical Practitioner exam p
 
 - A tracked pre-commit hook refreshes `APP_LAST_UPDATED` in `app.js` automatically before each commit.
 - If hooks are not active in a fresh clone, run `git config core.hooksPath .githooks` from the repository root.
+
+## Hosting
+
+- The app is served as a BDB web app task: `aitech_exam_simulator` (`https://scripts.cisco.com/app/aitech_exam_simulator`).
+- Shared anonymous usage stats and feedback are stored by the backend task `aitech_exam_stats` (DBaaS).
+- `aitech-backend.js` calls the shared backend when served from `scripts.cisco.com`; on the public mirror it falls back to per-browser `localStorage`.
+- To update the BDB app: edit files locally, upload them to the `aitech_exam_simulator` task (git push + `git-pull`, or `bdb task edit`), then deploy.
 
 ## Description
 

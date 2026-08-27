@@ -1,6 +1,6 @@
 const QUESTION_BANK = Array.isArray(window.QUESTION_BANK) ? window.QUESTION_BANK : [];
 const APP_VERSION = "1.3";
-const APP_LAST_UPDATED = "2026-06-25-11-05";
+const APP_LAST_UPDATED = "2026-08-27-11-07";
 const PRACTICE_AUTO_ADVANCE_DELAY_MS = 5000;
 const PRACTICE_ADVANCE_OPTIONS = [
   { value: "auto", label: "Auto-advance" },
@@ -62,7 +62,27 @@ const elements = {
   progressSummaryText: document.querySelector("#progressSummaryText"),
   progressSummaryGrid: document.querySelector("#progressSummaryGrid"),
   resultsSummary: document.querySelector("#resultsSummary"),
-  resultsReview: document.querySelector("#resultsReview")
+  resultsReview: document.querySelector("#resultsReview"),
+  questionsDbButton: document.querySelector("#questionsDbButton"),
+  usageStatsButton: document.querySelector("#usageStatsButton"),
+  feedbackButton: document.querySelector("#feedbackButton"),
+  questionsModal: document.querySelector("#questionsModal"),
+  blueprintList: document.querySelector("#blueprintList"),
+  questionsModalIntro: document.querySelector("#questionsModalIntro"),
+  statsModal: document.querySelector("#statsModal"),
+  statsGrid: document.querySelector("#statsGrid"),
+  statsDomains: document.querySelector("#statsDomains"),
+  statsScopeNote: document.querySelector("#statsScopeNote"),
+  feedbackModal: document.querySelector("#feedbackModal"),
+  feedbackForm: document.querySelector("#feedbackForm"),
+  feedbackStarRow: document.querySelector("#feedbackStarRow"),
+  feedbackComment: document.querySelector("#feedbackComment"),
+  feedbackStatus: document.querySelector("#feedbackStatus"),
+  feedbackModalIntro: document.querySelector("#feedbackModalIntro"),
+  feedbackCard: document.querySelector("#feedbackCard"),
+  feedbackCardList: document.querySelector("#feedbackCardList"),
+  feedbackCardButton: document.querySelector("#feedbackCardButton"),
+  feedbackRatingSummary: document.querySelector("#feedbackRatingSummary")
 };
 
 const state = {
@@ -82,7 +102,10 @@ const state = {
   selectedQuestionCountOption: String(DEFAULT_EXAM_QUESTION_COUNT),
   activeQuestionCountOption: String(DEFAULT_EXAM_QUESTION_COUNT),
   passingScore: DEFAULT_PASSING_SCORE,
-  practiceAutoAdvance: true
+  practiceAutoAdvance: true,
+  feedbackRating: 0,
+  feedbackContext: "spontaneous",
+  lastRunSummary: null
 };
 
 const THEME_STORAGE_KEY = "aitech-theme";
@@ -185,10 +208,308 @@ function closeAboutModal() {
   document.body.classList.remove("modal-open");
 }
 
+function openAppModal(modal) {
+  if (!modal) {
+    return;
+  }
+  modal.classList.remove("hidden");
+  modal.setAttribute("aria-hidden", "false");
+  document.body.classList.add("modal-open");
+}
+
+function closeAppModal(modal) {
+  if (!modal) {
+    return;
+  }
+  modal.classList.add("hidden");
+  modal.setAttribute("aria-hidden", "true");
+  if (!document.querySelector(".app-modal:not(.hidden)") && elements.aboutModal.classList.contains("hidden")) {
+    document.body.classList.remove("modal-open");
+  }
+}
+
+function closeAllAppModals() {
+  document.querySelectorAll(".app-modal:not(.hidden)").forEach((modal) => closeAppModal(modal));
+}
+
+function renderBlueprintDatabase() {
+  const grouped = new Map(BLUEPRINT_DOMAIN_TARGETS.map(([domainName]) => [domainName, []]));
+
+  state.questionBank.forEach((question) => {
+    const domainName = getOfficialDomainName(question);
+    if (!grouped.has(domainName)) {
+      grouped.set(domainName, []);
+    }
+    grouped.get(domainName).push(question);
+  });
+
+  elements.questionsModalIntro.textContent = `Browse all ${state.questionBank.length} questions grouped by the six official exam domains. Correct answers and rationale are shown for study.`;
+
+  const sections = [...grouped.entries()]
+    .filter(([, questions]) => questions.length > 0)
+    .map(([domainName, questions]) => {
+      const questionMarkup = questions
+        .map((question) => renderBlueprintQuestion(question))
+        .join("");
+
+      return `
+        <section class="blueprint-domain">
+          <button class="blueprint-domain-header" type="button" aria-expanded="false">
+            <span class="blueprint-domain-name">${escapeHtml(domainName)}</span>
+            <span class="blueprint-domain-count">${questions.length} question${questions.length === 1 ? "" : "s"}</span>
+          </button>
+          <div class="blueprint-domain-body">
+            ${questionMarkup}
+          </div>
+        </section>
+      `;
+    })
+    .join("");
+
+  elements.blueprintList.innerHTML = sections || `<p class="feedback-empty">No questions available.</p>`;
+}
+
+function renderBlueprintQuestion(question) {
+  const correctSet = new Set(question.correctAnswers);
+  const optionsMarkup = question.options
+    .map((option) => {
+      const isCorrect = correctSet.has(option.letter);
+      return `
+        <li class="blueprint-option ${isCorrect ? "correct" : ""}">
+          <span class="blueprint-option-letter">${escapeHtml(option.letter)}</span>
+          <span class="blueprint-option-text">${escapeHtml(option.text)}</span>
+          ${isCorrect ? `<span class="blueprint-option-flag">Correct</span>` : ""}
+        </li>
+      `;
+    })
+    .join("");
+
+  const rationale = question.rationaleCorrect
+    ? `<p class="blueprint-rationale"><span class="blueprint-rationale-label">Why:</span> ${escapeHtml(formatRationaleText(question.rationaleCorrect, question, question.correctAnswers))}</p>`
+    : "";
+
+  return `
+    <article class="blueprint-question">
+      <p class="blueprint-question-number">Question ${question.number}</p>
+      <p class="blueprint-question-text">${escapeHtml(question.text)}</p>
+      <ul class="blueprint-options">${optionsMarkup}</ul>
+      ${rationale}
+    </article>
+  `;
+}
+
+function openQuestionsDatabase() {
+  renderBlueprintDatabase();
+  openAppModal(elements.questionsModal);
+}
+
+function handleBlueprintToggle(event) {
+  const header = event.target.closest(".blueprint-domain-header");
+  if (!header) {
+    return;
+  }
+  const domain = header.closest(".blueprint-domain");
+  const expanded = domain.classList.toggle("open");
+  header.setAttribute("aria-expanded", String(expanded));
+}
+
+function formatStatTimestamp(isoString) {
+  if (!isoString) {
+    return "Not yet";
+  }
+  const parsed = new Date(isoString);
+  if (Number.isNaN(parsed.getTime())) {
+    return "Not yet";
+  }
+  return parsed.toLocaleString();
+}
+
+function renderUsageStats(stats) {
+  const scopeLabel = stats.scope === "shared" ? "shared across all users" : "recorded on this device";
+  elements.statsScopeNote.textContent = `Anonymous tool utilization, ${scopeLabel}. No personal data is collected.`;
+
+  const cards = [
+    ["Total Sessions", stats.totalRuns],
+    ["Exams Run", stats.totalExams],
+    ["Practice Runs", stats.totalPractice],
+    ["Questions Answered", stats.totalQuestionsAnswered],
+    ["Avg Exam Score", `${stats.avgExamScore}%`],
+    ["Exam Pass Rate", `${stats.passRate}%`]
+  ];
+
+  elements.statsGrid.innerHTML = cards
+    .map(([label, value]) => `
+      <article class="stat-card">
+        <span class="toolbar-label">${escapeHtml(label)}</span>
+        <strong>${escapeHtml(String(value))}</strong>
+      </article>
+    `)
+    .join("");
+
+  const domainMarkup = (stats.domains || [])
+    .filter((entry) => entry.total > 0)
+    .map((entry) => `
+      <article class="stat-domain-row">
+        <div class="stat-domain-copy">
+          <p class="stat-domain-name">${escapeHtml(entry.domain)}</p>
+          <p class="review-meta">${entry.correct} / ${entry.total} correct</p>
+        </div>
+        <div class="stat-domain-bar" aria-hidden="true">
+          <span style="width: ${entry.percentage}%"></span>
+        </div>
+        <strong class="stat-domain-pct">${entry.percentage}%</strong>
+      </article>
+    `)
+    .join("");
+
+  elements.statsDomains.innerHTML = domainMarkup
+    ? `<h3 class="stats-domains-title">Accuracy by Domain</h3>${domainMarkup}<p class="review-meta stats-updated">Last activity: ${escapeHtml(formatStatTimestamp(stats.lastUpdated))}</p>`
+    : `<p class="feedback-empty">No sessions recorded yet. Finish an exam or practice run to populate these metrics.</p>`;
+}
+
+async function openUsageStats() {
+  elements.statsGrid.innerHTML = `<p class="feedback-empty">Loading usage statistics...</p>`;
+  elements.statsDomains.innerHTML = "";
+  openAppModal(elements.statsModal);
+  try {
+    const stats = await window.AitechBackend.getStats();
+    renderUsageStats(stats);
+  } catch (error) {
+    elements.statsGrid.innerHTML = `<p class="feedback-empty">Usage statistics are unavailable right now.</p>`;
+  }
+}
+
+function renderFeedbackStars() {
+  elements.feedbackStarRow.innerHTML = [1, 2, 3, 4, 5]
+    .map((value) => `
+      <button class="feedback-star ${value <= state.feedbackRating ? "active" : ""}" type="button" role="radio" aria-checked="${value === state.feedbackRating}" data-rating="${value}" aria-label="${value} star${value === 1 ? "" : "s"}">★</button>
+    `)
+    .join("");
+}
+
+function setFeedbackRating(value) {
+  state.feedbackRating = Math.max(0, Math.min(5, value));
+  renderFeedbackStars();
+}
+
+function openFeedbackModal(context = "spontaneous") {
+  state.feedbackContext = ["exam", "practice", "spontaneous"].includes(context) ? context : "spontaneous";
+  state.feedbackRating = 0;
+  elements.feedbackComment.value = "";
+  elements.feedbackStatus.textContent = "";
+  elements.feedbackStatus.classList.remove("error");
+  renderFeedbackStars();
+
+  if (state.feedbackContext === "spontaneous") {
+    elements.feedbackModalIntro.textContent = "Your feedback is anonymous and helps improve the simulator.";
+  } else {
+    const label = state.feedbackContext === "practice" ? "practice session" : "exam";
+    elements.feedbackModalIntro.textContent = `Nice work finishing your ${label}! Your anonymous feedback helps improve the simulator.`;
+  }
+
+  openAppModal(elements.feedbackModal);
+}
+
+function handleFeedbackStarClick(event) {
+  const star = event.target.closest(".feedback-star");
+  if (!star) {
+    return;
+  }
+  setFeedbackRating(Number(star.dataset.rating));
+}
+
+async function handleFeedbackSubmit(event) {
+  event.preventDefault();
+
+  if (state.feedbackRating < 1) {
+    elements.feedbackStatus.textContent = "Please select a star rating first.";
+    elements.feedbackStatus.classList.add("error");
+    return;
+  }
+
+  const comment = elements.feedbackComment.value.trim();
+  elements.feedbackStatus.classList.remove("error");
+  elements.feedbackStatus.textContent = "Submitting...";
+
+  try {
+    await window.AitechBackend.submitFeedback({
+      rating: state.feedbackRating,
+      comment,
+      context: state.feedbackContext,
+      score: state.lastRunSummary ? state.lastRunSummary.score : null
+    });
+    elements.feedbackStatus.textContent = "Thank you for your feedback!";
+    window.setTimeout(() => closeAppModal(elements.feedbackModal), 900);
+    loadFeedbackCard();
+  } catch (error) {
+    elements.feedbackStatus.textContent = "Could not submit feedback. Please try again.";
+    elements.feedbackStatus.classList.add("error");
+  }
+}
+
+function renderRatingSummary(feedback) {
+  if (!feedback.count) {
+    elements.feedbackRatingSummary.textContent = "";
+    return;
+  }
+  const rounded = Math.round(feedback.averageRating);
+  const stars = "★★★★★".slice(0, rounded).padEnd(5, "☆");
+  elements.feedbackRatingSummary.textContent = `${stars} ${feedback.averageRating.toFixed(1)} · ${feedback.count} rating${feedback.count === 1 ? "" : "s"}`;
+}
+
+function renderFeedbackCard(feedback) {
+  renderRatingSummary(feedback);
+
+  const items = Array.isArray(feedback.items)
+    ? feedback.items.filter((item) => item && (item.comment || "").trim().length > 0).slice(0, 6)
+    : [];
+
+  if (items.length === 0) {
+    elements.feedbackCardList.innerHTML = `<p class="feedback-empty">No comments yet. Be the first to share your feedback!</p>`;
+    return;
+  }
+
+  elements.feedbackCardList.innerHTML = items
+    .map((item) => {
+      const rating = Math.max(0, Math.min(5, Number(item.rating) || 0));
+      const stars = "★★★★★".slice(0, rating).padEnd(5, "☆");
+      return `
+        <article class="feedback-item">
+          <p class="feedback-item-stars" aria-label="${rating} out of 5 stars">${stars}</p>
+          <p class="feedback-item-comment">${escapeHtml(item.comment)}</p>
+        </article>
+      `;
+    })
+    .join("");
+}
+
+async function loadFeedbackCard() {
+  try {
+    const feedback = await window.AitechBackend.listFeedback(12);
+    renderFeedbackCard(feedback);
+  } catch (error) {
+    elements.feedbackCardList.innerHTML = `<p class="feedback-empty">Feedback is unavailable right now.</p>`;
+  }
+}
+
+async function recordRunUsage(summary) {
+  state.lastRunSummary = summary;
+  try {
+    await window.AitechBackend.recordRun(summary);
+  } catch (error) {
+    /* usage tracking is best-effort */
+  }
+}
+
+
 function handleGlobalKeydown(event) {
-  if (event.key === "Escape" && !elements.aboutModal.classList.contains("hidden")) {
+  if (event.key !== "Escape") {
+    return;
+  }
+  if (!elements.aboutModal.classList.contains("hidden")) {
     closeAboutModal();
   }
+  closeAllAppModals();
 }
 
 function normalizeQuestionCountOption(value, fallback = String(DEFAULT_EXAM_QUESTION_COUNT)) {
@@ -1141,6 +1462,21 @@ function renderResults(results) {
   }
   persistPracticeState();
 
+  recordRunUsage({
+    mode: practiceMode ? "practice" : "exam",
+    score,
+    correct: correctCount,
+    total: sessionSize,
+    passed,
+    domains: domainBreakdown.map((entry) => ({
+      domain: entry.domain,
+      correct: entry.correct,
+      total: entry.total
+    }))
+  });
+
+  window.setTimeout(() => openFeedbackModal(practiceMode ? "practice" : "exam"), 700);
+
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
@@ -1385,6 +1721,16 @@ elements.discardSavedPracticeButton.addEventListener("click", handleDiscardSaved
 elements.aboutButton.addEventListener("click", openAboutModal);
 elements.closeAboutButton.addEventListener("click", closeAboutModal);
 elements.aboutModalBackdrop.addEventListener("click", closeAboutModal);
+elements.questionsDbButton.addEventListener("click", openQuestionsDatabase);
+elements.usageStatsButton.addEventListener("click", openUsageStats);
+elements.feedbackButton.addEventListener("click", () => openFeedbackModal("spontaneous"));
+elements.feedbackCardButton.addEventListener("click", () => openFeedbackModal("spontaneous"));
+elements.blueprintList.addEventListener("click", handleBlueprintToggle);
+elements.feedbackStarRow.addEventListener("click", handleFeedbackStarClick);
+elements.feedbackForm.addEventListener("submit", handleFeedbackSubmit);
+document.querySelectorAll("[data-modal-close]").forEach((element) => {
+  element.addEventListener("click", () => closeAppModal(document.getElementById(element.dataset.modalClose)));
+});
 elements.quitPracticeButton.addEventListener("click", exitPracticeMode);
 elements.restartButton.addEventListener("click", handleRestart);
 elements.retryWrongButton.addEventListener("click", startRetryWrongPractice);
@@ -1400,3 +1746,4 @@ initializeAboutContent();
 initializeSettingsControls();
 syncSessionModeUi();
 initializeQuestionBank();
+loadFeedbackCard();

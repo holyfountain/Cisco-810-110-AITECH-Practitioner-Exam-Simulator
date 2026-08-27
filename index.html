@@ -2,6 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <script>
+    // Legacy Cisco-enterprise GitHub Pages visitors are redirected to the BDB-hosted app.
+    (function () {
+      if (window.location.hostname === "wwwin-github.cisco.com") {
+        window.location.replace("https://scripts.cisco.com/app/aitech_exam_simulator");
+      }
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>810-110 Exam Simulator</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,6 +23,9 @@
       <div class="hero-topbar">
         <p class="eyebrow">Cisco 810-110</p>
         <div class="hero-actions">
+          <button class="secondary-button hero-action-button" id="questionsDbButton" type="button">Questions DB</button>
+          <button class="secondary-button hero-action-button" id="usageStatsButton" type="button">Usage Stats</button>
+          <button class="secondary-button hero-action-button" id="feedbackButton" type="button">Feedback</button>
           <button class="secondary-button hero-action-button" id="aboutButton" type="button">About</button>
           <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false">Dark Mode</button>
         </div>
@@ -71,6 +82,22 @@
             <div class="saved-session-actions">
               <button class="secondary-button" id="discardSavedPracticeButton" type="button">Discard</button>
               <button class="primary-button" id="resumePracticeButton" type="button">Resume Practice</button>
+            </div>
+          </section>
+
+          <section class="feedback-card" id="feedbackCard" aria-live="polite">
+            <div class="feedback-card-header">
+              <div class="feedback-card-heading">
+                <p class="sidebar-label">Community Feedback</p>
+                <h3 id="feedbackCardTitle">What students are saying</h3>
+              </div>
+              <div class="feedback-card-meta">
+                <div class="feedback-rating-summary" id="feedbackRatingSummary" aria-hidden="true"></div>
+                <button class="secondary-button" id="feedbackCardButton" type="button">Give Feedback</button>
+              </div>
+            </div>
+            <div class="feedback-card-list" id="feedbackCardList">
+              <p class="feedback-empty" id="feedbackEmpty">Loading feedback...</p>
             </div>
           </section>
 
@@ -171,9 +198,68 @@
         </div>
       </div>
     </section>
+
+    <section class="app-modal hidden" id="questionsModal" aria-hidden="true" aria-labelledby="questionsModalTitle" role="dialog">
+      <div class="app-modal-backdrop" data-modal-close="questionsModal"></div>
+      <div class="app-modal-card app-modal-card-wide">
+        <div class="app-modal-header">
+          <div>
+            <p class="toolbar-label">Question Bank</p>
+            <h2 id="questionsModalTitle">Questions Database by Blueprint</h2>
+          </div>
+          <button class="secondary-button app-modal-close" type="button" data-modal-close="questionsModal" aria-label="Close questions database">Close</button>
+        </div>
+        <p class="app-modal-intro" id="questionsModalIntro">Browse every question in the bank, grouped by official exam domain.</p>
+        <div class="blueprint-list" id="blueprintList"></div>
+      </div>
+    </section>
+
+    <section class="app-modal hidden" id="statsModal" aria-hidden="true" aria-labelledby="statsModalTitle" role="dialog">
+      <div class="app-modal-backdrop" data-modal-close="statsModal"></div>
+      <div class="app-modal-card">
+        <div class="app-modal-header">
+          <div>
+            <p class="toolbar-label">Anonymous Metrics</p>
+            <h2 id="statsModalTitle">Usage Statistics</h2>
+          </div>
+          <button class="secondary-button app-modal-close" type="button" data-modal-close="statsModal" aria-label="Close usage statistics">Close</button>
+        </div>
+        <p class="app-modal-intro" id="statsScopeNote">Aggregated tool utilization. No personal data is collected.</p>
+        <div class="stats-grid" id="statsGrid"></div>
+        <div class="stats-domains" id="statsDomains"></div>
+      </div>
+    </section>
+
+    <section class="app-modal hidden" id="feedbackModal" aria-hidden="true" aria-labelledby="feedbackModalTitle" role="dialog">
+      <div class="app-modal-backdrop" data-modal-close="feedbackModal"></div>
+      <div class="app-modal-card">
+        <div class="app-modal-header">
+          <div>
+            <p class="toolbar-label">Feedback</p>
+            <h2 id="feedbackModalTitle">Share your feedback</h2>
+          </div>
+          <button class="secondary-button app-modal-close" type="button" data-modal-close="feedbackModal" aria-label="Close feedback form">Close</button>
+        </div>
+        <p class="app-modal-intro" id="feedbackModalIntro">Your feedback is anonymous and helps improve the simulator.</p>
+        <form id="feedbackForm" class="feedback-form">
+          <fieldset class="feedback-rating" id="feedbackRatingInput">
+            <legend class="sidebar-label">Your rating</legend>
+            <div class="feedback-star-row" id="feedbackStarRow" role="radiogroup" aria-label="Rating from 1 to 5 stars"></div>
+          </fieldset>
+          <label class="sidebar-label" for="feedbackComment">Comments (optional)</label>
+          <textarea id="feedbackComment" class="feedback-textarea" rows="4" maxlength="1000" placeholder="What worked well? What could be better?"></textarea>
+          <p class="feedback-status" id="feedbackStatus" aria-live="polite"></p>
+          <div class="feedback-form-actions">
+            <button class="secondary-button" type="button" data-modal-close="feedbackModal">Not now</button>
+            <button class="primary-button" type="submit" id="feedbackSubmitButton">Submit Feedback</button>
+          </div>
+        </form>
+      </div>
+    </section>
   </div>
 
-  <script src="./questions-db.js?v=2026-06-25-11-05"></script>
-  <script src="./app.js?v=2026-06-25-11-05"></script>
+  <script src="./questions-db.js?v=2026-08-27-11-07"></script>
+  <script src="./aitech-backend.js?v=2026-06-25-11-05"></script>
+  <script src="./app.js?v=2026-08-27-11-07"></script>
 </body>
 </html>
