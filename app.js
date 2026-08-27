@@ -1,6 +1,6 @@
 const QUESTION_BANK = Array.isArray(window.QUESTION_BANK) ? window.QUESTION_BANK : [];
 const APP_VERSION = "1.3";
-const APP_LAST_UPDATED = "2026-08-27-11-07";
+const APP_LAST_UPDATED = "2026-08-27-12-08";
 const PRACTICE_AUTO_ADVANCE_DELAY_MS = 5000;
 const PRACTICE_ADVANCE_OPTIONS = [
   { value: "auto", label: "Auto-advance" },
@@ -175,6 +175,7 @@ function getDisplayLabelForOriginalLetter(question, originalLetter) {
 function setLoadMessage(message, isError = false) {
   elements.statusText.textContent = message;
   elements.statusText.classList.toggle("error", isError);
+  elements.statusText.classList.toggle("hidden", !message);
 }
 
 function applyTheme(theme) {
@@ -243,7 +244,7 @@ function renderBlueprintDatabase() {
     grouped.get(domainName).push(question);
   });
 
-  elements.questionsModalIntro.textContent = `Browse all ${state.questionBank.length} questions grouped by the six official exam domains. Correct answers and rationale are shown for study.`;
+  elements.questionsModalIntro.textContent = `Browse all ${state.questionBank.length} questions grouped by the six official exam domains. Expand a domain, then a question, to reveal its answers and reasoning.`;
 
   const sections = [...grouped.entries()]
     .filter(([, questions]) => questions.length > 0)
@@ -285,15 +286,19 @@ function renderBlueprintQuestion(question) {
     .join("");
 
   const rationale = question.rationaleCorrect
-    ? `<p class="blueprint-rationale"><span class="blueprint-rationale-label">Why:</span> ${escapeHtml(formatRationaleText(question.rationaleCorrect, question, question.correctAnswers))}</p>`
+    ? `<p class="blueprint-rationale"><span class="blueprint-rationale-label">Why:</span> ${escapeHtml(question.rationaleCorrect)}</p>`
     : "";
 
   return `
     <article class="blueprint-question">
-      <p class="blueprint-question-number">Question ${question.number}</p>
-      <p class="blueprint-question-text">${escapeHtml(question.text)}</p>
-      <ul class="blueprint-options">${optionsMarkup}</ul>
-      ${rationale}
+      <button class="blueprint-question-header" type="button" aria-expanded="false">
+        <span class="blueprint-question-number">Question ${question.number}</span>
+        <span class="blueprint-question-text">${escapeHtml(question.text)}</span>
+      </button>
+      <div class="blueprint-question-body">
+        <ul class="blueprint-options">${optionsMarkup}</ul>
+        ${rationale}
+      </div>
     </article>
   `;
 }
@@ -304,13 +309,21 @@ function openQuestionsDatabase() {
 }
 
 function handleBlueprintToggle(event) {
-  const header = event.target.closest(".blueprint-domain-header");
-  if (!header) {
+  const questionHeader = event.target.closest(".blueprint-question-header");
+  if (questionHeader) {
+    const question = questionHeader.closest(".blueprint-question");
+    const expanded = question.classList.toggle("open");
+    questionHeader.setAttribute("aria-expanded", String(expanded));
     return;
   }
-  const domain = header.closest(".blueprint-domain");
+
+  const domainHeader = event.target.closest(".blueprint-domain-header");
+  if (!domainHeader) {
+    return;
+  }
+  const domain = domainHeader.closest(".blueprint-domain");
   const expanded = domain.classList.toggle("open");
-  header.setAttribute("aria-expanded", String(expanded));
+  domainHeader.setAttribute("aria-expanded", String(expanded));
 }
 
 function formatStatTimestamp(isoString) {
@@ -723,12 +736,14 @@ function restorePersistedPracticeState(persistedState = loadPersistedPracticeSta
 
   if (persistedState.view === "results") {
     elements.introPanel.classList.add("hidden");
+    elements.feedbackCard.classList.add("hidden");
     syncSessionModeUi();
     renderResults(gradeExam());
     return true;
   }
 
   elements.introPanel.classList.add("hidden");
+  elements.feedbackCard.classList.add("hidden");
   elements.resultsPanel.classList.add("hidden");
   elements.examPanel.classList.remove("hidden");
   syncSessionModeUi();
@@ -862,7 +877,7 @@ function updateBankDetails() {
   elements.practiceModeButton.disabled = !practiceReady;
 
   if (examReady && practiceReady) {
-    setLoadMessage("Question database ready.");
+    setLoadMessage("");
     return;
   }
 
@@ -972,6 +987,7 @@ function startSession(mode) {
 
   updateSessionTitle();
   elements.introPanel.classList.add("hidden");
+  elements.feedbackCard.classList.add("hidden");
   elements.resultsPanel.classList.add("hidden");
   elements.examPanel.classList.remove("hidden");
   setExamChrome(true);
@@ -1015,6 +1031,7 @@ function returnToHome() {
   elements.examPanel.classList.add("hidden");
   elements.resultsPanel.classList.add("hidden");
   elements.introPanel.classList.remove("hidden");
+  elements.feedbackCard.classList.remove("hidden");
   elements.examForm.innerHTML = "";
   elements.resultsSummary.innerHTML = "";
   elements.resultsReview.innerHTML = "";
@@ -1699,7 +1716,7 @@ function initializeQuestionBank() {
       setLoadMessage("Saved practice session available.");
       return;
     }
-    setLoadMessage("Question database ready.");
+    setLoadMessage("");
   } catch (error) {
     state.questionBank = [];
     updateBankDetails();

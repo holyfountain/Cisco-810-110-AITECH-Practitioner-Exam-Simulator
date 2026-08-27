@@ -23,7 +23,6 @@
       <div class="hero-topbar">
         <p class="eyebrow">Cisco 810-110</p>
         <div class="hero-actions">
-          <button class="secondary-button hero-action-button" id="questionsDbButton" type="button">Questions DB</button>
           <button class="secondary-button hero-action-button" id="usageStatsButton" type="button">Usage Stats</button>
           <button class="secondary-button hero-action-button" id="feedbackButton" type="button">Feedback</button>
           <button class="secondary-button hero-action-button" id="aboutButton" type="button">About</button>
@@ -51,9 +50,10 @@
           </div>
 
           <div class="home-stats">
-            <article class="home-stat">
+            <article class="home-stat home-stat-bank">
               <p class="sidebar-label">Question Bank</p>
               <p class="sidebar-value" id="bankCount">Loading...</p>
+              <button class="secondary-button home-bank-button" id="questionsDbButton" type="button">Questions DB</button>
             </article>
             <article class="home-stat">
               <label class="sidebar-label" for="questionCountSelect">Question Count</label>
@@ -85,22 +85,22 @@
             </div>
           </section>
 
-          <section class="feedback-card" id="feedbackCard" aria-live="polite">
-            <div class="feedback-card-header">
-              <div class="feedback-card-heading">
-                <p class="sidebar-label">Community Feedback</p>
-                <h3 id="feedbackCardTitle">What students are saying</h3>
-              </div>
-              <div class="feedback-card-meta">
-                <div class="feedback-rating-summary" id="feedbackRatingSummary" aria-hidden="true"></div>
-                <button class="secondary-button" id="feedbackCardButton" type="button">Give Feedback</button>
-              </div>
-            </div>
-            <div class="feedback-card-list" id="feedbackCardList">
-              <p class="feedback-empty" id="feedbackEmpty">Loading feedback...</p>
-            </div>
-          </section>
+        </section>
 
+        <section class="panel feedback-panel" id="feedbackCard" aria-live="polite">
+          <div class="feedback-card-header">
+            <div class="feedback-card-heading">
+              <p class="sidebar-label">Community Feedback</p>
+              <h3 id="feedbackCardTitle">What students are saying</h3>
+            </div>
+            <div class="feedback-card-meta">
+              <div class="feedback-rating-summary" id="feedbackRatingSummary" aria-hidden="true"></div>
+              <button class="secondary-button" id="feedbackCardButton" type="button">Give Feedback</button>
+            </div>
+          </div>
+          <div class="feedback-card-list" id="feedbackCardList">
+            <p class="feedback-empty" id="feedbackEmpty">Loading feedback...</p>
+          </div>
         </section>
 
         <section class="panel exam-panel hidden" id="examPanel">
@@ -258,8 +258,8 @@
     </section>
   </div>
 
-  <script src="./questions-db.js?v=2026-08-27-11-07"></script>
+  <script src="./questions-db.js?v=2026-08-27-12-08"></script>
   <script src="./aitech-backend.js?v=2026-06-25-11-05"></script>
-  <script src="./app.js?v=2026-08-27-11-07"></script>
+  <script src="./app.js?v=2026-08-27-12-08"></script>
 </body>
 </html>

@@ -247,6 +247,23 @@ body.exam-session .exam-panel {
   border: 1px solid var(--border);
 }
 
+.home-stat-bank {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.home-bank-button {
+  width: 100%;
+  margin-top: auto;
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+.home-stat-bank .sidebar-value {
+  margin-bottom: 12px;
+}
+
 .setting-select {
   width: 100%;
   margin-top: 10px;
@@ -1323,11 +1340,14 @@ body.exam-session .sticky-actions {
 }
 
 .blueprint-domain-name {
+  flex: 1;
   font-weight: 700;
   font-size: 1.05rem;
 }
 
 .blueprint-domain-count {
+  flex: none;
+  text-align: right;
   color: var(--muted);
   font-size: 0.86rem;
   white-space: nowrap;
@@ -1354,22 +1374,58 @@ body.exam-session .sticky-actions {
 }
 
 .blueprint-question {
-  padding: 16px 0;
   border-top: 1px solid var(--border);
 }
 
+.blueprint-question-header {
+  width: 100%;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 14px 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font: inherit;
+  color: var(--text);
+  text-align: left;
+}
+
+.blueprint-question-header::after {
+  content: "\25B8";
+  margin-left: auto;
+  align-self: center;
+  color: var(--muted);
+  transition: transform 160ms ease;
+}
+
+.blueprint-question.open .blueprint-question-header::after {
+  transform: rotate(90deg);
+}
+
 .blueprint-question-number {
-  margin: 0 0 6px;
+  flex: none;
+  padding-top: 2px;
   font-size: 0.78rem;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: var(--muted);
+  white-space: nowrap;
 }
 
 .blueprint-question-text {
-  margin: 0 0 12px;
+  flex: 1;
   font-weight: 600;
   line-height: 1.45;
+}
+
+.blueprint-question-body {
+  display: none;
+  padding: 0 0 14px;
+}
+
+.blueprint-question.open .blueprint-question-body {
+  display: block;
 }
 
 .blueprint-options {
@@ -1493,12 +1549,8 @@ body.exam-session .sticky-actions {
 }
 
 /* Feedback card on home */
-.feedback-card {
-  margin-top: 24px;
-  padding: 22px;
-  border-radius: 22px;
-  background: var(--panel-strong);
-  border: 1px solid var(--border);
+.feedback-panel {
+  padding: 28px;
 }
 
 .feedback-card-header {
