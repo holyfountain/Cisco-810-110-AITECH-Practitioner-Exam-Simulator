@@ -11,10 +11,11 @@ The former Cisco GitHub Pages URL (https://wwwin-github.cisco.com/pages/tantunes
 
 ## Current Version
 
-- `1.4`
+- `1.4.1`
 
 ## Latest Update
 
+- Synced the BDB-hosted build to the full `160`-question bank (it was still serving 156).
 - Added a `Questions DB` blueprint browser (Domain > Question > answers and reasoning).
 - Added anonymous `Usage Stats` and a community `Feedback` card with post-session and spontaneous prompts.
 - Added a `BookExam` guide for requesting the Cisco employee exam discount and scheduling with Pearson VUE (step screenshots shown on the BDB-hosted app).
