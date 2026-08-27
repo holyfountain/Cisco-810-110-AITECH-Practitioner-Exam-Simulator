@@ -1553,6 +1553,40 @@ body.exam-session .sticky-actions {
   padding: 28px;
 }
 
+.book-step {
+  margin-bottom: 18px;
+}
+
+.book-step-title {
+  margin: 0 0 8px;
+  font-size: 1.05rem;
+}
+
+.book-step-list {
+  margin: 0;
+  padding-left: 22px;
+  display: grid;
+  gap: 6px;
+  line-height: 1.5;
+}
+
+.book-note {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 0.94rem;
+}
+
+.book-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.book-actions a {
+  text-decoration: none;
+}
+
 .feedback-card-header {
   display: flex;
   align-items: center;

@@ -4990,5 +4990,133 @@ window.QUESTION_BANK = [
     "rationaleCorrect": "When the problem space is ambiguous and requires reasoning about novel issues not predicted in advance is correct because agents are most valuable when the system must adapt its actions dynamically instead of following a fully predefined path.",
     "rationaleIncorrect": "The other options better fit deterministic workflows, cost-sensitive automation, or tightly controlled process execution rather than situations that benefit from agentic reasoning.",
     "multiSelect": false
+  },
+  {
+    "id": "questions-source.txt-157",
+    "number": 157,
+    "sourceName": "questions-source.txt",
+    "domain": "Prompt Engineering",
+    "officialDomain": "Domain 2: Prompt Engineering",
+    "text": "A prompt engineer stops writing production prompts by hand and instead has the LLM draft, critique, and rewrite those prompts against a style guide; the finished prompts are later used at runtime with no examples. Which prompt technique is this, and how does it differ from zero-shot and few-shot prompting?",
+    "options": [
+      {
+        "letter": "A",
+        "text": "Metaprompting"
+      },
+      {
+        "letter": "B",
+        "text": "Few-shot prompting"
+      },
+      {
+        "letter": "C",
+        "text": "Zero-shot prompting"
+      },
+      {
+        "letter": "D",
+        "text": "Chain-of-Thought (CoT) prompting"
+      }
+    ],
+    "correctAnswers": [
+      "A"
+    ],
+    "rationaleCorrect": "A. Metaprompting is correct because the model is being used to draft, critique, and refine the prompts themselves rather than to answer the end task. This differs from zero-shot prompting, which gives the model instructions but no examples, and from few-shot prompting, which places a small number of worked examples in the prompt to steer the output.",
+    "rationaleIncorrect": "Few-shot is wrong because the runtime prompts contain no examples; zero-shot is wrong because the model is given explicit guidelines rather than a bare task; and chain-of-thought describes step-by-step reasoning inside an answer, not the authoring of prompts.",
+    "multiSelect": false
+  },
+  {
+    "id": "questions-source.txt-158",
+    "number": 158,
+    "sourceName": "questions-source.txt",
+    "domain": "Prompt Engineering",
+    "officialDomain": "Domain 2: Prompt Engineering",
+    "text": "A team is comparing three prompt-engineering techniques - zero-shot, few-shot, and metaprompting. One uses only instructions with no examples, one adds a handful of input-output examples to steer the model, and one uses the model itself to write and refine prompts. Which sequence correctly names the three descriptions, in the order given?",
+    "options": [
+      {
+        "letter": "A",
+        "text": "Zero-shot, few-shot, metaprompting"
+      },
+      {
+        "letter": "B",
+        "text": "Few-shot, zero-shot, metaprompting"
+      },
+      {
+        "letter": "C",
+        "text": "Metaprompting, few-shot, zero-shot"
+      },
+      {
+        "letter": "D",
+        "text": "Zero-shot, metaprompting, few-shot"
+      }
+    ],
+    "correctAnswers": [
+      "A"
+    ],
+    "rationaleCorrect": "A. Zero-shot, few-shot, metaprompting is correct because the first technique (instructions only, no examples) is zero-shot, the second (a few input-output examples added to the prompt) is few-shot, and the third (using the model to write and refine prompts) is metaprompting. The scenario lists them in exactly that order.",
+    "rationaleIncorrect": "The other orderings mislabel at least one technique - such as calling the example-driven method zero-shot or the prompt-writing method few-shot - which confuses the defining trait of each.",
+    "multiSelect": false
+  },
+  {
+    "id": "questions-source.txt-159",
+    "number": 159,
+    "sourceName": "questions-source.txt",
+    "domain": "Agentic AI",
+    "officialDomain": "Domain 6: Agentic AI",
+    "text": "An agentic workflow reaches a high-impact action and must wait for a human reviewer to approve it before proceeding. On a well-designed agent runtime, what happens to the agent while it waits for that approval?",
+    "options": [
+      {
+        "letter": "A",
+        "text": "It suspends its state at a checkpoint and stops consuming tokens, then resumes from that point when approval arrives"
+      },
+      {
+        "letter": "B",
+        "text": "It keeps calling the model in a loop, consuming tokens continuously until approval is granted"
+      },
+      {
+        "letter": "C",
+        "text": "It discards its progress and must restart the task from the beginning after approval"
+      },
+      {
+        "letter": "D",
+        "text": "It automatically approves its own action so the workflow never blocks"
+      }
+    ],
+    "correctAnswers": [
+      "A"
+    ],
+    "rationaleCorrect": "A. It suspends its state at a checkpoint and stops consuming tokens, then resumes from that point when approval arrives is correct because a well-designed agent runtime persists its conversation and intermediate state at the approval gate, so it is not generating tokens while paused and does not lose prior work; when approval is received it reloads that saved context and continues from the checkpoint instead of starting over.",
+    "rationaleIncorrect": "Continuously looping the model wastes tokens and money for no benefit; restarting from the beginning throws away valid intermediate state and is not how checkpointed agents resume; and self-approving defeats the purpose of requiring a reviewer.",
+    "multiSelect": false
+  },
+  {
+    "id": "questions-source.txt-160",
+    "number": 160,
+    "sourceName": "questions-source.txt",
+    "domain": "Agentic AI",
+    "officialDomain": "Domain 6: Agentic AI",
+    "text": "In an agentic system, a long-running task is paused so a person can approve a sensitive tool call. Which agent design property most directly lets the workflow continue afterward without redoing the steps already completed?",
+    "options": [
+      {
+        "letter": "A",
+        "text": "Persistent state or memory that checkpoints progress so execution can resume"
+      },
+      {
+        "letter": "B",
+        "text": "A higher model temperature so the agent is more creative after the pause"
+      },
+      {
+        "letter": "C",
+        "text": "A larger training dataset so the agent memorizes the task"
+      },
+      {
+        "letter": "D",
+        "text": "Removing the agent's tool access so it cannot take further actions"
+      }
+    ],
+    "correctAnswers": [
+      "A"
+    ],
+    "rationaleCorrect": "A. Persistent state or memory that checkpoints progress so execution can resume is correct because saving the agent's plan, intermediate results, and conversation lets the workflow continue from exactly where it paused once the person approves, instead of repeating finished steps.",
+    "rationaleIncorrect": "Temperature only changes randomness, more training data does not retain a specific run's progress, and removing tool access would block the very action the workflow is trying to complete - none of these preserve or restore execution state across the pause.",
+    "multiSelect": false
   }
 ];

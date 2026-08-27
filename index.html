@@ -23,6 +23,7 @@
       <div class="hero-topbar">
         <p class="eyebrow">Cisco 810-110</p>
         <div class="hero-actions">
+          <button class="primary-button hero-action-button" id="bookExamButton" type="button">BookExam</button>
           <button class="secondary-button hero-action-button" id="usageStatsButton" type="button">Usage Stats</button>
           <button class="secondary-button hero-action-button" id="feedbackButton" type="button">Feedback</button>
           <button class="secondary-button hero-action-button" id="aboutButton" type="button">About</button>
@@ -256,10 +257,58 @@
         </form>
       </div>
     </section>
-  </div>
+    <section class="app-modal hidden" id="bookExamModal" aria-hidden="true" aria-labelledby="bookExamModalTitle" role="dialog">
+      <div class="app-modal-backdrop" data-modal-close="bookExamModal"></div>
+      <div class="app-modal-card">
+        <div class="app-modal-header">
+          <div>
+            <p class="toolbar-label">Pearson VUE</p>
+            <h2 id="bookExamModalTitle">Book the Real Exam - 810-110</h2>
+          </div>
+          <button class="secondary-button app-modal-close" type="button" data-modal-close="bookExamModal" aria-label="Close booking instructions">Close</button>
+        </div>
+        <p class="app-modal-intro">How to request a voucher and schedule the official Cisco 810-110 AI Technical Practitioner exam through Pearson VUE.</p>
 
-  <script src="./questions-db.js?v=2026-08-27-12-08"></script>
+        <section class="book-step">
+          <h3 class="book-step-title">1. Request an exam voucher</h3>
+          <ol class="book-step-list">
+            <li>Confirm how you obtain a voucher for your case (for example, your team or program lead, or your organization's voucher-request process).</li>
+            <li>Submit the request with your Cisco email and exam code <strong>810-110</strong>.</li>
+            <li>Once approved, you will receive a voucher or discount code by email - keep it for the payment step.</li>
+          </ol>
+          <p class="book-note">No voucher? You can still pay directly at checkout.</p>
+        </section>
+
+        <section class="book-step">
+          <h3 class="book-step-title">2. Schedule on Cisco CertMetrics &rarr; Pearson VUE</h3>
+          <ol class="book-step-list">
+            <li>Sign in to the Cisco certification portal with your Cisco.com (CCO) account.</li>
+            <li>First time only: complete your candidate profile - your legal name must match your government photo ID.</li>
+            <li>Open <em>Schedule an exam</em> and search for <strong>810-110 - Cisco AI Technical Practitioner</strong>.</li>
+            <li>Choose delivery: a test center, or online with OnVUE remote proctoring.</li>
+            <li>Pick language, date, and time (mind the time zone), plus a location or the OnVUE system check.</li>
+            <li>At payment, enter your <strong>voucher or discount code</strong> (if you have one) and confirm.</li>
+            <li>You will receive a confirmation email with your appointment details and the reschedule/cancel policy.</li>
+          </ol>
+        </section>
+
+        <section class="book-step">
+          <h3 class="book-step-title">3. On exam day</h3>
+          <ul class="book-step-list">
+            <li><strong>Test center:</strong> arrive about 15 minutes early with a valid government photo ID.</li>
+            <li><strong>Online (OnVUE):</strong> run the system test beforehand; use a quiet private room, clear desk, and valid ID; check in about 30 minutes early.</li>
+          </ul>
+        </section>
+
+        <div class="book-actions">
+          <a class="primary-button" href="https://cp.certmetrics.com/cisco/en/schedule/schedule-exam" target="_blank" rel="noopener">Open Scheduling Portal</a>
+          <a class="secondary-button" href="https://certsupport.cisco.com/s/?language=en_US" target="_blank" rel="noopener">Certification Support</a>
+        </div>
+      </div>
+    </section>  </div>
+
+  <script src="./questions-db.js?v=2026-08-27-12-40"></script>
   <script src="./aitech-backend.js?v=2026-06-25-11-05"></script>
-  <script src="./app.js?v=2026-08-27-12-08"></script>
+  <script src="./app.js?v=2026-08-27-12-40"></script>
 </body>
 </html>
