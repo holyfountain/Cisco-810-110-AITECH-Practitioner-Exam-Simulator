@@ -1637,11 +1637,68 @@ body.exam-session .sticky-actions {
   margin: 12px 0 0;
 }
 
+.book-substep {
+  margin: 0 0 12px;
+}
+
+.book-line {
+  margin: 0;
+  display: flex;
+  gap: 8px;
+  line-height: 1.5;
+}
+
+.book-num {
+  flex: none;
+  min-width: 2.4em;
+  font-weight: 700;
+  color: var(--accent-dark);
+}
+
+.book-step a {
+  color: var(--accent-dark);
+  font-weight: 600;
+}
+
 .book-shot {
+  display: none;
   width: 100%;
+  max-width: 100%;
   height: auto;
+  margin-top: 8px;
   border-radius: 12px;
   border: 1px solid var(--border);
+}
+
+.on-bdb .book-shot {
+  display: block;
+}
+
+.book-links-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+  font-size: 0.94rem;
+}
+
+.book-links-table th,
+.book-links-table td {
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+.book-links-table th {
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 0.78rem;
+}
+
+.book-links-table a {
+  color: var(--accent-dark);
+  font-weight: 700;
 }
 
 .feedback-card-header {
