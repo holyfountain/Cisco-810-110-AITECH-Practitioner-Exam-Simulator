@@ -1,3 +1,6 @@
 .vscode/
 *.code-workspace
 810-110-AITECH-v1.0.pdf
+
+# Internal-only exam voucher guide + screenshots (do not publish to the public mirror)
+BookingExamInstructions/

@@ -1587,6 +1587,63 @@ body.exam-session .sticky-actions {
   text-decoration: none;
 }
 
+.book-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0 0 18px;
+}
+
+.book-fact {
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: var(--panel-strong);
+  border: 1px solid var(--border);
+  display: grid;
+  gap: 4px;
+}
+
+.book-fact strong {
+  font-size: 0.98rem;
+}
+
+.book-details {
+  margin-top: 8px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: var(--panel-strong);
+  border: 1px solid var(--border);
+}
+
+.book-details summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.book-email {
+  margin: 12px 0 0;
+  color: var(--muted);
+  line-height: 1.5;
+  font-size: 0.94rem;
+}
+
+.book-shots {
+  display: none;
+}
+
+.on-bdb .book-shots {
+  display: grid;
+  gap: 10px;
+  margin: 12px 0 0;
+}
+
+.book-shot {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+
 .feedback-card-header {
   display: flex;
   align-items: center;
@@ -1865,6 +1922,10 @@ body.exam-session .sticky-actions {
   }
 
   .feedback-card-list {
+    grid-template-columns: 1fr;
+  }
+
+  .book-facts {
     grid-template-columns: 1fr;
   }
 }
