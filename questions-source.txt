@@ -2077,3 +2077,250 @@ Answer: 🟩 A. Persistent state or memory that checkpoints progress so executio
 
 * Why it is correct: A. Persistent state or memory that checkpoints progress so execution can resume is correct because saving the agent's plan, intermediate results, and conversation lets the workflow continue from exactly where it paused once the person approves, instead of repeating finished steps.
 * Why others are incorrect: Temperature only changes randomness, more training data does not retain a specific run's progress, and removing tool access would block the very action the workflow is trying to complete - none of these preserve or restore execution state across the pause.
+
+## Question 161 (Domain: Prompt Engineering)
+Which option correctly lists the five components of the CROSS prompt-engineering framework?
+
+* A. Context, Role, Objective, Scope, Source
+* B. Creativity, Role, Output, Structure, Source
+* C. Context, Reasoning, Objective, Simplicity, Style
+* D. Clarity, Role, Output, Scope, Sequence
+
+Answer: 🟩 A. Context, Role, Objective, Scope, Source
+
+* Why it is correct: Context, Role, Objective, Scope, Source is correct because CROSS is an acronym for those five prompt elements, which together give the model background, a persona, a goal, boundaries, and grounding.
+* Why others are incorrect: The other options swap in distractor words such as Creativity, Reasoning, Simplicity, or Sequence that are not part of the CROSS framework.
+
+## Question 162 (Domain: Prompt Engineering)
+A prompt reads: "Act as our social media manager. Create a post for our company's Twitter account to announce our new product." Using the CROSS framework, which single element is already satisfied by this prompt?
+
+* A. Role
+* B. Context
+* C. Objective
+* D. Scope
+
+Answer: 🟩 A. Role
+
+* Why it is correct: Role is correct because "Act as our social media manager" assigns the model a persona, which is the Role element of CROSS.
+* Why others are incorrect: Context (what the product is), Objective (drive clicks or build awareness), and Scope (character limit and tone) are all still missing from the prompt.
+
+## Question 163 (Domain: Prompt Engineering)
+A DevOps engineer needs an AI to generate a Kubernetes manifest in valid YAML. In the S.C.O.P.E. prompt framework, which element most directly commands this specific file structure and format?
+
+* A. Situation
+* B. Character
+* C. Output
+* D. Purpose
+
+Answer: 🟩 C. Output
+
+* Why it is correct: Output is correct because the Output element of S.C.O.P.E. specifies the exact format, structure, and type of the deliverable, such as YAML, JSON, a table, or a code block.
+* Why others are incorrect: Situation sets the background, Character sets the persona, and Purpose sets the goal; none of them dictates the concrete file format the way Output does.
+
+## Question 164 (Domain: Prompt Engineering)
+A network administrator needs to understand a complex BGP route-map. Which prompt is best engineered to produce a clear, technically precise, and actionable explanation?
+
+* A. Explain the purpose of this BGP route-map and what each line does
+* B. Act as a senior network architect and provide your analysis of this BGP route-map
+* C. Put an explanation of this BGP route-map's configuration into a simple, easy-to-read table
+* D. Act as a senior network architect and generate a markdown table that explains this BGP route-map's logic for each sequence number
+
+Answer: 🟩 D. Act as a senior network architect and generate a markdown table that explains this BGP route-map's logic for each sequence number
+
+* Why it is correct: This prompt wins because it combines a persona (senior network architect), a specific output format (markdown table), and a precise scope (each sequence number), which together produce a structured, expert-level explanation.
+* Why others are incorrect: A and B lack a defined output structure, and C omits the expert persona that sets the technical depth and vocabulary.
+
+## Question 165 (Domain: Prompt Engineering)
+According to the "AI Assembly Line" approach, why does giving a model a single, massive instruction containing all available data often fail for complex tasks?
+
+* A. It overwhelms the model's reasoning, producing shallow and generic output
+* B. It always exceeds the token limit of modern LLMs, so the request is rejected
+* C. It blocks the model from accessing its internal best-practice knowledge
+* D. It triggers safety filters by presenting too much information at once
+
+Answer: 🟩 A. It overwhelms the model's reasoning, producing shallow and generic output
+
+* Why it is correct: This is correct because packing every requirement into one prompt causes cognitive overload, so the model produces unfocused, surface-level results; breaking the work into sequential, focused steps yields deeper output.
+* Why others are incorrect: Token limits are not always exceeded, a large prompt does not disable the model's knowledge, and volume alone does not trip safety filters.
+
+## Question 166 (Domain: Data Research and Analysis)
+According to the Verification Pyramid, which level of verification is the most rigorous and reserved for the most critical, high-stakes information?
+
+* A. Level 1: Internal Gut Check
+* B. Level 2: Secondary Source Verification
+* C. Level 3: Primary Source Confirmation
+* D. Level 4: External Peer Review
+
+Answer: 🟩 D. Level 4: External Peer Review
+
+* Why it is correct: External Peer Review is correct because having independent domain experts validate a conclusion is the top and most rigorous tier of the Verification Pyramid.
+* Why others are incorrect: Levels 1 through 3 (gut check, secondary sources, primary sources) are progressively stronger but still less definitive than independent expert review.
+
+## Question 167 (Domain: Data Research and Analysis)
+An AI-drafted report states the company's Q4 revenue "jumped 30% year-over-year, according to a recent news article." Which level of the Verification Pyramid should you apply to this claim?
+
+* A. Level 1: Internal Gut Check
+* B. Level 2: Secondary Source Verification
+* C. Level 3: Primary Source Confirmation
+* D. Level 4: External Peer Review
+
+Answer: 🟩 C. Level 3: Primary Source Confirmation
+
+* Why it is correct: Primary Source Confirmation is correct because a specific financial statistic attributed to a secondary source (a news article) must be confirmed against the primary source, such as the earnings report, SEC filing, or official press release.
+* Why others are incorrect: A gut check and secondary-source verification are too weak for a precise financial figure, and peer review is not the mechanism for confirming a published number.
+
+## Question 168 (Domain: Data Research and Analysis)
+In the "Diverge, Deepen, Decide" framework, what is the main purpose of using a decision matrix in the final "Decide" phase?
+
+* A. To generate more creative ideas when brainstorming has stalled
+* B. To explore the detailed pros and cons of the single most popular idea
+* C. To create an objective comparison of the top options against key criteria
+* D. To check the initial research for potential factual errors
+
+Answer: 🟩 C. To create an objective comparison of the top options against key criteria
+
+* Why it is correct: The decision matrix is correct because the Decide phase scores the top options against weighted criteria, enabling a data-driven final choice.
+* Why others are incorrect: Idea generation belongs to Diverge, deep pros and cons analysis belongs to Deepen, and fact-checking is a separate verification step.
+
+## Question 169 (Domain: Data Research and Analysis)
+A team using the "Diverge, Deepen, Decide" framework has already generated creative ideas. What is the primary goal of the "Deepen" phase?
+
+* A. Generating a high volume of brand-new creative ideas
+* B. Making the final, data-driven decision on the best option
+* C. Creating a polished presentation for stakeholders
+* D. Analyzing the pros and cons of the most promising ideas
+
+Answer: 🟩 D. Analyzing the pros and cons of the most promising ideas
+
+* Why it is correct: Analyzing pros and cons is correct because Deepen takes the strongest ideas from Diverge and examines their implications before a decision is made.
+* Why others are incorrect: Generating ideas is Diverge, making the decision is Decide, and building presentations happens after the framework concludes.
+
+## Question 170 (Domain: Data Research and Analysis)
+What is the primary purpose of the initial "Deconstruct" phase when tackling a complex problem with AI?
+
+* A. To write the final executive summary before any analysis
+* B. To break the complex problem into smaller, sequential components
+* C. To generate a large volume of code to test the context window
+* D. To assign one persona that handles every aspect simultaneously
+
+Answer: 🟩 B. To break the complex problem into smaller, sequential components
+
+* Why it is correct: Breaking the problem into components is correct because Deconstruct decomposes a complex task into sequential sub-problems (for example diagnosis, root cause, implementation) that each can be handled by a focused sub-prompt.
+* Why others are incorrect: Writing the summary first, generating filler code, or forcing a single all-purpose persona all skip the decomposition that Deconstruct provides.
+
+## Question 171 (Domain: Data Research and Analysis)
+Which statement best defines the "Confident Impostor" phenomenon in generative AI?
+
+* A. A model that uses confident language to hide its inability to finish a task
+* B. A model that presents inaccurate or fabricated information with high confidence and fluency, making it appear correct
+* C. A model that correctly flags factual errors in its own output before sharing
+* D. A model that intentionally adds bias to manipulate the user's perception
+
+Answer: 🟩 B. A model that presents inaccurate or fabricated information with high confidence and fluency, making it appear correct
+
+* Why it is correct: This definition is correct because the Confident Impostor is a hallucination delivered with an authoritative, fluent tone, so incorrect information sounds just as trustworthy as correct information.
+* Why others are incorrect: The other options describe hedging, self-correction, or deliberate manipulation, none of which capture confidently delivered fabrication.
+
+## Question 172 (Domain: Data Research and Analysis)
+What is the primary difference between a hallucination and a factual error in AI-generated content?
+
+* A. A hallucination is a visual error, while a factual error is text-based
+* B. A hallucination is an incorrect detail about a real thing, while a factual error is a complete fabrication
+* C. A hallucination is a complete fabrication, while a factual error is an incorrect detail about a real thing
+* D. A hallucination is a biased statement, while a factual error is an outdated statistic
+
+Answer: 🟩 C. A hallucination is a complete fabrication, while a factual error is an incorrect detail about a real thing
+
+* Why it is correct: This is correct because a hallucination invents something that does not exist (a fake citation, event, or person), whereas a factual error describes a real thing incorrectly (a wrong date or number).
+* Why others are incorrect: The distinction is not about visual versus text or bias versus staleness, and option B reverses the two definitions.
+
+## Question 173 (Domain: Data Research and Analysis)
+What is the main purpose of adding a "sourcing mandate" to an AI research prompt?
+
+* A. To shift accountability for verification back to the user and surface where information came from
+* B. To ensure the AI uses only the most creative and interesting sources
+* C. To make the AI's response longer and more detailed
+* D. To help the AI remember its own sources for future sessions
+
+Answer: 🟩 A. To shift accountability for verification back to the user and surface where information came from
+
+* Why it is correct: This is correct because a sourcing mandate, such as asking the model to cite its sources, makes it indicate where claims come from so the user can follow up and verify them.
+* Why others are incorrect: A sourcing mandate is not about creative sourcing, response length, or cross-session memory, which the model does not retain by default.
+
+## Question 174 (Domain: Data Research and Analysis)
+What is the primary advantage of using an LLM for initial research on an unfamiliar topic compared with a traditional search engine?
+
+* A. Gaining access to paywalled or otherwise private information
+* B. Receiving a much longer list of websites to visit
+* C. Getting a direct, synthesized explanation of the topic itself
+* D. Guaranteeing the information provided is always 100% accurate
+
+Answer: 🟩 C. Getting a direct, synthesized explanation of the topic itself
+
+* Why it is correct: A synthesized explanation is correct because an LLM explains a concept directly, whereas a search engine returns a list of links the user must read and piece together.
+* Why others are incorrect: LLMs cannot access paywalled content, do not return curated link lists, and are not guaranteed to be fully accurate.
+
+## Question 175 (Domain: Generative AI Models)
+Which statement best describes the core function of a Large Language Model (LLM)?
+
+* A. To create photorealistic images from text descriptions
+* B. To predict the next most probable token in a sequence to generate text
+* C. To store and retrieve factual records like a traditional database
+* D. To add and remove noise step by step to generate digital art
+
+Answer: 🟩 B. To predict the next most probable token in a sequence to generate text
+
+* Why it is correct: Next-token prediction is correct because an LLM is trained to predict the next token given the preceding context, which is how it generates coherent text.
+* Why others are incorrect: Image creation and noise-based generation describe diffusion models, and reliable factual storage and retrieval describes a database, not an LLM.
+
+## Question 176 (Domain: Generative AI Models)
+The ability of an AI model to process and integrate information from different data types, such as an image and text at the same time, is known as:
+
+* A. Multitasking
+* B. Deep Learning
+* C. Multimodality
+* D. Diffusion
+
+Answer: 🟩 C. Multimodality
+
+* Why it is correct: Multimodality is correct because it is the term for a model that accepts and reasons over multiple data types, such as text, images, and audio, together.
+* Why others are incorrect: Multitasking, deep learning, and diffusion describe unrelated concepts and not the fusion of multiple input modalities.
+
+## Question 177 (Domain: Generative AI Models)
+A company's AI usage is highly variable, with millions of API calls some months and very few in others, and it wants to avoid paying for idle capacity. Which AI cost model is best suited?
+
+* A. A flat-rate annual subscription with unlimited use
+* B. A per-user, per-month subscription
+* C. A usage-based token model
+* D. A hardware purchasing model
+
+Answer: 🟩 C. A usage-based token model
+
+* Why it is correct: The usage-based token model is correct because it charges only for the tokens actually consumed, which is ideal for spiky, unpredictable workloads.
+* Why others are incorrect: Flat-rate and per-seat subscriptions bill for idle capacity, and buying hardware is a large fixed cost that does not flex with usage.
+
+## Question 178 (Domain: Ethics and Security)
+A user submits a "right to be forgotten" request. This is a direct application of a key GDPR principle. What does that principle primarily establish?
+
+* A. That companies may retain customer data for marketing purposes
+* B. That individuals have fundamental rights and control over their personal information
+* C. That anonymized data can be stored indefinitely without limits
+* D. That only residents of specific regions have any privacy rights
+
+Answer: 🟩 B. That individuals have fundamental rights and control over their personal information
+
+* Why it is correct: This is correct because GDPR's right to erasure establishes that individuals control their personal data and can request its deletion.
+* Why others are incorrect: The principle restricts indefinite retention rather than enabling it, and GDPR rights are not limited to a single geographic group in the way described.
+
+## Question 179 (Domain: Development and Workflow Automation)
+An engineer gives an AI the vague prompt "Fix this code." The AI returns a syntactically correct but logically flawed script that introduces a subtle security vulnerability. This most directly illustrates which foundational principle?
+
+* A. The model's inherent bias toward insecure code patterns
+* B. The Garbage In, Garbage Out principle in action
+* C. A failure of the AI's internal code-compilation process
+* D. The model exceeding its context window and losing instructions
+
+Answer: 🟩 B. The Garbage In, Garbage Out principle in action
+
+* Why it is correct: Garbage In, Garbage Out is correct because a vague, low-quality input leads to a flawed, insecure output; the model followed the underspecified instruction faithfully.
+* Why others are incorrect: There is no evidence of built-in bias, LLMs do not compile code internally, and nothing indicates a context-window overflow.

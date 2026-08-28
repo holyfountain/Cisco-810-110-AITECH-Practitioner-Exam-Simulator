@@ -5118,5 +5118,613 @@ window.QUESTION_BANK = [
     "rationaleCorrect": "A. Persistent state or memory that checkpoints progress so execution can resume is correct because saving the agent's plan, intermediate results, and conversation lets the workflow continue from exactly where it paused once the person approves, instead of repeating finished steps.",
     "rationaleIncorrect": "Temperature only changes randomness, more training data does not retain a specific run's progress, and removing tool access would block the very action the workflow is trying to complete - none of these preserve or restore execution state across the pause.",
     "multiSelect": false
+  },
+  {
+    "id": "questions-source.txt-161",
+    "number": 161,
+    "sourceName": "questions-source.txt",
+    "domain": "Prompt Engineering",
+    "officialDomain": "Domain 2: Prompt Engineering",
+    "text": "Which option correctly lists the five components of the CROSS prompt-engineering framework?",
+    "options": [
+      {
+        "letter": "A",
+        "text": "Context, Role, Objective, Scope, Source"
+      },
+      {
+        "letter": "B",
+        "text": "Creativity, Role, Output, Structure, Source"
+      },
+      {
+        "letter": "C",
+        "text": "Context, Reasoning, Objective, Simplicity, Style"
+      },
+      {
+        "letter": "D",
+        "text": "Clarity, Role, Output, Scope, Sequence"
+      }
+    ],
+    "correctAnswers": [
+      "A"
+    ],
+    "rationaleCorrect": "Context, Role, Objective, Scope, Source is correct because CROSS is an acronym for those five prompt elements, which together give the model background, a persona, a goal, boundaries, and grounding.",
+    "rationaleIncorrect": "The other options swap in distractor words such as Creativity, Reasoning, Simplicity, or Sequence that are not part of the CROSS framework.",
+    "multiSelect": false
+  },
+  {
+    "id": "questions-source.txt-162",
+    "number": 162,
+    "sourceName": "questions-source.txt",
+    "domain": "Prompt Engineering",
+    "officialDomain": "Domain 2: Prompt Engineering",
+    "text": "A prompt reads: \"Act as our social media manager. Create a post for our company's Twitter account to announce our new product.\" Using the CROSS framework, which single element is already satisfied by this prompt?",
+    "options": [
+      {
+        "letter": "A",
+        "text": "Role"
+      },
+      {
+        "letter": "B",
+        "text": "Context"
+      },
+      {
+        "letter": "C",
+        "text": "Objective"
+      },
+      {
+        "letter": "D",
+        "text": "Scope"
+      }
+    ],
+    "correctAnswers": [
+      "A"
+    ],
+    "rationaleCorrect": "Role is correct because \"Act as our social media manager\" assigns the model a persona, which is the Role element of CROSS.",
+    "rationaleIncorrect": "Context (what the product is), Objective (drive clicks or build awareness), and Scope (character limit and tone) are all still missing from the prompt.",
+    "multiSelect": false
+  },
+  {
+    "id": "questions-source.txt-163",
+    "number": 163,
+    "sourceName": "questions-source.txt",
+    "domain": "Prompt Engineering",
+    "officialDomain": "Domain 2: Prompt Engineering",
+    "text": "A DevOps engineer needs an AI to generate a Kubernetes manifest in valid YAML. In the S.C.O.P.E. prompt framework, which element most directly commands this specific file structure and format?",
+    "options": [
+      {
+        "letter": "A",
+        "text": "Situation"
+      },
+      {
+        "letter": "B",
+        "text": "Character"
+      },
+      {
+        "letter": "C",
+        "text": "Output"
+      },
+      {
+        "letter": "D",
+        "text": "Purpose"
+      }
+    ],
+    "correctAnswers": [
+      "C"
+    ],
+    "rationaleCorrect": "Output is correct because the Output element of S.C.O.P.E. specifies the exact format, structure, and type of the deliverable, such as YAML, JSON, a table, or a code block.",
+    "rationaleIncorrect": "Situation sets the background, Character sets the persona, and Purpose sets the goal; none of them dictates the concrete file format the way Output does.",
+    "multiSelect": false
+  },
+  {
+    "id": "questions-source.txt-164",
+    "number": 164,
+    "sourceName": "questions-source.txt",
+    "domain": "Prompt Engineering",
+    "officialDomain": "Domain 2: Prompt Engineering",
+    "text": "A network administrator needs to understand a complex BGP route-map. Which prompt is best engineered to produce a clear, technically precise, and actionable explanation?",
+    "options": [
+      {
+        "letter": "A",
+        "text": "Explain the purpose of this BGP route-map and what each line does"
+      },
+      {
+        "letter": "B",
+        "text": "Act as a senior network architect and provide your analysis of this BGP route-map"
+      },
+      {
+        "letter": "C",
+        "text": "Put an explanation of this BGP route-map's configuration into a simple, easy-to-read table"
+      },
+      {
+        "letter": "D",
+        "text": "Act as a senior network architect and generate a markdown table that explains this BGP route-map's logic for each sequence number"
+      }
+    ],
+    "correctAnswers": [
+      "D"
+    ],
+    "rationaleCorrect": "This prompt wins because it combines a persona (senior network architect), a specific output format (markdown table), and a precise scope (each sequence number), which together produce a structured, expert-level explanation.",
+    "rationaleIncorrect": "A and B lack a defined output structure, and C omits the expert persona that sets the technical depth and vocabulary.",
+    "multiSelect": false
+  },
+  {
+    "id": "questions-source.txt-165",
+    "number": 165,
+    "sourceName": "questions-source.txt",
+    "domain": "Prompt Engineering",
+    "officialDomain": "Domain 2: Prompt Engineering",
+    "text": "According to the \"AI Assembly Line\" approach, why does giving a model a single, massive instruction containing all available data often fail for complex tasks?",
+    "options": [
+      {
+        "letter": "A",
+        "text": "It overwhelms the model's reasoning, producing shallow and generic output"
+      },
+      {
+        "letter": "B",
+        "text": "It always exceeds the token limit of modern LLMs, so the request is rejected"
+      },
+      {
+        "letter": "C",
+        "text": "It blocks the model from accessing its internal best-practice knowledge"
+      },
+      {
+        "letter": "D",
+        "text": "It triggers safety filters by presenting too much information at once"
+      }
+    ],
+    "correctAnswers": [
+      "A"
+    ],
+    "rationaleCorrect": "This is correct because packing every requirement into one prompt causes cognitive overload, so the model produces unfocused, surface-level results; breaking the work into sequential, focused steps yields deeper output.",
+    "rationaleIncorrect": "Token limits are not always exceeded, a large prompt does not disable the model's knowledge, and volume alone does not trip safety filters.",
+    "multiSelect": false
+  },
+  {
+    "id": "questions-source.txt-166",
+    "number": 166,
+    "sourceName": "questions-source.txt",
+    "domain": "Data Research and Analysis",
+    "officialDomain": "Domain 4: Data Research and Analysis",
+    "text": "According to the Verification Pyramid, which level of verification is the most rigorous and reserved for the most critical, high-stakes information?",
+    "options": [
+      {
+        "letter": "A",
+        "text": "Level 1: Internal Gut Check"
+      },
+      {
+        "letter": "B",
+        "text": "Level 2: Secondary Source Verification"
+      },
+      {
+        "letter": "C",
+        "text": "Level 3: Primary Source Confirmation"
+      },
+      {
+        "letter": "D",
+        "text": "Level 4: External Peer Review"
+      }
+    ],
+    "correctAnswers": [
+      "D"
+    ],
+    "rationaleCorrect": "External Peer Review is correct because having independent domain experts validate a conclusion is the top and most rigorous tier of the Verification Pyramid.",
+    "rationaleIncorrect": "Levels 1 through 3 (gut check, secondary sources, primary sources) are progressively stronger but still less definitive than independent expert review.",
+    "multiSelect": false
+  },
+  {
+    "id": "questions-source.txt-167",
+    "number": 167,
+    "sourceName": "questions-source.txt",
+    "domain": "Data Research and Analysis",
+    "officialDomain": "Domain 4: Data Research and Analysis",
+    "text": "An AI-drafted report states the company's Q4 revenue \"jumped 30% year-over-year, according to a recent news article.\" Which level of the Verification Pyramid should you apply to this claim?",
+    "options": [
+      {
+        "letter": "A",
+        "text": "Level 1: Internal Gut Check"
+      },
+      {
+        "letter": "B",
+        "text": "Level 2: Secondary Source Verification"
+      },
+      {
+        "letter": "C",
+        "text": "Level 3: Primary Source Confirmation"
+      },
+      {
+        "letter": "D",
+        "text": "Level 4: External Peer Review"
+      }
+    ],
+    "correctAnswers": [
+      "C"
+    ],
+    "rationaleCorrect": "Primary Source Confirmation is correct because a specific financial statistic attributed to a secondary source (a news article) must be confirmed against the primary source, such as the earnings report, SEC filing, or official press release.",
+    "rationaleIncorrect": "A gut check and secondary-source verification are too weak for a precise financial figure, and peer review is not the mechanism for confirming a published number.",
+    "multiSelect": false
+  },
+  {
+    "id": "questions-source.txt-168",
+    "number": 168,
+    "sourceName": "questions-source.txt",
+    "domain": "Data Research and Analysis",
+    "officialDomain": "Domain 4: Data Research and Analysis",
+    "text": "In the \"Diverge, Deepen, Decide\" framework, what is the main purpose of using a decision matrix in the final \"Decide\" phase?",
+    "options": [
+      {
+        "letter": "A",
+        "text": "To generate more creative ideas when brainstorming has stalled"
+      },
+      {
+        "letter": "B",
+        "text": "To explore the detailed pros and cons of the single most popular idea"
+      },
+      {
+        "letter": "C",
+        "text": "To create an objective comparison of the top options against key criteria"
+      },
+      {
+        "letter": "D",
+        "text": "To check the initial research for potential factual errors"
+      }
+    ],
+    "correctAnswers": [
+      "C"
+    ],
+    "rationaleCorrect": "The decision matrix is correct because the Decide phase scores the top options against weighted criteria, enabling a data-driven final choice.",
+    "rationaleIncorrect": "Idea generation belongs to Diverge, deep pros and cons analysis belongs to Deepen, and fact-checking is a separate verification step.",
+    "multiSelect": false
+  },
+  {
+    "id": "questions-source.txt-169",
+    "number": 169,
+    "sourceName": "questions-source.txt",
+    "domain": "Data Research and Analysis",
+    "officialDomain": "Domain 4: Data Research and Analysis",
+    "text": "A team using the \"Diverge, Deepen, Decide\" framework has already generated creative ideas. What is the primary goal of the \"Deepen\" phase?",
+    "options": [
+      {
+        "letter": "A",
+        "text": "Generating a high volume of brand-new creative ideas"
+      },
+      {
+        "letter": "B",
+        "text": "Making the final, data-driven decision on the best option"
+      },
+      {
+        "letter": "C",
+        "text": "Creating a polished presentation for stakeholders"
+      },
+      {
+        "letter": "D",
+        "text": "Analyzing the pros and cons of the most promising ideas"
+      }
+    ],
+    "correctAnswers": [
+      "D"
+    ],
+    "rationaleCorrect": "Analyzing pros and cons is correct because Deepen takes the strongest ideas from Diverge and examines their implications before a decision is made.",
+    "rationaleIncorrect": "Generating ideas is Diverge, making the decision is Decide, and building presentations happens after the framework concludes.",
+    "multiSelect": false
+  },
+  {
+    "id": "questions-source.txt-170",
+    "number": 170,
+    "sourceName": "questions-source.txt",
+    "domain": "Data Research and Analysis",
+    "officialDomain": "Domain 4: Data Research and Analysis",
+    "text": "What is the primary purpose of the initial \"Deconstruct\" phase when tackling a complex problem with AI?",
+    "options": [
+      {
+        "letter": "A",
+        "text": "To write the final executive summary before any analysis"
+      },
+      {
+        "letter": "B",
+        "text": "To break the complex problem into smaller, sequential components"
+      },
+      {
+        "letter": "C",
+        "text": "To generate a large volume of code to test the context window"
+      },
+      {
+        "letter": "D",
+        "text": "To assign one persona that handles every aspect simultaneously"
+      }
+    ],
+    "correctAnswers": [
+      "B"
+    ],
+    "rationaleCorrect": "Breaking the problem into components is correct because Deconstruct decomposes a complex task into sequential sub-problems (for example diagnosis, root cause, implementation) that each can be handled by a focused sub-prompt.",
+    "rationaleIncorrect": "Writing the summary first, generating filler code, or forcing a single all-purpose persona all skip the decomposition that Deconstruct provides.",
+    "multiSelect": false
+  },
+  {
+    "id": "questions-source.txt-171",
+    "number": 171,
+    "sourceName": "questions-source.txt",
+    "domain": "Data Research and Analysis",
+    "officialDomain": "Domain 4: Data Research and Analysis",
+    "text": "Which statement best defines the \"Confident Impostor\" phenomenon in generative AI?",
+    "options": [
+      {
+        "letter": "A",
+        "text": "A model that uses confident language to hide its inability to finish a task"
+      },
+      {
+        "letter": "B",
+        "text": "A model that presents inaccurate or fabricated information with high confidence and fluency, making it appear correct"
+      },
+      {
+        "letter": "C",
+        "text": "A model that correctly flags factual errors in its own output before sharing"
+      },
+      {
+        "letter": "D",
+        "text": "A model that intentionally adds bias to manipulate the user's perception"
+      }
+    ],
+    "correctAnswers": [
+      "B"
+    ],
+    "rationaleCorrect": "This definition is correct because the Confident Impostor is a hallucination delivered with an authoritative, fluent tone, so incorrect information sounds just as trustworthy as correct information.",
+    "rationaleIncorrect": "The other options describe hedging, self-correction, or deliberate manipulation, none of which capture confidently delivered fabrication.",
+    "multiSelect": false
+  },
+  {
+    "id": "questions-source.txt-172",
+    "number": 172,
+    "sourceName": "questions-source.txt",
+    "domain": "Data Research and Analysis",
+    "officialDomain": "Domain 4: Data Research and Analysis",
+    "text": "What is the primary difference between a hallucination and a factual error in AI-generated content?",
+    "options": [
+      {
+        "letter": "A",
+        "text": "A hallucination is a visual error, while a factual error is text-based"
+      },
+      {
+        "letter": "B",
+        "text": "A hallucination is an incorrect detail about a real thing, while a factual error is a complete fabrication"
+      },
+      {
+        "letter": "C",
+        "text": "A hallucination is a complete fabrication, while a factual error is an incorrect detail about a real thing"
+      },
+      {
+        "letter": "D",
+        "text": "A hallucination is a biased statement, while a factual error is an outdated statistic"
+      }
+    ],
+    "correctAnswers": [
+      "C"
+    ],
+    "rationaleCorrect": "This is correct because a hallucination invents something that does not exist (a fake citation, event, or person), whereas a factual error describes a real thing incorrectly (a wrong date or number).",
+    "rationaleIncorrect": "The distinction is not about visual versus text or bias versus staleness, and option B reverses the two definitions.",
+    "multiSelect": false
+  },
+  {
+    "id": "questions-source.txt-173",
+    "number": 173,
+    "sourceName": "questions-source.txt",
+    "domain": "Data Research and Analysis",
+    "officialDomain": "Domain 4: Data Research and Analysis",
+    "text": "What is the main purpose of adding a \"sourcing mandate\" to an AI research prompt?",
+    "options": [
+      {
+        "letter": "A",
+        "text": "To shift accountability for verification back to the user and surface where information came from"
+      },
+      {
+        "letter": "B",
+        "text": "To ensure the AI uses only the most creative and interesting sources"
+      },
+      {
+        "letter": "C",
+        "text": "To make the AI's response longer and more detailed"
+      },
+      {
+        "letter": "D",
+        "text": "To help the AI remember its own sources for future sessions"
+      }
+    ],
+    "correctAnswers": [
+      "A"
+    ],
+    "rationaleCorrect": "This is correct because a sourcing mandate, such as asking the model to cite its sources, makes it indicate where claims come from so the user can follow up and verify them.",
+    "rationaleIncorrect": "A sourcing mandate is not about creative sourcing, response length, or cross-session memory, which the model does not retain by default.",
+    "multiSelect": false
+  },
+  {
+    "id": "questions-source.txt-174",
+    "number": 174,
+    "sourceName": "questions-source.txt",
+    "domain": "Data Research and Analysis",
+    "officialDomain": "Domain 4: Data Research and Analysis",
+    "text": "What is the primary advantage of using an LLM for initial research on an unfamiliar topic compared with a traditional search engine?",
+    "options": [
+      {
+        "letter": "A",
+        "text": "Gaining access to paywalled or otherwise private information"
+      },
+      {
+        "letter": "B",
+        "text": "Receiving a much longer list of websites to visit"
+      },
+      {
+        "letter": "C",
+        "text": "Getting a direct, synthesized explanation of the topic itself"
+      },
+      {
+        "letter": "D",
+        "text": "Guaranteeing the information provided is always 100% accurate"
+      }
+    ],
+    "correctAnswers": [
+      "C"
+    ],
+    "rationaleCorrect": "A synthesized explanation is correct because an LLM explains a concept directly, whereas a search engine returns a list of links the user must read and piece together.",
+    "rationaleIncorrect": "LLMs cannot access paywalled content, do not return curated link lists, and are not guaranteed to be fully accurate.",
+    "multiSelect": false
+  },
+  {
+    "id": "questions-source.txt-175",
+    "number": 175,
+    "sourceName": "questions-source.txt",
+    "domain": "Generative AI Models",
+    "officialDomain": "Domain 1: Generative AI Models",
+    "text": "Which statement best describes the core function of a Large Language Model (LLM)?",
+    "options": [
+      {
+        "letter": "A",
+        "text": "To create photorealistic images from text descriptions"
+      },
+      {
+        "letter": "B",
+        "text": "To predict the next most probable token in a sequence to generate text"
+      },
+      {
+        "letter": "C",
+        "text": "To store and retrieve factual records like a traditional database"
+      },
+      {
+        "letter": "D",
+        "text": "To add and remove noise step by step to generate digital art"
+      }
+    ],
+    "correctAnswers": [
+      "B"
+    ],
+    "rationaleCorrect": "Next-token prediction is correct because an LLM is trained to predict the next token given the preceding context, which is how it generates coherent text.",
+    "rationaleIncorrect": "Image creation and noise-based generation describe diffusion models, and reliable factual storage and retrieval describes a database, not an LLM.",
+    "multiSelect": false
+  },
+  {
+    "id": "questions-source.txt-176",
+    "number": 176,
+    "sourceName": "questions-source.txt",
+    "domain": "Generative AI Models",
+    "officialDomain": "Domain 1: Generative AI Models",
+    "text": "The ability of an AI model to process and integrate information from different data types, such as an image and text at the same time, is known as:",
+    "options": [
+      {
+        "letter": "A",
+        "text": "Multitasking"
+      },
+      {
+        "letter": "B",
+        "text": "Deep Learning"
+      },
+      {
+        "letter": "C",
+        "text": "Multimodality"
+      },
+      {
+        "letter": "D",
+        "text": "Diffusion"
+      }
+    ],
+    "correctAnswers": [
+      "C"
+    ],
+    "rationaleCorrect": "Multimodality is correct because it is the term for a model that accepts and reasons over multiple data types, such as text, images, and audio, together.",
+    "rationaleIncorrect": "Multitasking, deep learning, and diffusion describe unrelated concepts and not the fusion of multiple input modalities.",
+    "multiSelect": false
+  },
+  {
+    "id": "questions-source.txt-177",
+    "number": 177,
+    "sourceName": "questions-source.txt",
+    "domain": "Generative AI Models",
+    "officialDomain": "Domain 1: Generative AI Models",
+    "text": "A company's AI usage is highly variable, with millions of API calls some months and very few in others, and it wants to avoid paying for idle capacity. Which AI cost model is best suited?",
+    "options": [
+      {
+        "letter": "A",
+        "text": "A flat-rate annual subscription with unlimited use"
+      },
+      {
+        "letter": "B",
+        "text": "A per-user, per-month subscription"
+      },
+      {
+        "letter": "C",
+        "text": "A usage-based token model"
+      },
+      {
+        "letter": "D",
+        "text": "A hardware purchasing model"
+      }
+    ],
+    "correctAnswers": [
+      "C"
+    ],
+    "rationaleCorrect": "The usage-based token model is correct because it charges only for the tokens actually consumed, which is ideal for spiky, unpredictable workloads.",
+    "rationaleIncorrect": "Flat-rate and per-seat subscriptions bill for idle capacity, and buying hardware is a large fixed cost that does not flex with usage.",
+    "multiSelect": false
+  },
+  {
+    "id": "questions-source.txt-178",
+    "number": 178,
+    "sourceName": "questions-source.txt",
+    "domain": "Ethics and Security",
+    "officialDomain": "Domain 3: Ethics and Security",
+    "text": "A user submits a \"right to be forgotten\" request. This is a direct application of a key GDPR principle. What does that principle primarily establish?",
+    "options": [
+      {
+        "letter": "A",
+        "text": "That companies may retain customer data for marketing purposes"
+      },
+      {
+        "letter": "B",
+        "text": "That individuals have fundamental rights and control over their personal information"
+      },
+      {
+        "letter": "C",
+        "text": "That anonymized data can be stored indefinitely without limits"
+      },
+      {
+        "letter": "D",
+        "text": "That only residents of specific regions have any privacy rights"
+      }
+    ],
+    "correctAnswers": [
+      "B"
+    ],
+    "rationaleCorrect": "This is correct because GDPR's right to erasure establishes that individuals control their personal data and can request its deletion.",
+    "rationaleIncorrect": "The principle restricts indefinite retention rather than enabling it, and GDPR rights are not limited to a single geographic group in the way described.",
+    "multiSelect": false
+  },
+  {
+    "id": "questions-source.txt-179",
+    "number": 179,
+    "sourceName": "questions-source.txt",
+    "domain": "Development and Workflow Automation",
+    "officialDomain": "Domain 5: Development and Workflow Automation",
+    "text": "An engineer gives an AI the vague prompt \"Fix this code.\" The AI returns a syntactically correct but logically flawed script that introduces a subtle security vulnerability. This most directly illustrates which foundational principle?",
+    "options": [
+      {
+        "letter": "A",
+        "text": "The model's inherent bias toward insecure code patterns"
+      },
+      {
+        "letter": "B",
+        "text": "The Garbage In, Garbage Out principle in action"
+      },
+      {
+        "letter": "C",
+        "text": "A failure of the AI's internal code-compilation process"
+      },
+      {
+        "letter": "D",
+        "text": "The model exceeding its context window and losing instructions"
+      }
+    ],
+    "correctAnswers": [
+      "B"
+    ],
+    "rationaleCorrect": "Garbage In, Garbage Out is correct because a vague, low-quality input leads to a flawed, insecure output; the model followed the underspecified instruction faithfully.",
+    "rationaleIncorrect": "There is no evidence of built-in bias, LLMs do not compile code internally, and nothing indicates a context-window overflow.",
+    "multiSelect": false
   }
 ];
