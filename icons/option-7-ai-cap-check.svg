@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="AI graduation pass icon">
+  <defs>
+    <linearGradient id="g7" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#16a36f"/>
+      <stop offset="1" stop-color="#0d6b4a"/>
+    </linearGradient>
+  </defs>
+  <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#g7)"/>
+  <path d="M32 8 L53 18 L32 28 L11 18 Z" fill="#fffaf2"/>
+  <path d="M19 23 v4 c0 4 6 6 13 6 s13 -2 13 -6 v-4 L32 29 Z" fill="#e78f53"/>
+  <path d="M53 18 v10" fill="none" stroke="#e78f53" stroke-width="2.5" stroke-linecap="round"/>
+  <circle cx="53" cy="30" r="2.5" fill="#e78f53"/>
+  <text x="31" y="52" text-anchor="middle" font-family="'Space Grotesk','Segoe UI',sans-serif" font-weight="700" font-size="25" fill="#fffaf2">AI</text>
+  <circle cx="49" cy="14" r="8" fill="#fffaf2"/>
+  <path d="M45.5 14 l2.5 2.5 5 -6" fill="none" stroke="#0f8a5f" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

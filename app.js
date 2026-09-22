@@ -1,6 +1,6 @@
 const QUESTION_BANK = Array.isArray(window.QUESTION_BANK) ? window.QUESTION_BANK : [];
 const APP_VERSION = "1.5.0";
-const APP_LAST_UPDATED = "2026-08-28-12-31";
+const APP_LAST_UPDATED = "2026-09-22-15-18";
 const PRACTICE_AUTO_ADVANCE_DELAY_MS = 5000;
 const PRACTICE_ADVANCE_OPTIONS = [
   { value: "auto", label: "Auto-advance" },
@@ -480,7 +480,10 @@ function renderFeedbackCard(feedback) {
     : [];
 
   if (items.length === 0) {
-    elements.feedbackCardList.innerHTML = `<p class="feedback-empty">No comments yet. Be the first to share your feedback!</p>`;
+    const message = feedback.count
+      ? "No written comments yet. Be the first to share your thoughts!"
+      : "No feedback yet. Be the first to share your feedback!";
+    elements.feedbackCardList.innerHTML = `<p class="feedback-empty">${message}</p>`;
     return;
   }
 
