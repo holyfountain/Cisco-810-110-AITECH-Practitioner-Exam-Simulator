@@ -128,7 +128,13 @@ def _submit_feedback(db, payload):
 
 def _list_feedback(db, payload):
     limit = max(1, min(FEEDBACK_LIMIT_MAX, _to_int(payload.get("limit"), 25)))
-    items = list(db.feedback.find({}, {"_id": 0}).sort("ts", -1).limit(limit))
+    # Only surface entries that actually carry a comment so that newer
+    # comment-less ratings never push older written feedback out of view.
+    items = list(
+        db.feedback.find({"comment": {"$regex": r"\S"}}, {"_id": 0})
+        .sort("ts", -1)
+        .limit(limit)
+    )
     count = db.feedback.count_documents({})
     average = 0
     if count:

@@ -1,6 +1,6 @@
 const QUESTION_BANK = Array.isArray(window.QUESTION_BANK) ? window.QUESTION_BANK : [];
-const APP_VERSION = "1.5.0";
-const APP_LAST_UPDATED = "2026-09-22-15-18";
+const APP_VERSION = "1.5.3";
+const APP_LAST_UPDATED = "2026-10-07-10-22";
 const PRACTICE_AUTO_ADVANCE_DELAY_MS = 5000;
 const PRACTICE_ADVANCE_OPTIONS = [
   { value: "auto", label: "Auto-advance" },

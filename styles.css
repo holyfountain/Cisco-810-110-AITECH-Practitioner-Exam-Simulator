@@ -375,6 +375,21 @@ body.exam-session .exam-panel {
   margin-bottom: 18px;
 }
 
+.about-heading {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.about-app-icon {
+  width: 56px;
+  height: 56px;
+  flex: 0 0 56px;
+  border-radius: 14px;
+  box-shadow: 0 8px 18px rgba(15, 138, 95, 0.2);
+}
+
 .about-modal-header h2 {
   margin: 6px 0 0;
   font-size: 1.55rem;

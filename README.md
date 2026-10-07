@@ -11,10 +11,12 @@ The former Cisco GitHub Pages URL (https://wwwin-github.cisco.com/pages/tantunes
 
 ## Current Version
 
-- `1.5.0`
+- `1.5.3`
 
 ## Latest Update
 
+- Added the custom app icon to the top-left of the About dialog.
+- Fixed the BDB-hosted app's browser-tab icon: the deployed page now declares the custom AI graduation-cap favicon and cache-busts its URL so the BDB default icon is replaced.
 - Expanded the question bank to `179` questions, adding the Cisco U foundational-framework items our set was missing: CROSS, S.C.O.P.E., the Verification Pyramid, Diverge/Deepen/Decide, Deconstruct, the AI Assembly Line, the Confident Impostor, hallucination vs factual error, sourcing mandates, GDPR right to be forgotten, AI cost models, multimodality, and Garbage In/Garbage Out.
 - Synced the BDB-hosted build to the full `160`-question bank (it was still serving 156).
 - Added a `Questions DB` blueprint browser (Domain > Question > answers and reasoning).
