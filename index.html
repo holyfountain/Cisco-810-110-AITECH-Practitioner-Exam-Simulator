@@ -230,6 +230,14 @@
           <button class="secondary-button app-modal-close" type="button" data-modal-close="statsModal" aria-label="Close usage statistics">Close</button>
         </div>
         <p class="app-modal-intro" id="statsScopeNote">Aggregated tool utilization. No personal data is collected.</p>
+        <div class="stats-period-switch" id="statsPeriodSwitch" role="group" aria-label="Time period">
+          <button class="stats-period-button" type="button" data-period="current_week" aria-pressed="false">This week</button>
+          <button class="stats-period-button" type="button" data-period="current_month" aria-pressed="false">This month</button>
+          <button class="stats-period-button" type="button" data-period="last_week" aria-pressed="false">Last week</button>
+          <button class="stats-period-button" type="button" data-period="last_month" aria-pressed="false">Last month</button>
+          <button class="stats-period-button active" type="button" data-period="all_time" aria-pressed="true">All time</button>
+        </div>
+        <p class="review-meta stats-period-range" id="statsPeriodRange" aria-live="polite"></p>
         <div class="stats-grid" id="statsGrid"></div>
         <div class="stats-domains" id="statsDomains"></div>
       </div>
@@ -406,8 +414,8 @@
       </div>
     </section>  </div>
 
-  <script src="./questions-db.js?v=2026-10-07-10-29"></script>
+  <script src="./questions-db.js?v=2026-10-09-11-49"></script>
   <script src="./aitech-backend.js?v=2026-06-25-11-05"></script>
-  <script src="./app.js?v=2026-10-07-10-29"></script>
+  <script src="./app.js?v=2026-10-09-11-49"></script>
 </body>
 </html>

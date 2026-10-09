@@ -9,8 +9,15 @@
 const AitechBackend = (() => {
   const TASK_NAME = "aitech_exam_stats";
   const LOCAL_STATS_KEY = "aitech-usage-stats";
+  const LOCAL_DAILY_KEY = "aitech-usage-daily";
   const LOCAL_FEEDBACK_KEY = "aitech-feedback";
   const FEEDBACK_LIST_LIMIT = 25;
+  const PERIODS = ["current_week", "last_week", "current_month", "last_month", "all_time"];
+  const COUNTER_FIELDS = [
+    "totalRuns", "totalExams", "totalPractice", "totalQuestionsAnswered", "totalCorrect",
+    "scoreSum", "scoreCount", "examScoreSum", "examScoreCount", "examPassCount"
+  ];
+  const DAY_MS = 86400000;
 
   const isBdbHost = /(^|\.)scripts\.cisco\.com$/i.test(window.location.hostname);
   const isDev = window.location.pathname.includes("/app_dev/");
@@ -149,11 +156,81 @@ const AitechBackend = (() => {
   function recordRunLocally(summary) {
     const accumulator = applyRunToAccumulator(readLocalJson(LOCAL_STATS_KEY, emptyAccumulator()), summary);
     writeLocalJson(LOCAL_STATS_KEY, accumulator);
+
+    const daily = readLocalJson(LOCAL_DAILY_KEY, {});
+    const dayKey = new Date().toISOString().slice(0, 10);
+    daily[dayKey] = applyRunToAccumulator(daily[dayKey] || emptyAccumulator(), summary);
+    writeLocalJson(LOCAL_DAILY_KEY, daily);
+
     return summarizeAccumulator(accumulator, "local");
   }
 
-  function getStatsLocally() {
-    return summarizeAccumulator(readLocalJson(LOCAL_STATS_KEY, emptyAccumulator()), "local");
+  // Returns [start, end) in UTC ms (weeks start Monday), or null for all_time.
+  function periodRange(period, now) {
+    const year = now.getUTCFullYear();
+    const month = now.getUTCMonth();
+    const today = Date.UTC(year, month, now.getUTCDate());
+    const weekStart = today - ((now.getUTCDay() + 6) % 7) * DAY_MS;
+    switch (period) {
+      case "current_week":
+        return [weekStart, weekStart + 7 * DAY_MS];
+      case "last_week":
+        return [weekStart - 7 * DAY_MS, weekStart];
+      case "current_month":
+        return [Date.UTC(year, month, 1), Date.UTC(year, month + 1, 1)];
+      case "last_month":
+        return [Date.UTC(year, month - 1, 1), Date.UTC(year, month, 1)];
+      default:
+        return null;
+    }
+  }
+
+  function mergeAccumulators(list) {
+    const merged = { domains: {} };
+    list.forEach((item) => {
+      COUNTER_FIELDS.forEach((field) => {
+        merged[field] = (merged[field] || 0) + (Number(item[field]) || 0);
+      });
+      Object.entries(item.domains || {}).forEach(([domain, entry]) => {
+        const target = merged.domains[domain] || { correct: 0, total: 0 };
+        target.correct += Number(entry.correct) || 0;
+        target.total += Number(entry.total) || 0;
+        merged.domains[domain] = target;
+      });
+      if (item.lastUpdated && item.lastUpdated > (merged.lastUpdated || "")) {
+        merged.lastUpdated = item.lastUpdated;
+      }
+    });
+    return merged;
+  }
+
+  function getStatsLocally(requestedPeriod) {
+    const period = PERIODS.includes(requestedPeriod) ? requestedPeriod : "all_time";
+    const overall = readLocalJson(LOCAL_STATS_KEY, emptyAccumulator());
+    const daily = readLocalJson(LOCAL_DAILY_KEY, {});
+    const dayKeys = Object.keys(daily).sort();
+    const range = periodRange(period, new Date());
+
+    let source = overall;
+    let periodStart = null;
+    let periodEnd = null;
+    if (range) {
+      periodStart = new Date(range[0]).toISOString().slice(0, 10);
+      periodEnd = new Date(range[1] - DAY_MS).toISOString().slice(0, 10);
+      source = mergeAccumulators(
+        dayKeys.filter((key) => key >= periodStart && key <= periodEnd).map((key) => daily[key])
+      );
+    }
+
+    return {
+      ...summarizeAccumulator(source, "local"),
+      period,
+      periodStart,
+      periodEnd,
+      launchDate: overall.firstSeen || null,
+      firstSeen: overall.firstSeen || null,
+      trackingSince: dayKeys[0] || null
+    };
   }
 
   function submitFeedbackLocally(feedback) {
@@ -217,15 +294,15 @@ const AitechBackend = (() => {
     }
   }
 
-  async function getStats() {
+  async function getStats(period) {
     if (!isBdbHost) {
-      return getStatsLocally();
+      return getStatsLocally(period);
     }
     try {
-      const remote = await callTask("get_stats", {});
-      return remote && typeof remote === "object" ? { scope: "shared", ...remote } : getStatsLocally();
+      const remote = await callTask("get_stats", { period: period || "all_time" });
+      return remote && typeof remote === "object" ? { scope: "shared", ...remote } : getStatsLocally(period);
     } catch (error) {
-      return getStatsLocally();
+      return getStatsLocally(period);
     }
   }
 

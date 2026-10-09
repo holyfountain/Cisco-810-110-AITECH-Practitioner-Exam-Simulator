@@ -1,6 +1,6 @@
 const QUESTION_BANK = Array.isArray(window.QUESTION_BANK) ? window.QUESTION_BANK : [];
-const APP_VERSION = "1.5.3";
-const APP_LAST_UPDATED = "2026-10-07-10-29";
+const APP_VERSION = "1.5.4";
+const APP_LAST_UPDATED = "2026-10-09-11-49";
 const PRACTICE_AUTO_ADVANCE_DELAY_MS = 5000;
 const PRACTICE_ADVANCE_OPTIONS = [
   { value: "auto", label: "Auto-advance" },
@@ -73,6 +73,8 @@ const elements = {
   statsGrid: document.querySelector("#statsGrid"),
   statsDomains: document.querySelector("#statsDomains"),
   statsScopeNote: document.querySelector("#statsScopeNote"),
+  statsPeriodSwitch: document.querySelector("#statsPeriodSwitch"),
+  statsPeriodRange: document.querySelector("#statsPeriodRange"),
   feedbackModal: document.querySelector("#feedbackModal"),
   feedbackForm: document.querySelector("#feedbackForm"),
   feedbackStarRow: document.querySelector("#feedbackStarRow"),
@@ -339,9 +341,33 @@ function formatStatTimestamp(isoString) {
   return parsed.toLocaleString();
 }
 
+function formatStatDate(value) {
+  const parsed = value ? new Date(value) : null;
+  if (!parsed || Number.isNaN(parsed.getTime())) {
+    return "";
+  }
+  return parsed.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric", timeZone: "UTC" });
+}
+
+function describeStatsPeriod(stats) {
+  const launched = formatStatDate(stats.launchDate);
+  if (!stats.periodStart) {
+    return launched ? `All time: since launch on ${launched}.` : "All time: no sessions recorded yet.";
+  }
+
+  let text = `${formatStatDate(stats.periodStart)} \u2013 ${formatStatDate(stats.periodEnd)} (UTC).`;
+  if (!stats.trackingSince || stats.periodStart < stats.trackingSince) {
+    text += stats.trackingSince
+      ? ` Period tracking began ${formatStatDate(stats.trackingSince)}; earlier sessions appear only under All time.`
+      : " Period tracking has no data yet; earlier sessions appear only under All time.";
+  }
+  return text;
+}
+
 function renderUsageStats(stats) {
   const scopeLabel = stats.scope === "shared" ? "shared across all users" : "recorded on this device";
   elements.statsScopeNote.textContent = `Anonymous tool utilization, ${scopeLabel}. No personal data is collected.`;
+  elements.statsPeriodRange.textContent = describeStatsPeriod(stats);
 
   const cards = [
     ["Total Sessions", stats.totalRuns],
@@ -379,18 +405,45 @@ function renderUsageStats(stats) {
 
   elements.statsDomains.innerHTML = domainMarkup
     ? `<h3 class="stats-domains-title">Accuracy by Domain</h3>${domainMarkup}<p class="review-meta stats-updated">Last activity: ${escapeHtml(formatStatTimestamp(stats.lastUpdated))}</p>`
-    : `<p class="feedback-empty">No sessions recorded yet. Finish an exam or practice run to populate these metrics.</p>`;
+    : `<p class="feedback-empty">${stats.periodStart ? "No sessions recorded in this period." : "No sessions recorded yet. Finish an exam or practice run to populate these metrics."}</p>`;
 }
 
-async function openUsageStats() {
+let activeStatsPeriod = "all_time";
+let statsRequestId = 0;
+
+async function loadUsageStats(period) {
+  activeStatsPeriod = period;
+  elements.statsPeriodSwitch.querySelectorAll("[data-period]").forEach((button) => {
+    const active = button.dataset.period === period;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-pressed", String(active));
+  });
+
+  const requestId = ++statsRequestId;
   elements.statsGrid.innerHTML = `<p class="feedback-empty">Loading usage statistics...</p>`;
   elements.statsDomains.innerHTML = "";
-  openAppModal(elements.statsModal);
+  elements.statsPeriodRange.textContent = "";
   try {
-    const stats = await window.AitechBackend.getStats();
-    renderUsageStats(stats);
+    const stats = await window.AitechBackend.getStats(period);
+    if (requestId === statsRequestId) {
+      renderUsageStats(stats);
+    }
   } catch (error) {
-    elements.statsGrid.innerHTML = `<p class="feedback-empty">Usage statistics are unavailable right now.</p>`;
+    if (requestId === statsRequestId) {
+      elements.statsGrid.innerHTML = `<p class="feedback-empty">Usage statistics are unavailable right now.</p>`;
+    }
+  }
+}
+
+function openUsageStats() {
+  openAppModal(elements.statsModal);
+  return loadUsageStats(activeStatsPeriod);
+}
+
+function handleStatsPeriodClick(event) {
+  const button = event.target.closest("[data-period]");
+  if (button) {
+    loadUsageStats(button.dataset.period);
   }
 }
 
@@ -1744,6 +1797,7 @@ elements.closeAboutButton.addEventListener("click", closeAboutModal);
 elements.aboutModalBackdrop.addEventListener("click", closeAboutModal);
 elements.questionsDbButton.addEventListener("click", openQuestionsDatabase);
 elements.usageStatsButton.addEventListener("click", openUsageStats);
+elements.statsPeriodSwitch.addEventListener("click", handleStatsPeriodClick);
 elements.bookExamButton.addEventListener("click", () => openAppModal(elements.bookExamModal));
 elements.feedbackButton.addEventListener("click", () => openFeedbackModal("spontaneous"));
 elements.feedbackCardButton.addEventListener("click", () => openFeedbackModal("spontaneous"));

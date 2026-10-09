@@ -1563,6 +1563,45 @@ body.exam-session .sticky-actions {
   margin-top: 8px;
 }
 
+.stats-period-switch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.stats-period-button {
+  appearance: none;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--panel-strong);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.stats-period-button:hover {
+  border-color: var(--accent);
+}
+
+.stats-period-button.active {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent-dark);
+}
+
+:root[data-theme="dark"] .stats-period-button.active {
+  color: #9fe8c9;
+}
+
+.stats-period-range {
+  margin: 0 0 16px;
+  min-height: 1.2em;
+}
+
 /* Feedback card on home */
 .feedback-panel {
   padding: 28px;

@@ -2,7 +2,8 @@
 
 Actions (passed via the `action` input, data via the `payload` dictionary input):
   - record_run       : aggregate one finished exam/practice run into shared counters
-  - get_stats        : return aggregated usage statistics
+  - get_stats        : return aggregated usage statistics; optional payload `period` of
+                       current_week | last_week | current_month | last_month | all_time
   - submit_feedback  : store one anonymous feedback entry
   - list_feedback    : return recent anonymous feedback + rating summary
 
@@ -10,17 +11,57 @@ No user identity is stored, so all metrics and feedback are anonymous.
 Data is persisted in the task's DBaaS (MongoDB) instance.
 """
 import re
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 from bdblib.exceptions import BDBTaskError
 
 STATS_ID = "global"
+PERIODS = ("current_week", "last_week", "current_month", "last_month", "all_time")
+COUNTER_FIELDS = (
+    "totalRuns", "totalExams", "totalPractice", "totalQuestionsAnswered", "totalCorrect",
+    "scoreSum", "scoreCount", "examScoreSum", "examScoreCount", "examPassCount",
+)
 FEEDBACK_LIMIT_MAX = 100
 ALLOWED_CONTEXTS = ("exam", "practice", "spontaneous")
 
 
 def _now_iso():
     return datetime.now(timezone.utc).isoformat()
+
+
+def _period_range(period, today):
+    """Return [start, end) dates (UTC, weeks start Monday) or None for all_time."""
+    if period == "current_week":
+        start = today - timedelta(days=today.weekday())
+        return start, start + timedelta(days=7)
+    if period == "last_week":
+        end = today - timedelta(days=today.weekday())
+        return end - timedelta(days=7), end
+    if period == "current_month":
+        start = today.replace(day=1)
+        return start, (start + timedelta(days=32)).replace(day=1)
+    if period == "last_month":
+        end = today.replace(day=1)
+        return (end - timedelta(days=1)).replace(day=1), end
+    return None
+
+
+def _merge_daily(docs):
+    merged = {"domains": {}}
+    for doc in docs:
+        for field in COUNTER_FIELDS:
+            merged[field] = merged.get(field, 0) + _to_int(doc.get(field))
+        for slug, entry in (doc.get("domains") or {}).items():
+            entry = entry or {}
+            target = merged["domains"].setdefault(
+                slug, {"name": entry.get("name", slug), "correct": 0, "total": 0}
+            )
+            target["correct"] += _to_int(entry.get("correct"))
+            target["total"] += _to_int(entry.get("total"))
+        last = doc.get("lastUpdated")
+        if last and last > (merged.get("lastUpdated") or ""):
+            merged["lastUpdated"] = last
+    return merged
 
 
 def _slug(name):
@@ -110,7 +151,39 @@ def _record_run(db, payload):
         {"$inc": inc, "$set": set_fields, "$setOnInsert": {"firstSeen": now}},
         upsert=True,
     )
+    db.stats_daily.update_one(
+        {"_id": now[:10]},
+        {"$inc": inc, "$set": set_fields},
+        upsert=True,
+    )
     return _summarize(db.stats.find_one({"_id": STATS_ID}))
+
+
+def _get_stats(db, payload):
+    period = payload.get("period") if payload.get("period") in PERIODS else "all_time"
+    overall = db.stats.find_one({"_id": STATS_ID}) or {}
+    bounds = _period_range(period, datetime.now(timezone.utc).date())
+
+    if bounds is None:
+        stats = _summarize(overall)
+        period_start = period_end = None
+    else:
+        start, end = bounds
+        docs = db.stats_daily.find({"_id": {"$gte": start.isoformat(), "$lt": end.isoformat()}})
+        stats = _summarize(_merge_daily(list(docs)))
+        period_start = start.isoformat()
+        period_end = (end - timedelta(days=1)).isoformat()
+
+    earliest = db.stats_daily.find_one({}, sort=[("_id", 1)])
+    stats.update({
+        "period": period,
+        "periodStart": period_start,
+        "periodEnd": period_end,
+        "launchDate": overall.get("firstSeen"),
+        "firstSeen": overall.get("firstSeen"),
+        "trackingSince": earliest["_id"] if earliest else None,
+    })
+    return stats
 
 
 def _submit_feedback(db, payload):
@@ -151,7 +224,7 @@ def task(env, action, payload=None):
     if action == "record_run":
         return _record_run(db, payload)
     if action == "get_stats":
-        return _summarize(db.stats.find_one({"_id": STATS_ID}))
+        return _get_stats(db, payload)
     if action == "submit_feedback":
         return _submit_feedback(db, payload)
     if action == "list_feedback":
