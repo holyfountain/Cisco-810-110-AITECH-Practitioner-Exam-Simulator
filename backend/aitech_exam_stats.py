@@ -3,7 +3,8 @@
 Actions (passed via the `action` input, data via the `payload` dictionary input):
   - record_run       : aggregate one finished exam/practice run into shared counters
   - get_stats        : return aggregated usage statistics; optional payload `period` of
-                       current_week | last_week | current_month | last_month | all_time
+                       current_week | last_week | current_month | last_month | all_time | custom
+                       (`custom` also takes inclusive `startDate` / `endDate` as YYYY-MM-DD)
   - submit_feedback  : store one anonymous feedback entry
   - list_feedback    : return recent anonymous feedback + rating summary
 
@@ -11,12 +12,12 @@ No user identity is stored, so all metrics and feedback are anonymous.
 Data is persisted in the task's DBaaS (MongoDB) instance.
 """
 import re
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 
 from bdblib.exceptions import BDBTaskError
 
 STATS_ID = "global"
-PERIODS = ("current_week", "last_week", "current_month", "last_month", "all_time")
+PERIODS = ("current_week", "last_week", "current_month", "last_month", "custom", "all_time")
 COUNTER_FIELDS = (
     "totalRuns", "totalExams", "totalPractice", "totalQuestionsAnswered", "totalCorrect",
     "scoreSum", "scoreCount", "examScoreSum", "examScoreCount", "examPassCount",
@@ -29,8 +30,18 @@ def _now_iso():
     return datetime.now(timezone.utc).isoformat()
 
 
-def _period_range(period, today):
+def _period_range(period, today, payload=None):
     """Return [start, end) dates (UTC, weeks start Monday) or None for all_time."""
+    if period == "custom":
+        payload = payload or {}
+        try:
+            start = date.fromisoformat(str(payload.get("startDate")))
+            last = date.fromisoformat(str(payload.get("endDate")))
+        except ValueError:
+            raise BDBTaskError("Custom range needs startDate and endDate as YYYY-MM-DD")
+        if last < start:
+            start, last = last, start
+        return start, last + timedelta(days=1)
     if period == "current_week":
         start = today - timedelta(days=today.weekday())
         return start, start + timedelta(days=7)
@@ -148,7 +159,7 @@ def _record_run(db, payload):
 
     db.stats.update_one(
         {"_id": STATS_ID},
-        {"$inc": inc, "$set": set_fields, "$setOnInsert": {"firstSeen": now}},
+        {"$inc": inc, "$set": set_fields, "$setOnInsert": {"firstSeen": now}, "$min": {"dailyTrackingSince": now[:10]}},
         upsert=True,
     )
     db.stats_daily.update_one(
@@ -162,7 +173,17 @@ def _record_run(db, payload):
 def _get_stats(db, payload):
     period = payload.get("period") if payload.get("period") in PERIODS else "all_time"
     overall = db.stats.find_one({"_id": STATS_ID}) or {}
-    bounds = _period_range(period, datetime.now(timezone.utc).date())
+    today = datetime.now(timezone.utc).date()
+    bounds = _period_range(period, today, payload)
+
+    # Per-day tracking began when this field was first written; earlier sessions only exist in the totals.
+    tracking_since = overall.get("dailyTrackingSince")
+    if overall and not tracking_since:
+        tracking_since = today.isoformat()
+        db.stats.update_one(
+            {"_id": STATS_ID, "dailyTrackingSince": {"$exists": False}},
+            {"$set": {"dailyTrackingSince": tracking_since}},
+        )
 
     if bounds is None:
         stats = _summarize(overall)
@@ -174,14 +195,13 @@ def _get_stats(db, payload):
         period_start = start.isoformat()
         period_end = (end - timedelta(days=1)).isoformat()
 
-    earliest = db.stats_daily.find_one({}, sort=[("_id", 1)])
     stats.update({
         "period": period,
         "periodStart": period_start,
         "periodEnd": period_end,
         "launchDate": overall.get("firstSeen"),
         "firstSeen": overall.get("firstSeen"),
-        "trackingSince": earliest["_id"] if earliest else None,
+        "trackingSince": tracking_since,
     })
     return stats
 

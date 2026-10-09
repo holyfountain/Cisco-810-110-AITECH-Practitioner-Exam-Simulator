@@ -11,10 +11,11 @@ The former Cisco GitHub Pages URL (https://wwwin-github.cisco.com/pages/tantunes
 
 ## Current Version
 
-- `1.5.4`
+- `1.5.5`
 
 ## Latest Update
 
+- `Usage Stats` is wider and adds a `Custom range` date picker; periods before per-day tracking began show `Not tracked` instead of 0.
 - `Usage Stats` can now be filtered by period (This week, This month, Last week, Last month, All time); All time shows the launch date. Periods use UTC and start from the first session recorded after this release.
 - Added the custom app icon to the top-left of the About dialog.
 - Fixed the BDB-hosted app's browser-tab icon: the deployed page now declares the custom AI graduation-cap favicon and cache-busts its URL so the BDB default icon is replaced.

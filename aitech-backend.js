@@ -10,9 +10,11 @@ const AitechBackend = (() => {
   const TASK_NAME = "aitech_exam_stats";
   const LOCAL_STATS_KEY = "aitech-usage-stats";
   const LOCAL_DAILY_KEY = "aitech-usage-daily";
+  const LOCAL_TRACKING_KEY = "aitech-usage-tracking-since";
   const LOCAL_FEEDBACK_KEY = "aitech-feedback";
   const FEEDBACK_LIST_LIMIT = 25;
-  const PERIODS = ["current_week", "last_week", "current_month", "last_month", "all_time"];
+  const PERIODS = ["current_week", "last_week", "current_month", "last_month", "custom", "all_time"];
+  const DATE_KEY_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
   const COUNTER_FIELDS = [
     "totalRuns", "totalExams", "totalPractice", "totalQuestionsAnswered", "totalCorrect",
     "scoreSum", "scoreCount", "examScoreSum", "examScoreCount", "examPassCount"
@@ -153,7 +155,18 @@ const AitechBackend = (() => {
     return extractTaskResult(await response.json());
   }
 
+  function ensureLocalTrackingSince() {
+    const stored = readLocalJson(LOCAL_TRACKING_KEY, null);
+    if (stored) {
+      return stored;
+    }
+    const today = new Date().toISOString().slice(0, 10);
+    writeLocalJson(LOCAL_TRACKING_KEY, today);
+    return today;
+  }
+
   function recordRunLocally(summary) {
+    ensureLocalTrackingSince();
     const accumulator = applyRunToAccumulator(readLocalJson(LOCAL_STATS_KEY, emptyAccumulator()), summary);
     writeLocalJson(LOCAL_STATS_KEY, accumulator);
 
@@ -166,7 +179,20 @@ const AitechBackend = (() => {
   }
 
   // Returns [start, end) in UTC ms (weeks start Monday), or null for all_time.
-  function periodRange(period, now) {
+  function periodRange(period, now, options) {
+    if (period === "custom") {
+      const { startDate, endDate } = options || {};
+      if (!DATE_KEY_PATTERN.test(startDate) || !DATE_KEY_PATTERN.test(endDate)) {
+        return null;
+      }
+      const first = Date.parse(startDate);
+      const last = Date.parse(endDate);
+      if (Number.isNaN(first) || Number.isNaN(last)) {
+        return null;
+      }
+      return [Math.min(first, last), Math.max(first, last) + DAY_MS];
+    }
+
     const year = now.getUTCFullYear();
     const month = now.getUTCMonth();
     const today = Date.UTC(year, month, now.getUTCDate());
@@ -204,12 +230,12 @@ const AitechBackend = (() => {
     return merged;
   }
 
-  function getStatsLocally(requestedPeriod) {
+  function getStatsLocally(requestedPeriod, options) {
     const period = PERIODS.includes(requestedPeriod) ? requestedPeriod : "all_time";
     const overall = readLocalJson(LOCAL_STATS_KEY, emptyAccumulator());
     const daily = readLocalJson(LOCAL_DAILY_KEY, {});
     const dayKeys = Object.keys(daily).sort();
-    const range = periodRange(period, new Date());
+    const range = periodRange(period, new Date(), options);
 
     let source = overall;
     let periodStart = null;
@@ -229,7 +255,7 @@ const AitechBackend = (() => {
       periodEnd,
       launchDate: overall.firstSeen || null,
       firstSeen: overall.firstSeen || null,
-      trackingSince: dayKeys[0] || null
+      trackingSince: ensureLocalTrackingSince()
     };
   }
 
@@ -294,15 +320,15 @@ const AitechBackend = (() => {
     }
   }
 
-  async function getStats(period) {
+  async function getStats(period, options) {
     if (!isBdbHost) {
-      return getStatsLocally(period);
+      return getStatsLocally(period, options);
     }
     try {
-      const remote = await callTask("get_stats", { period: period || "all_time" });
-      return remote && typeof remote === "object" ? { scope: "shared", ...remote } : getStatsLocally(period);
+      const remote = await callTask("get_stats", { ...options, period: period || "all_time" });
+      return remote && typeof remote === "object" ? { scope: "shared", ...remote } : getStatsLocally(period, options);
     } catch (error) {
-      return getStatsLocally(period);
+      return getStatsLocally(period, options);
     }
   }
 

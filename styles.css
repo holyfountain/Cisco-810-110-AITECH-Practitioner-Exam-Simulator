@@ -1500,7 +1500,7 @@ body.exam-session .sticky-actions {
 /* Usage statistics */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 12px;
   margin-bottom: 20px;
 }
@@ -1600,6 +1600,37 @@ body.exam-session .sticky-actions {
 .stats-period-range {
   margin: 0 0 16px;
   min-height: 1.2em;
+}
+
+.stats-custom-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.stats-date-field {
+  display: grid;
+  gap: 4px;
+}
+
+.stats-date-input {
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--panel-strong);
+  color: var(--text);
+  font: inherit;
+}
+
+.stats-custom-error {
+  flex-basis: 100%;
+  min-height: 0;
+}
+
+.stats-custom-error:empty {
+  display: none;
 }
 
 /* Feedback card on home */

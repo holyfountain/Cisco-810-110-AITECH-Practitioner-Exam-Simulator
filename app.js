@@ -1,6 +1,6 @@
 const QUESTION_BANK = Array.isArray(window.QUESTION_BANK) ? window.QUESTION_BANK : [];
-const APP_VERSION = "1.5.4";
-const APP_LAST_UPDATED = "2026-10-09-11-49";
+const APP_VERSION = "1.5.5";
+const APP_LAST_UPDATED = "2026-10-09-14-01";
 const PRACTICE_AUTO_ADVANCE_DELAY_MS = 5000;
 const PRACTICE_ADVANCE_OPTIONS = [
   { value: "auto", label: "Auto-advance" },
@@ -75,6 +75,10 @@ const elements = {
   statsScopeNote: document.querySelector("#statsScopeNote"),
   statsPeriodSwitch: document.querySelector("#statsPeriodSwitch"),
   statsPeriodRange: document.querySelector("#statsPeriodRange"),
+  statsCustomForm: document.querySelector("#statsCustomForm"),
+  statsStartDate: document.querySelector("#statsStartDate"),
+  statsEndDate: document.querySelector("#statsEndDate"),
+  statsCustomError: document.querySelector("#statsCustomError"),
   feedbackModal: document.querySelector("#feedbackModal"),
   feedbackForm: document.querySelector("#feedbackForm"),
   feedbackStarRow: document.querySelector("#feedbackStarRow"),
@@ -364,10 +368,29 @@ function describeStatsPeriod(stats) {
   return text;
 }
 
+function isUntrackedPeriod(stats) {
+  return Boolean(stats.periodStart && stats.trackingSince && stats.periodEnd < stats.trackingSince);
+}
+
+function utcDateKey(offsetDays = 0) {
+  return new Date(Date.now() + offsetDays * 86400000).toISOString().slice(0, 10);
+}
+
 function renderUsageStats(stats) {
   const scopeLabel = stats.scope === "shared" ? "shared across all users" : "recorded on this device";
   elements.statsScopeNote.textContent = `Anonymous tool utilization, ${scopeLabel}. No personal data is collected.`;
   elements.statsPeriodRange.textContent = describeStatsPeriod(stats);
+
+  elements.statsStartDate.max = elements.statsEndDate.max = utcDateKey();
+  if (stats.launchDate) {
+    elements.statsStartDate.min = elements.statsEndDate.min = String(stats.launchDate).slice(0, 10);
+  }
+
+  if (isUntrackedPeriod(stats)) {
+    elements.statsGrid.innerHTML = `<p class="feedback-empty">Not tracked: per-day tracking began ${escapeHtml(formatStatDate(stats.trackingSince))}. Earlier sessions are counted only under All time.</p>`;
+    elements.statsDomains.innerHTML = "";
+    return;
+  }
 
   const cards = [
     ["Total Sessions", stats.totalRuns],
@@ -409,22 +432,26 @@ function renderUsageStats(stats) {
 }
 
 let activeStatsPeriod = "all_time";
+let activeStatsOptions = {};
 let statsRequestId = 0;
 
-async function loadUsageStats(period) {
+async function loadUsageStats(period, options = {}) {
   activeStatsPeriod = period;
+  activeStatsOptions = options;
   elements.statsPeriodSwitch.querySelectorAll("[data-period]").forEach((button) => {
     const active = button.dataset.period === period;
     button.classList.toggle("active", active);
     button.setAttribute("aria-pressed", String(active));
   });
+  elements.statsCustomForm.classList.toggle("hidden", period !== "custom");
+  elements.statsCustomError.textContent = "";
 
   const requestId = ++statsRequestId;
   elements.statsGrid.innerHTML = `<p class="feedback-empty">Loading usage statistics...</p>`;
   elements.statsDomains.innerHTML = "";
   elements.statsPeriodRange.textContent = "";
   try {
-    const stats = await window.AitechBackend.getStats(period);
+    const stats = await window.AitechBackend.getStats(period, options);
     if (requestId === statsRequestId) {
       renderUsageStats(stats);
     }
@@ -437,14 +464,38 @@ async function loadUsageStats(period) {
 
 function openUsageStats() {
   openAppModal(elements.statsModal);
-  return loadUsageStats(activeStatsPeriod);
+  return loadUsageStats(activeStatsPeriod, activeStatsOptions);
 }
 
 function handleStatsPeriodClick(event) {
   const button = event.target.closest("[data-period]");
-  if (button) {
-    loadUsageStats(button.dataset.period);
+  if (!button) {
+    return;
   }
+  if (button.dataset.period === "custom") {
+    const startDate = elements.statsStartDate.value || utcDateKey(-6);
+    const endDate = elements.statsEndDate.value || utcDateKey();
+    elements.statsStartDate.value = startDate;
+    elements.statsEndDate.value = endDate;
+    loadUsageStats("custom", { startDate, endDate });
+    return;
+  }
+  loadUsageStats(button.dataset.period);
+}
+
+function handleStatsCustomSubmit(event) {
+  event.preventDefault();
+  const startDate = elements.statsStartDate.value;
+  const endDate = elements.statsEndDate.value;
+  if (!startDate || !endDate) {
+    elements.statsCustomError.textContent = "Choose both a start and an end date.";
+    return;
+  }
+  if (startDate > endDate) {
+    elements.statsCustomError.textContent = "The start date must be on or before the end date.";
+    return;
+  }
+  loadUsageStats("custom", { startDate, endDate });
 }
 
 function renderFeedbackStars() {
@@ -1798,6 +1849,7 @@ elements.aboutModalBackdrop.addEventListener("click", closeAboutModal);
 elements.questionsDbButton.addEventListener("click", openQuestionsDatabase);
 elements.usageStatsButton.addEventListener("click", openUsageStats);
 elements.statsPeriodSwitch.addEventListener("click", handleStatsPeriodClick);
+elements.statsCustomForm.addEventListener("submit", handleStatsCustomSubmit);
 elements.bookExamButton.addEventListener("click", () => openAppModal(elements.bookExamModal));
 elements.feedbackButton.addEventListener("click", () => openFeedbackModal("spontaneous"));
 elements.feedbackCardButton.addEventListener("click", () => openFeedbackModal("spontaneous"));

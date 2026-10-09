@@ -221,7 +221,7 @@
 
     <section class="app-modal hidden" id="statsModal" aria-hidden="true" aria-labelledby="statsModalTitle" role="dialog">
       <div class="app-modal-backdrop" data-modal-close="statsModal"></div>
-      <div class="app-modal-card">
+      <div class="app-modal-card app-modal-card-wide">
         <div class="app-modal-header">
           <div>
             <p class="toolbar-label">Anonymous Metrics</p>
@@ -235,8 +235,21 @@
           <button class="stats-period-button" type="button" data-period="current_month" aria-pressed="false">This month</button>
           <button class="stats-period-button" type="button" data-period="last_week" aria-pressed="false">Last week</button>
           <button class="stats-period-button" type="button" data-period="last_month" aria-pressed="false">Last month</button>
+          <button class="stats-period-button" type="button" data-period="custom" aria-pressed="false">Custom range</button>
           <button class="stats-period-button active" type="button" data-period="all_time" aria-pressed="true">All time</button>
         </div>
+        <form class="stats-custom-form hidden" id="statsCustomForm" novalidate>
+          <label class="stats-date-field">
+            <span class="toolbar-label">From</span>
+            <input class="stats-date-input" id="statsStartDate" type="date" required>
+          </label>
+          <label class="stats-date-field">
+            <span class="toolbar-label">To</span>
+            <input class="stats-date-input" id="statsEndDate" type="date" required>
+          </label>
+          <button class="primary-button" type="submit">Apply</button>
+          <p class="feedback-status error stats-custom-error" id="statsCustomError" role="alert"></p>
+        </form>
         <p class="review-meta stats-period-range" id="statsPeriodRange" aria-live="polite"></p>
         <div class="stats-grid" id="statsGrid"></div>
         <div class="stats-domains" id="statsDomains"></div>
@@ -414,8 +427,8 @@
       </div>
     </section>  </div>
 
-  <script src="./questions-db.js?v=2026-10-09-11-49"></script>
+  <script src="./questions-db.js?v=2026-10-09-14-01"></script>
   <script src="./aitech-backend.js?v=2026-06-25-11-05"></script>
-  <script src="./app.js?v=2026-10-09-11-49"></script>
+  <script src="./app.js?v=2026-10-09-14-01"></script>
 </body>
 </html>
